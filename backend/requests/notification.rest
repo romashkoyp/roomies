@@ -1,0 +1,7 @@
+### Add new notification
+POST http://localhost:3001/api/notifications
+Content-Type: application/json
+
+{
+    "content": "First notification"
+}

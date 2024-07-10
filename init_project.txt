@@ -1,5 +1,6 @@
 npm init
-npm install express dotenv pg sequelize nodemon
+npm install express dotenv pg sequelize umzug
+npm install nodemon --save-dev
 
 # Initialize the local repository
 git init
