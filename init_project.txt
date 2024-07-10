@@ -1,0 +1,24 @@
+npm init
+npm install express dotenv pg sequelize nodemon
+
+# Initialize the local repository
+git init
+
+# Add all files to the staging area
+git add . 
+
+# Commit the changes
+git commit -m "Init nodeJS app with PostgreSQL in container"
+
+# Add the remote repository
+git remote add origin git@github.com:romashkoyp/roomies.git
+
+# Rename the default branch to master
+git branch -M master
+
+# Push the local repository to GitHub
+git push -u origin master
+
+# In WSL
+docker-compose -f docker-compose.yml up
+docker exec -it roomies_db_dev psql -U admin db

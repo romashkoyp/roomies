@@ -1,0 +1,15 @@
+services:
+  database:
+    container_name: roomies_db_dev
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_USER: admin
+      POSTGRES_DB: db
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
