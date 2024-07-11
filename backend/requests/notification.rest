@@ -1,7 +1,21 @@
+### Get all notifications
+GET http://localhost:3001/api/notifications
+
 ### Add new notification
 POST http://localhost:3001/api/notifications
 Content-Type: application/json
 
 {
-    "content": "First notification"
+    "content": "Third notification"
 }
+
+### Change content of desired notification
+PUT http://localhost:3001/api/notifications/2
+Content-Type: application/json
+
+{
+    "content": "Changed notification"
+}
+
+### Delete desired notification
+DELETE http://localhost:3001/api/notifications/1

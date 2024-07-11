@@ -7,9 +7,13 @@ const { connectToDatabase } = require('./util/db')
 
 const notificationRouter = require('./controllers/notifications')
 
+const { errorHandler } = require('./util/middleware')
+
 app.use(express.json())
 
 app.use('/api/notifications', notificationRouter)
+
+app.use(errorHandler)
 
 const start = async () => {
   await connectToDatabase()
