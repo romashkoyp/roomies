@@ -13,7 +13,7 @@ const errorHandler = (error, req, res, next) => {
     return res.status(500).json({ error: 'Database error occurred' })
   }
   
-  next(error)
+  //next(error)
 }
 
 module.exports = {

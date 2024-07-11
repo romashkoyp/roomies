@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 })
 
 router.put('/:id', notificationFinder, async (req, res) => {
-  if (req.notification) {
+  if (req.body.content) {
     req.notification.content = req.body.content
     await req.notification.save()
     res.json(req.notification)
