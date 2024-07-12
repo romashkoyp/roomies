@@ -1,22 +1,16 @@
 ### Get all users
 GET http://localhost:3001/api/users
 
-### Add new user
-POST http://localhost:3001/api/users
-Content-Type: application/json
-
-{
-    "username": "user1@gmail.com",
-    "name": "User"
-}
+### Get desired user
+GET http://localhost:3001/api/users/1
 
 ### Change username, name for desired user
-PUT http://localhost:3001/api/users/4
+PUT http://localhost:3001/api/users/1
 Content-Type: application/json
 
 {
-    "admin": false
+    "enabled": true
 }
 
 ### Delete desired user
-DELETE http://localhost:3001/api/users/3
+DELETE http://localhost:3001/api/users/1

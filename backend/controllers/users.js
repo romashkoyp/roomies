@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User } = require('../models')
+const { User, Notification } = require('../models')
 
 const userFinder = async (req, res, next) => {
   req.user = await User.findByPk(req.params.id)
@@ -9,23 +9,24 @@ const userFinder = async (req, res, next) => {
   next()
 }
 
+const excludePasswordHash = (user) => {
+  const { passwordHash, ...userWithoutPassword } = user.toJSON()
+  return userWithoutPassword
+}
+
 router.get('/', async (req, res) => {
-  const users = await User.findAll()
+  const users = await User.findAll({
+    attributes: { exclude: ['passwordHash'] },
+    include: {
+      model: Notification,
+      attributes: { exclude: ['userId'] }
+    }
+  })
 
   if (Array.isArray(users) && users.length !== 0) {
     res.json(users)
   } else {
     throw new Error ('No users found')
-  }
-})
-
-router.post('/', async (req, res) => {
-  const user = await User.create(req.body)
-  if (user) {
-    console.log(user.toJSON())
-    res.status(201).json(user)
-  } else {
-    res.status(400).json({ error })
   }
 })
 
@@ -48,16 +49,22 @@ router.put('/:id', userFinder, async (req, res) => {
       await req.user.save()
       console.log('Admin rights updated')
     }
+
+    if (req.body.enabled !== undefined) {
+      req.user.enabled = req.body.enabled
+      await req.user.save()
+      console.log('Users\'s status updated')
+    }
   } else {
     throw new Error ('User not updated')
   }
 
-  res.status(201).json(req.user)
+  res.status(201).json(excludePasswordHash(req.user))
 })
 
 router.get('/:id', userFinder, async (req, res) => {
   console.log(req.user.toJSON())
-  res.status(201).json(req.user)
+  res.status(201).json(excludePasswordHash(req.user))
 })
 
 router.delete('/:id', userFinder, async (req, res) => {

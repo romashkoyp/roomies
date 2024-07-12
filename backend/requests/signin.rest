@@ -1,0 +1,9 @@
+### Add new user
+POST http://localhost:3001/api/signin
+Content-Type: application/json
+
+{
+    "username": "user5@gmail.com",
+    "name": "User",
+    "password": "pypassword"
+}
