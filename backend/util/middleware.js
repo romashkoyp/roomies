@@ -7,6 +7,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'SequelizeValidationError') {
     return res.status(400).json({ error: error.message })
+  } else if (error.message === 'Validation failed') {
+    return res.status(400).json({ errors: error.errors })
   } else if (error.name === 'EmptyResultError') {
     return res.status(404).json({ error: 'Resource not found' })
   } else if (error.name === 'Error') {

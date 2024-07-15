@@ -54,6 +54,7 @@ module.exports = {
   },
 
   down: async ({ context: queryInterface }) => {
+    await queryInterface.removeConstraint('notifications', 'notifications_user_id_fkey')
     await queryInterface.dropTable('users')
   }
 }

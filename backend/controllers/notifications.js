@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { Notification, User } = require('../models')
 const { tokenExtractor } = require('../util/middleware')
+const { body, validationResult } = require('express-validator')
 
 const notificationFinder = async (req, res, next) => {
   req.notification = await Notification.findByPk(req.params.id)
@@ -27,69 +28,103 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.put('/:id', notificationFinder, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id)
-  
-  if (!user) {
-    throw new Error('User not found')
-  }
+router.put('/:id',
+  body('content').notEmpty().withMessage('Content is required'),
+  notificationFinder,
+  tokenExtractor,
+  async (req, res) => {
+    const errors = validationResult(req)
 
-  if (user.enabled === undefined) {
-    throw new Error('Account disabled') 
-  }
+    if (!errors.isEmpty()) {
+      const validationError = new Error('Validation failed')
+      validationError.errors = errors.array()
+      throw validationError
+    }
 
-  if (user.admin === undefined) {
-    throw new Error('Not enough rights for changing notification') 
-  }
+    const user = await User.findByPk(req.decodedToken.id)
+    
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
 
-  if (req.body.content) {
-    req.notification.content = req.body.content
-    await req.notification.save()
-    res.json(req.notification)
-    console.log('notification updated')
-  } else {
-    throw new Error ('Notification not updated')
-  }
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    /*if (user.admin !== true) {
+      throw new Error('Not enough rights') 
+    }*/
+
+    if (req.notification.userId !== user.id) {
+      throw new Error('Not enough rights')
+    }
+
+    if (req.body.content) {
+      req.notification.content = req.body.content
+      await req.notification.save()
+      res.json(req.notification)
+      console.log('notification updated')
+    } else {
+      throw new Error ('Notification not updated')
+    }
 })
 
-router.post('/', tokenExtractor, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id)
+router.post('/',
+  body('content')
+    .notEmpty().withMessage('Content is required'),
+  tokenExtractor,
+  async (req, res) => {
+    const errors = validationResult(req)
 
-  const notification = await Notification.create(req.body)
+    if (!errors.isEmpty()) {
+      const validationError = new Error('Validation failed')
+      validationError.errors = errors.array()
+      throw validationError
+    }
+  
+    const user = await User.findByPk(req.decodedToken.id)
 
-  if (!user) {
-    throw new Error('User not found')
-  }
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
 
-  if (user.enabled === undefined) {
-    throw new Error('Account disabled') 
-  }
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
 
-  if (user.admin === undefined) {
-    throw new Error('Not enough rights for creating notification') 
-  }
+    /*if (user.admin !== true) {
+      throw new Error('Not enough rights') 
+    }*/
 
-  if (notification) {
-    console.log(notification.toJSON())
-    res.status(201).json(notification)
-  } else {
-    throw new Error ('Notification not created')
-  }
+    const notification = await Notification.create({
+      ...req.body, 
+      userId: user.id
+    })
+
+    if (notification) {
+      console.log(notification.toJSON())
+      res.status(201).json(notification)
+    } else {
+      throw new Error ('Notification not created')
+    }
 })
 
 router.delete('/:id', tokenExtractor, notificationFinder, async (req, res) => {
   const user = await User.findByPk(req.decodedToken.id)
-
-  if (!user) {
-    throw new Error('User not found')
+  if (!user.id) {
+    throw new Error('User not found from token')
   }
 
-  if (user.enabled === undefined) {
+  if (user.enabled !== true) {
     throw new Error('Account disabled') 
   }
 
-  if (user.admin === undefined) {
-    throw new Error('Not enough rights for deleting notification') 
+  /*if (user.admin !== true) {
+    throw new Error('Not enough rights') 
+  }*/
+
+  if (req.notification.userId !== user.id) {
+    throw new Error('Not enough rights')
   }
 
   try {

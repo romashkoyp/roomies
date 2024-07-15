@@ -1,22 +1,24 @@
 ### Get all notifications
-GET http://localhost:3001/api/notifications
+GET http://localhost:4000/api/notifications
 
 ### Add new notification
-POST http://localhost:3001/api/notifications
+POST http://localhost:4000/api/notifications
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXI1QGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MjA3NzU5MjcsImV4cCI6MTcyMDc3OTUyN30.gmz-0N4wzkGNQVem4ZRVL4ubPy6GQDLEEz-Hy_Zc4Xs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxQGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MjEwNTMzMTQsImV4cCI6MTcyMTA1NjkxNH0.D4Y168mwZo6tU_diQyLSxor8J-M3LeK_pXbDcmx-7ZU
 
 {
-    "content": "First notification"
+    "content": "The second notification"
 }
 
 ### Change content of desired notification
-PUT http://localhost:3001/api/notifications/2
+PUT http://localhost:4000/api/notifications/2
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxQGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MjEwNTMzMTQsImV4cCI6MTcyMTA1NjkxNH0.D4Y168mwZo6tU_diQyLSxor8J-M3LeK_pXbDcmx-7ZU
 
 {
     "content": "Changed notification"
 }
 
 ### Delete desired notification
-DELETE http://localhost:3001/api/notifications/1
+DELETE http://localhost:4000/api/notifications/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxQGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MjEwNDgxOTgsImV4cCI6MTcyMTA1MTc5OH0.6fV6yAT-Lw5DCftXLwo7m_XW_TU9nL9T5_iRA8Kzb5Y

@@ -34,4 +34,14 @@ const runMigrations = async () => {
   })
 }
 
-module.exports = { connectToDatabase, sequelize }
+const rollbackMigration = async () => {
+  await sequelize.authenticate()
+  const migrator = new Umzug(migrationConf)
+  await migrator.down({ to: 0 })
+}
+
+module.exports = {
+  connectToDatabase,
+  sequelize,
+  rollbackMigration
+ }
