@@ -1,0 +1,15 @@
+services:
+  database:
+    container_name: roomies_db_test
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_USER: testadmin
+      POSTGRES_DB: db_test
+    ports:
+      - 5433:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:

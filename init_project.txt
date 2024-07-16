@@ -21,5 +21,16 @@ git branch -M master
 git push -u origin master
 
 # In WSL
-docker-compose -f docker-compose.yml up
+docker-compose -f docker-compose.yml -p roomies_dev up -d
+docker-compose -f docker-compose.yml -p roomies_dev down
 docker exec -it roomies_db_dev psql -U admin db
+
+docker-compose -f docker-compose.test.yml -p roomies_test up -d
+docker-compose -f docker-compose.test.yml -p roomies_test down
+docker exec -it roomies_db_test psql -U testadmin db_test
+=========================================================
+docker-compose -f docker-compose.yml -p roomies_dev up -d
+docker-compose -f docker-compose.test.yml -p roomies_test up -d
+
+docker-compose -f docker-compose.yml -p roomies_dev down
+docker-compose -f docker-compose.test.yml -p roomies_test down
