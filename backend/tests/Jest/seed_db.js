@@ -1,41 +1,53 @@
 const { User, Notification } = require('../../models')
+const { passwordHash } = require('../../util/middleware')
 
 const initialUsers = [
   { 
+    id: 2,
     username: 'user1@example.com', 
     name: 'User 1', 
-    passwordHash: '$2a$10$jL.m3.tM1jEK7M/K62..6eU6/j4y25/A9hWZ.vOqrg.tDk7ZQcC3G',
+    password: 'pdCh8,$r',
     admin: false,
     enabled: true
   },
   {
+    id: 3,
     username: 'user2@example.com', 
     name: 'User 2', 
-    passwordHash: '726mU3W6q$ja/K..$L/k45.9GMe2Q71/K2j$cg.6t.Z0yMZCAOjt3Dv.rh1E',
+    password: 'pdC8,$rh',
     admin: false,
     enabled: true
   },
   {
+    id: 4,
     username: 'user3@example.com', 
     name: 'User 3', 
-    passwordHash: 'j/W$7M.59re/c6M3G6q7m4v2yjQkt/1h2OKjaA2.g..ECtKZ1D.L63$0Z.$U',
+    password: 'pd,C8$rh',
     admin: false,
     enabled: false
-  }
+  },
+  { 
+    id: 5,
+    username: 'testadmin@admin.com', 
+    name: 'TestAdmin', 
+    password: 'pd8$r,Ch',
+    admin: true,
+    enabled: true
+  },
 ]
 
 const initialNotifications = [
   {
     content: 'Test notification 1',
-    userId: 1
+    userId: 5
   },
   {
     content: 'Test notification 2',
-    userId: 1
+    userId: 5
   },
   {
     content: 'Another test notification',
-    userId: 2
+    userId: 5
   }
 ]
 
@@ -44,7 +56,12 @@ const seedDatabase = async () => {
     await User.sync({ force: true })
     await Notification.sync({ force: true })
 
-    await User.bulkCreate(initialUsers)
+    const usersWithHashedPasswords = await Promise.all(initialUsers.map(async (user) => {
+      const hashedPassword = await passwordHash(user.password)
+      return { ...user, passwordHash: hashedPassword, password: undefined }
+    }))
+
+    await User.bulkCreate(usersWithHashedPasswords)
     await Notification.bulkCreate(initialNotifications)
 
     console.log('Test data seeded successfully!')

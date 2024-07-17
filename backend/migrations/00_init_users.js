@@ -1,4 +1,6 @@
 const { DataTypes } = require('sequelize')
+const { PASSWORD } = require('../util/config')
+const { passwordHash } = require('../util/middleware')
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
@@ -73,6 +75,18 @@ module.exports = {
       allowNull: false,
       references: { model: 'users', key: 'id', onDelete: 'CASCADE' },
     })
+
+    await queryInterface.bulkInsert('users', [
+      {
+        username: 'admin@admin.com',
+        name: 'Admin',
+        password_hash: await passwordHash(PASSWORD),
+        admin: true,
+        enabled: true,
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    ])
   },
 
   down: async ({ context: queryInterface }) => {

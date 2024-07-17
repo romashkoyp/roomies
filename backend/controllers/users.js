@@ -16,25 +16,7 @@ const excludePasswordHash = (user) => {
   return userWithoutPassword
 }
 
-router.get('/', async (req, res) => {
-  const users = await User.findAll({
-    attributes: { exclude: ['passwordHash'] },
-    include: {
-      model: Notification,
-      attributes: { exclude: ['userId'] }
-    }
-  })
-
-  if (Array.isArray(users) && users.length !== 0) {
-    res.json(users)
-  } else {
-    throw new Error ('No users found')
-  }
-})
-
-router.put('/:id',
-  userFinder,
-  tokenExtractor,
+router.get('/', tokenExtractor,
   async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id)
 
@@ -42,17 +24,44 @@ router.put('/:id',
       throw new Error('User not found from token')
     }
 
-    if (parseInt(req.params.id, 10) !== user.id) {
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    if (user.admin !== true) {
       throw new Error('Not enough rights') 
+    }
+
+    const users = await User.findAll({
+      attributes: { exclude: ['passwordHash'] },
+      include: {
+        model: Notification,
+        attributes: { exclude: ['userId'] }
+      }
+    })
+
+    if (Array.isArray(users) && users.length !== 0) {
+      res.json(users)
+    } else {
+      throw new Error ('No users found')
+    }
+})
+
+router.put('/:id', userFinder, tokenExtractor,
+  async (req, res) => {
+    const user = await User.findByPk(req.decodedToken.id)
+
+    if (!user.id) {
+      throw new Error('User not found from token')
     }
 
     if (user.enabled !== true) {
       throw new Error('Account disabled') 
     }
 
-    /*if (user.admin !== true) {
+    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
       throw new Error('Not enough rights') 
-    }*/
+    }
 
     const validationChain = []
     if (req.body.username) {
@@ -111,9 +120,24 @@ router.put('/:id',
     res.status(201).json(excludePasswordHash(req.user))
 })
 
-router.get('/:id', userFinder, async (req, res) => {
-  console.log(req.user.toJSON())
-  res.status(201).json(excludePasswordHash(req.user))
+router.get('/:id', userFinder, tokenExtractor,
+  async (req, res) => {
+    const user = await User.findByPk(req.decodedToken.id)
+
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
+
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
+      throw new Error('Not enough rights') 
+    }
+    
+    console.log(req.user.toJSON())
+    res.status(200).json(excludePasswordHash(req.user))
 })
 
 router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
@@ -123,17 +147,13 @@ router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
     throw new Error('User not found from token')
   }
 
-  if (parseInt(req.params.id, 10) !== user.id) {
-    throw new Error('Not enough rights') 
-  }
-
   if (user.enabled !== true) {
     throw new Error('Account disabled') 
   }
 
-  /*if (user.admin !== true) {
+  if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
     throw new Error('Not enough rights') 
-  }*/
+  }
 
   try {
     await req.user.destroy()

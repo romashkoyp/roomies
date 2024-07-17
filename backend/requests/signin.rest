@@ -3,6 +3,6 @@ POST http://localhost:4000/api/signin
 Content-Type: application/json
 
 {
-    "username": "user1@gmail.com",
-    "password": "Ch8,pd$r"
+    "username": "admin@admin.com",
+    "password": "pd$rCh8,"
 }

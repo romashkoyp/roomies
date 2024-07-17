@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "reset": "node util/rollback.js",
-    "test": "jest"
+    "test": "cross-env NODE_ENV=test jest --runInBand --silent"
   },
   "author": "Yaroslav Romashko",
   "license": "ISC",

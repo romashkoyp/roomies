@@ -28,10 +28,13 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.put('/:id',
+router.get('/:id', notificationFinder,
+  async (req, res) => {
+    res.status(200).json(req.notification)
+})
+
+router.put('/:id', notificationFinder, tokenExtractor,
   body('content').notEmpty().withMessage('Content is required'),
-  notificationFinder,
-  tokenExtractor,
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -51,12 +54,8 @@ router.put('/:id',
       throw new Error('Account disabled') 
     }
 
-    /*if (user.admin !== true) {
+    if (user.admin !== true) {
       throw new Error('Not enough rights') 
-    }*/
-
-    if (req.notification.userId !== user.id) {
-      throw new Error('Not enough rights')
     }
 
     if (req.body.content) {
@@ -69,10 +68,9 @@ router.put('/:id',
     }
 })
 
-router.post('/',
+router.post('/', tokenExtractor,
   body('content')
     .notEmpty().withMessage('Content is required'),
-  tokenExtractor,
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -92,9 +90,9 @@ router.post('/',
       throw new Error('Account disabled') 
     }
 
-    /*if (user.admin !== true) {
+    if (user.admin !== true) {
       throw new Error('Not enough rights') 
-    }*/
+    }
 
     const notification = await Notification.create({
       ...req.body, 
@@ -119,12 +117,8 @@ router.delete('/:id', tokenExtractor, notificationFinder, async (req, res) => {
     throw new Error('Account disabled') 
   }
 
-  /*if (user.admin !== true) {
+  if (user.admin !== true) {
     throw new Error('Not enough rights') 
-  }*/
-
-  if (req.notification.userId !== user.id) {
-    throw new Error('Not enough rights')
   }
 
   try {

@@ -10,9 +10,4 @@ describe('Database Connection', () => {
       throw error
     }
   })
-
-  afterAll(async () => {
-    await sequelize.close()
-    console.log('Database connection closed.')
-  })
 })

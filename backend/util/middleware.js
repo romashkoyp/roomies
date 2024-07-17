@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const { SECRET } = require('./config')
 
 const errorHandler = (error, req, res, next) => {
@@ -39,7 +40,14 @@ const tokenExtractor = (req, res, next) => {
   next()
 }
 
+const passwordHash = async (password) => {
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+  return passwordHash
+}
+
 module.exports = {
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  passwordHash
 }

@@ -21,16 +21,50 @@ git branch -M master
 git push -u origin master
 
 # In WSL
-docker-compose -f docker-compose.yml -p roomies_dev up -d
 docker-compose -f docker-compose.yml -p roomies_dev down
+docker-compose -f docker-compose.yml -p roomies_dev up -d
 docker exec -it roomies_db_dev psql -U admin db
 
-docker-compose -f docker-compose.test.yml -p roomies_test up -d
 docker-compose -f docker-compose.test.yml -p roomies_test down
-docker exec -it roomies_db_test psql -U testadmin db_test
-=========================================================
-docker-compose -f docker-compose.yml -p roomies_dev up -d
 docker-compose -f docker-compose.test.yml -p roomies_test up -d
+docker exec -it roomies_db_test psql -U testadmin db_test
+
+================ALL DOWN AND UP==========
 
 docker-compose -f docker-compose.yml -p roomies_dev down
 docker-compose -f docker-compose.test.yml -p roomies_test down
+docker-compose -f docker-compose.yml -p roomies_dev up -d
+docker-compose -f docker-compose.test.yml -p roomies_test up -d
+
+================DEV======================
+services:
+  database:
+    container_name: roomies_db_dev
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_USER: admin
+      POSTGRES_DB: db
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
+====================TEST===================
+services:
+  database:
+    container_name: roomies_db_test
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_USER: testadmin
+      POSTGRES_DB: db_test
+    ports:
+      - 5433:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
