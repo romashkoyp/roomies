@@ -47,6 +47,25 @@ router.get('/', tokenExtractor,
     }
 })
 
+router.get('/:id', userFinder, tokenExtractor,
+  async (req, res) => {
+    const user = await User.findByPk(req.decodedToken.id)
+
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
+
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
+      throw new Error('Not enough rights')
+    }
+    
+    res.status(200).json(excludePasswordHash(req.user))
+})
+
 router.put('/:id', userFinder, tokenExtractor,
   async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id)
@@ -64,6 +83,7 @@ router.put('/:id', userFinder, tokenExtractor,
     }
 
     const validationChain = []
+
     if (req.body.username) {
       validationChain.push(
         body('username').isEmail().withMessage('Invalid email format')
@@ -91,53 +111,40 @@ router.put('/:id', userFinder, tokenExtractor,
       throw validationError
     }
 
-    if (req.body) {
-      if (req.body.username) {
-        req.user.username = req.body.username
-        console.log('Username updated')
-      }
-
-      if (req.body.name) {
-        req.user.name = req.body.name
-        console.log('Name updated')
-      }
-
-      if (req.body.admin !== undefined) {
-        req.user.admin = req.body.admin
-        console.log('Admin rights updated')
-      }
-
-      if (req.body.enabled !== undefined) {
-        req.user.enabled = req.body.enabled
-        console.log('Users\'s status updated')
-      }
-
-      await req.user.save()
-    } else {
-      throw new Error ('User not updated')
-    }
-
-    res.status(201).json(excludePasswordHash(req.user))
-})
-
-router.get('/:id', userFinder, tokenExtractor,
-  async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
-      throw new Error('Not enough rights') 
+    if (!req.body) { 
+      throw new Error('No update data provided')
     }
     
-    console.log(req.user.toJSON())
-    res.status(200).json(excludePasswordHash(req.user))
+    if (req.body.username) {
+      req.user.username = req.body.username
+      console.log('Username updated')
+    }
+
+    if (req.body.name) {
+      req.user.name = req.body.name
+      console.log('Name updated')
+    }
+
+    if (req.body.admin === false || req.body.admin === true) {
+      if (user.admin === true) {
+        req.user.admin = req.body.admin
+        console.log('Admin rights updated')
+      } else {
+        throw new Error ('Not enough rights')
+      }
+    }
+
+    if (req.body.enabled === false || req.body.enabled === true) {
+      if (user.admin === true) {
+        req.user.enabled = req.body.enabled
+        console.log('Users\'s status updated')
+      } else {
+        throw new Error ('Not enough rights')
+      }
+    }
+
+    await req.user.save()
+    return res.status(201).json(excludePasswordHash(req.user))
 })
 
 router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {

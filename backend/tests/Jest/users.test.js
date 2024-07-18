@@ -8,6 +8,7 @@ const { SECRET } = require('../../util/config')
 describe('Users API', () => {
   let adminToken
   let user1Token
+  let user2Token
   let user3Token
 
   beforeEach(async () => {
@@ -18,6 +19,9 @@ describe('Users API', () => {
 
     const user1 = await User.findOne({ where: { username: 'user1@example.com' } })
     user1Token = jwt.sign({ id: user1.id, username: user1.username }, SECRET)
+
+    const user2 = await User.findOne({ where: { username: 'user2@example.com' } })
+    user2Token = jwt.sign({ id: user2.id, username: user2.username }, SECRET)
 
     const user3 = await User.findOne({ where: { username: 'user3@example.com' } })
     user3Token = jwt.sign({ id: user3.id, username: user3.username }, SECRET)
@@ -52,19 +56,147 @@ describe('Users API', () => {
       expect(res.body.error).toBe('Account disabled')
     })
 
-    it('disabled user cannot get list of other users', async () => {
-      const res = await request(app)
-        .get('/api/users')
-        .set('Authorization', `Bearer ${user3Token}`)
-      expect(res.status).toBe(404)
-      expect(res.body.error).toBe('Account disabled')
-    })
-
-    it('returns 401 if no token is provided', async () => {
+    it('returns 401 if no token provided', async () => {
       const res = await request(app)
         .get('/api/users')
       expect(res.status).toBe(401)
       expect(res.body.error).toBe('token missing')
+    })
+  })
+
+  describe('GET /api/users/:id', () => {
+    it('admin can get desired user without passwordHash', async () => {
+      const res = await request(app)
+        .get('/api/users/2')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(200)
+      expect(res.body.username).toBe('user1@example.com')
+      expect(res.body.passwordHash).toBeUndefined()
+    })
+
+    it('user can get own data without passwordHash', async () => {
+      const res = await request(app)
+        .get('/api/users/2')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res.status).toBe(200)
+      expect(res.body.username).toBe('user1@example.com')
+      expect(res.body.passwordHash).toBeUndefined()
+    })
+
+    it('user cannot get data of other user', async () => {
+      const res = await request(app)
+        .get('/api/users/3')
+        .set('Authorization', `Bearer ${user1Token}`)
+        expect(res.status).toBe(404)
+        expect(res.body.error).toBe('Not enough rights')
+    })
+
+    it('disabled user cannot get his own data', async () => {
+      const res = await request(app)
+        .get('/api/users/4')
+        .set('Authorization', `Bearer ${user3Token}`)
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Account disabled')
+    })
+  })
+
+  describe('PUT /api/users/:id', () => {
+    it('admin can change all user\'s data', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          name: 'updated name by admin',
+          username: 'new@username.com',
+          admin: true,
+          enabled: false
+         })
+      expect(res.status).toBe(201)
+      expect(res.body.name).toBe('updated name by admin')
+      expect(res.body.username).toBe('new@username.com')
+      expect(res.body.admin).toBe(true)
+      expect(res.body.enabled).toBe(false)
+    })
+
+    it('user can change own name and username', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          name: 'updated name by user',
+          username: 'new@username.com'
+        })
+      expect(res.status).toBe(201)
+      expect(res.body.name).toBe('updated name by user')
+      expect(res.body.username).toBe('new@username.com')
+    })
+
+    it('user cannot change admin and enabled status', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({ admin: true, enabled: false })
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Not enough rights')
+    })
+
+    it('validation email for non emails as username', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          username: 'newusername.com'
+        })
+      expect(res.status).toBe(400)
+      expect(res.body.errors[0].msg).toBe('Invalid email format')
+    })
+
+    it('validation admin field for non boolean value', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          admin: 'string'
+        })
+      console.log(res.body)
+      expect(res.status).toBe(400)
+      expect(res.body.errors[0].msg).toBe('Allowed True or False for admin status')
+    })
+
+    it('validation enabled field for non boolean value', async () => {
+      const res = await request(app)
+        .put('/api/users/2')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          enabled: 'string'
+        })
+      console.log(res.body)
+      expect(res.status).toBe(400)
+      expect(res.body.errors[0].msg).toBe('Allowed True or False for enabled status')
+    })
+  })
+
+  describe('DELETE /api/users/:id', () => {
+    it('admin can delete user\'s account', async () => {
+      const res = await request(app)
+        .delete('/api/users/5')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(204)
+    })
+
+    it('user can delete own account', async () => {
+      const res = await request(app)
+        .delete('/api/users/2')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res.status).toBe(204)
+    })
+
+    it('user cannot delete another account', async () => {
+      const res = await request(app)
+        .delete('/api/users/2')
+        .set('Authorization', `Bearer ${user2Token}`)
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Not enough rights')
     })
   })
 })
