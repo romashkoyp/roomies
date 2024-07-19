@@ -33,41 +33,6 @@ router.get('/:id', notificationFinder,
     res.status(200).json(req.notification)
 })
 
-router.put('/:id', notificationFinder, tokenExtractor,
-  body('content').notEmpty().withMessage('Content is required'),
-  async (req, res) => {
-    const errors = validationResult(req)
-
-    if (!errors.isEmpty()) {
-      const validationError = new Error('Validation failed')
-      validationError.errors = errors.array()
-      throw validationError
-    }
-
-    const user = await User.findByPk(req.decodedToken.id)
-    
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    if (req.body.content) {
-      req.notification.content = req.body.content
-      await req.notification.save()
-      res.json(req.notification)
-      console.log('notification updated')
-    } else {
-      throw new Error ('Notification not updated')
-    }
-})
-
 router.post('/', tokenExtractor,
   body('content')
     .notEmpty().withMessage('Content is required'),
@@ -104,6 +69,41 @@ router.post('/', tokenExtractor,
       res.status(201).json(notification)
     } else {
       throw new Error ('Notification not created')
+    }
+})
+
+router.put('/:id', notificationFinder, tokenExtractor,
+  body('content').notEmpty().withMessage('Content is required'),
+  async (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      const validationError = new Error('Validation failed')
+      validationError.errors = errors.array()
+      throw validationError
+    }
+
+    const user = await User.findByPk(req.decodedToken.id)
+    
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
+
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    if (user.admin !== true) {
+      throw new Error('Not enough rights') 
+    }
+
+    if (req.body.content) {
+      req.notification.content = req.body.content
+      await req.notification.save()
+      res.json(req.notification)
+      console.log('notification updated')
+    } else {
+      throw new Error ('Notification not updated')
     }
 })
 

@@ -46,7 +46,7 @@ const start = async () => {
   } else {
     console.log('Admin user not created!')
   }
-
+  
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })

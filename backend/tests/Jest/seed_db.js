@@ -1,9 +1,10 @@
 const { User, Notification } = require('../../models')
 const { passwordHash } = require('../../util/middleware')
+const { sequelize } = require('../../util/db')
 
 const initialUsers = [
   { 
-    id: 1,
+    id: 10,
     username: 'testadmin@admin.com', 
     name: 'TestAdmin', 
     password: 'pd8$r,Ch',
@@ -11,7 +12,7 @@ const initialUsers = [
     enabled: true
   },
   { 
-    id: 2,
+    id: 20,
     username: 'user1@example.com', 
     name: 'User 1', 
     password: 'pdCh8,$r',
@@ -19,7 +20,7 @@ const initialUsers = [
     enabled: true
   },
   {
-    id: 3,
+    id: 30,
     username: 'user2@example.com', 
     name: 'User 2', 
     password: 'pdC8,$rh',
@@ -27,27 +28,38 @@ const initialUsers = [
     enabled: true
   },
   {
-    id: 4,
+    id: 40,
     username: 'user3@example.com', 
     name: 'User 3', 
     password: 'pd,C8$rh',
     admin: false,
+    enabled: false
+  },
+  { 
+    id: 50,
+    username: 'disabledadmin@admin.com',
+    name: 'DisabledAdmin',
+    password: 'pdr,Ch8$',
+    admin: true,
     enabled: false
   }
 ]
 
 const initialNotifications = [
   {
+    id: 10,
     content: 'Test notification 1',
-    userId: 1
+    userId: 10
   },
   {
+    id: 20,
     content: 'Test notification 2',
-    userId: 1
+    userId: 10
   },
   {
+    id: 30,
     content: 'Another test notification',
-    userId: 1
+    userId: 10
   }
 ]
 

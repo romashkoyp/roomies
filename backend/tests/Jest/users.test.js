@@ -67,7 +67,7 @@ describe('Users API', () => {
   describe('GET /api/users/:id', () => {
     it('admin can get desired user without passwordHash', async () => {
       const res = await request(app)
-        .get('/api/users/2')
+        .get('/api/users/20')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(200)
       expect(res.body.username).toBe('user1@example.com')
@@ -76,7 +76,7 @@ describe('Users API', () => {
 
     it('user can get own data without passwordHash', async () => {
       const res = await request(app)
-        .get('/api/users/2')
+        .get('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(200)
       expect(res.body.username).toBe('user1@example.com')
@@ -85,7 +85,7 @@ describe('Users API', () => {
 
     it('user cannot get data of other user', async () => {
       const res = await request(app)
-        .get('/api/users/3')
+        .get('/api/users/30')
         .set('Authorization', `Bearer ${user1Token}`)
         expect(res.status).toBe(404)
         expect(res.body.error).toBe('Not enough rights')
@@ -93,7 +93,7 @@ describe('Users API', () => {
 
     it('disabled user cannot get his own data', async () => {
       const res = await request(app)
-        .get('/api/users/4')
+        .get('/api/users/40')
         .set('Authorization', `Bearer ${user3Token}`)
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Account disabled')
@@ -111,7 +111,7 @@ describe('Users API', () => {
   describe('PUT /api/users/:id', () => {
     it('admin can change all user\'s data', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           name: 'updated name by admin',
@@ -128,7 +128,7 @@ describe('Users API', () => {
 
     it('user can change own name and username', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           name: 'updated name by user',
@@ -141,7 +141,7 @@ describe('Users API', () => {
 
     it('user cannot change admin and enabled status', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({ admin: true, enabled: false })
       expect(res.status).toBe(404)
@@ -150,7 +150,7 @@ describe('Users API', () => {
 
     it('validation email for non emails as username', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           username: 'newusername.com'
@@ -161,7 +161,7 @@ describe('Users API', () => {
 
     it('validation admin field for non boolean value', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           admin: 'string'
@@ -173,7 +173,7 @@ describe('Users API', () => {
 
     it('validation enabled field for non boolean value', async () => {
       const res = await request(app)
-        .put('/api/users/2')
+        .put('/api/users/20')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           enabled: 'string'
@@ -187,21 +187,21 @@ describe('Users API', () => {
   describe('DELETE /api/users/:id', () => {
     it('admin can delete user\'s account', async () => {
       const res = await request(app)
-        .delete('/api/users/4')
+        .delete('/api/users/40')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(204)
     })
 
     it('user can delete own account', async () => {
       const res = await request(app)
-        .delete('/api/users/2')
+        .delete('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(204)
     })
 
     it('user cannot delete another account', async () => {
       const res = await request(app)
-        .delete('/api/users/2')
+        .delete('/api/users/20')
         .set('Authorization', `Bearer ${user2Token}`)
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Not enough rights')
