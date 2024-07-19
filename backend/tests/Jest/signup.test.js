@@ -1,8 +1,21 @@
 const request = require('supertest')
-const app = require('../../index')
+const { app, start } = require('../../index')
 const { seedDatabase, clearDatabase } = require('./seed_db')
+const { PORT } = require('../../util/config')
 
 describe('Signup API', () => {
+  
+  let server
+
+  beforeAll(async () => {
+    await start()
+    server = app.listen(PORT)
+  })
+
+  afterAll(async () => {
+    await server.close()
+  })
+  
   beforeEach(async () => {
     await seedDatabase()
   })

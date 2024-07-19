@@ -11,9 +11,9 @@ const DATABASE_URL = process.env.NODE_ENV === 'test'
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
-const SEED_ADMIN_USER = process.env.NODE_ENV === 'test'
-  ? false
-  : true
+const TEST = process.env.NODE_ENV === 'test'
+  ? true
+  : false
 
 module.exports = {
   PORT,
@@ -21,5 +21,5 @@ module.exports = {
   DATABASE_URL,
   ADMIN_USERNAME,
   ADMIN_PASSWORD,
-  SEED_ADMIN_USER
+  TEST
 }

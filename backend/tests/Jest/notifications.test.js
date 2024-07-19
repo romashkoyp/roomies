@@ -1,17 +1,27 @@
 const request = require('supertest')
-const app = require('../../index')
+const { app, start } = require('../../index')
 const { seedDatabase, clearDatabase, initialNotifications } = require('./seed_db')
 const { User } = require('../../models')
 const jwt = require('jsonwebtoken')
-const { SECRET } = require('../../util/config')
+const { SECRET, PORT } = require('../../util/config')
 
 describe('Notifications API', () => {
+  let server
   let adminToken
   let user1Token
   let user2Token
   let user3Token
   let disabledAdminToken
   
+  beforeAll(async () => {
+    await start()
+    server = app.listen(PORT)
+  })
+  
+  afterAll(async () => {
+    await server.close()
+  })
+
   beforeEach(async () => {
     await seedDatabase()
 
