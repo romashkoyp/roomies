@@ -98,6 +98,14 @@ describe('Users API', () => {
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Account disabled')
     })
+
+    it('nonexisting user cannot be reached', async () => {
+      const res = await request(app)
+        .get('/api/users/999999')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('User not found')
+    })
   })
 
   describe('PUT /api/users/:id', () => {
@@ -179,7 +187,7 @@ describe('Users API', () => {
   describe('DELETE /api/users/:id', () => {
     it('admin can delete user\'s account', async () => {
       const res = await request(app)
-        .delete('/api/users/5')
+        .delete('/api/users/4')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(204)
     })
