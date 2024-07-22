@@ -68,3 +68,6 @@ services:
 
 volumes:
   data:
+===========================================
+
+npm test -- -t "signed out user cannot get his own data"

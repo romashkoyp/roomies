@@ -68,16 +68,36 @@ module.exports = {
       }
     })
 
+    await queryInterface.createTable('sessions', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      token: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    })
+
     await queryInterface.addColumn('notifications', 'user_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: 'users', key: 'id', onDelete: 'CASCADE' },
+    }),
+
+    await queryInterface.addColumn('sessions', 'user_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id', onDelete: 'CASCADE' }
     })
   },
 
   down: async ({ context: queryInterface }) => {
     await queryInterface.removeConstraint('notifications', 'notifications_user_id_fkey')
     await queryInterface.dropTable('notifications')
+    await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
+    await queryInterface.dropTable('sessions')
     await queryInterface.dropTable('users')
   }
 }

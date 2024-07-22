@@ -11,6 +11,7 @@ describe('Users API', () => {
   let user1Token
   let user2Token
   let user3Token
+  let user4Token
 
   beforeAll(async () => {
     await start()
@@ -35,6 +36,9 @@ describe('Users API', () => {
 
     const user3 = await User.findOne({ where: { username: 'user3@example.com' } })
     user3Token = jwt.sign({ id: user3.id, username: user3.username }, SECRET)
+
+    const user4 = await User.findOne({ where: { username: 'user4@example.com' } })
+    user4Token = jwt.sign({ id: user4.id, username: user4.username }, SECRET)
   })
 
   afterEach(async () => {
@@ -116,6 +120,19 @@ describe('Users API', () => {
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('User not found')
     })
+
+    it('signed out user cannot get his own data', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${user4Token}`)
+      expect(res1.status).toBe(204)
+
+      const res2 = await request(app)
+        .get('/api/users/60')
+        .set('Authorization', `Bearer ${user4Token}`)
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
+    })
   })
 
   describe('PUT /api/users/:id', () => {
@@ -192,13 +209,31 @@ describe('Users API', () => {
       expect(res.status).toBe(400)
       expect(res.body.errors[0].msg).toBe('Allowed True or False for enabled status')
     })
+
+    it('signed out user cannot change own data', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res1.status).toBe(204)
+
+      const res2 = await request(app)
+        .put('/api/users/20')
+        .set('Authorization', `Bearer ${user1Token}`)
+        .send({
+          name: 'updated name by user',
+          username: 'new@username.com'
+        })
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
+    })
   })
 
   describe('DELETE /api/users/:id', () => {
-    it('admin can delete user\'s account', async () => {
+    it('admin can delete users account', async () => {
       const res = await request(app)
         .delete('/api/users/40')
         .set('Authorization', `Bearer ${adminToken}`)
+      console.log(res.body)
       expect(res.status).toBe(204)
     })
 
@@ -215,6 +250,19 @@ describe('Users API', () => {
         .set('Authorization', `Bearer ${user2Token}`)
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Not enough rights')
+    })
+
+    it('signed out user cannot delete own data', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res1.status).toBe(204)
+
+      const res2 = await request(app)
+        .delete('/api/users/20')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
     })
   })
 })

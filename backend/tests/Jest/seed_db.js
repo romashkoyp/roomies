@@ -1,6 +1,7 @@
-const { User, Notification } = require('../../models')
+const { User, Notification, Session } = require('../../models')
 const { passwordHash } = require('../../util/middleware')
-const { sequelize } = require('../../util/db')
+const jwt = require('jsonwebtoken')
+const { SECRET } = require('../../util/config')
 
 const initialUsers = [
   { 
@@ -42,6 +43,14 @@ const initialUsers = [
     password: 'pdr,Ch8$',
     admin: true,
     enabled: false
+  },
+  {
+    id: 60,
+    username: 'user4@example.com',
+    name: 'User 4',
+    password: 'p$d,C8rh',
+    admin: false,
+    enabled: true
   }
 ]
 
@@ -75,6 +84,13 @@ const seedDatabase = async () => {
     await Notification.sync({ force: true }) //order make sense!!!!!!!!
     await Notification.bulkCreate(initialNotifications)
 
+    await Session.sync({ force: true })
+    const sessions = await Promise.all(initialUsers.map(async (user) => {
+      const token = jwt.sign({ id: user.id, username: user.username }, SECRET)
+      return { userId: user.id, token }
+    }))
+    await Session.bulkCreate(sessions)
+
     console.log('Test data seeded successfully!')
   } catch (error) {
     console.error('Error seeding database:', error)
@@ -86,6 +102,7 @@ const clearDatabase = async () => {
   try {
     await Notification.drop({ cascade: true })
     await User.drop({ cascade: true })
+    await Session.drop({ cascade: true })
     console.log('Test database cleared!')
   } catch (error) {
     console.error('Error clearing database:', error)

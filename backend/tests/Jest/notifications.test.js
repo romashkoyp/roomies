@@ -9,8 +9,6 @@ describe('Notifications API', () => {
   let server
   let adminToken
   let user1Token
-  let user2Token
-  let user3Token
   let disabledAdminToken
   
   beforeAll(async () => {
@@ -30,12 +28,6 @@ describe('Notifications API', () => {
 
     const user1 = await User.findOne({ where: { username: 'user1@example.com' } })
     user1Token = jwt.sign({ id: user1.id, username: user1.username }, SECRET)
-
-    const user2 = await User.findOne({ where: { username: 'user2@example.com' } })
-    user2Token = jwt.sign({ id: user2.id, username: user2.username }, SECRET)
-
-    const user3 = await User.findOne({ where: { username: 'user3@example.com' } })
-    user3Token = jwt.sign({ id: user3.id, username: user3.username }, SECRET)
 
     const disabledAdmin = await User.findOne({ where: { username: 'disabledadmin@admin.com' } })
     disabledAdminToken = jwt.sign({ id: disabledAdmin.id, username: disabledAdmin.username }, SECRET)
@@ -113,6 +105,23 @@ describe('Notifications API', () => {
       expect(res.status).toBe(401)
       expect(res.body.error).toBe('token missing')
     })
+
+    it('signed out user cannot create notification', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res1.status).toBe(204)
+      
+      const res2 = await request(app)
+        .post('/api/notifications')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          content: 'test content by admin'
+        })
+      console.log(res2.body)
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
+    })
   })
 
   describe('PUT /api/notifications/:id', () => {
@@ -167,6 +176,22 @@ describe('Notifications API', () => {
       expect(res.status).toBe(401)
       expect(res.body.error).toBe('token missing')
     })
+
+    it('signed our user cannot change notification', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res1.status).toBe(204)
+      
+      const res2 = await request(app)
+        .put('/api/notifications/10')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          content: 'test content'
+        })
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
+    })
   })
 
   describe('DELETE /api/notifications/:id', () => {
@@ -198,6 +223,19 @@ describe('Notifications API', () => {
         .delete('/api/notifications/10')
       expect(res.status).toBe(401)
       expect(res.body.error).toBe('token missing')
+    })
+
+    it('signed out user cannot delete notification', async () => {
+      const res1 = await request(app)
+        .delete('/api/signout')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res1.status).toBe(204)
+
+      const res2 = await request(app)
+        .delete('/api/notifications/10')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res2.status).toBe(404)
+      expect(res2.body.error).toBe('Session not found')
     })
   })
 })

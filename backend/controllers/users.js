@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User, Notification } = require('../models')
+const { User, Notification, Session } = require('../models')
 const { body, validationResult } = require('express-validator')
 const { tokenExtractor } = require('../util/middleware')
 
@@ -50,6 +50,7 @@ router.get('/', tokenExtractor,
 router.get('/:id', userFinder, tokenExtractor,
   async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id)
+    const token = req.headers.authorization.substring(7)
 
     if (!user.id) {
       throw new Error('User not found from token')
@@ -62,6 +63,17 @@ router.get('/:id', userFinder, tokenExtractor,
     if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
       throw new Error('Not enough rights')
     }
+
+    const session = await Session.findOne({
+      where: {
+        user_id: user.id,
+        token: token
+      }
+    })
+  
+    if (!session) {
+      throw new Error('Session not found')
+    }
     
     res.status(200).json(excludePasswordHash(req.user))
 })
@@ -69,6 +81,7 @@ router.get('/:id', userFinder, tokenExtractor,
 router.put('/:id', userFinder, tokenExtractor,
   async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id)
+    const token = req.headers.authorization.substring(7)
 
     if (!user.id) {
       throw new Error('User not found from token')
@@ -80,6 +93,17 @@ router.put('/:id', userFinder, tokenExtractor,
 
     if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
       throw new Error('Not enough rights') 
+    }
+
+    const session = await Session.findOne({
+      where: {
+        user_id: user.id,
+        token: token
+      }
+    })
+  
+    if (!session) {
+      throw new Error('Session not found')
     }
 
     const validationChain = []
@@ -149,6 +173,7 @@ router.put('/:id', userFinder, tokenExtractor,
 
 router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
   const user = await User.findByPk(req.decodedToken.id)
+  const token = req.headers.authorization.substring(7)
 
   if (!user.id) {
     throw new Error('User not found from token')
@@ -160,6 +185,17 @@ router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
 
   if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
     throw new Error('Not enough rights') 
+  }
+
+  const session = await Session.findOne({
+    where: {
+      user_id: user.id,
+      token: token
+    }
+  })
+
+  if (!session) {
+    throw new Error('Session not found')
   }
 
   try {

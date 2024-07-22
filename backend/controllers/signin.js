@@ -4,6 +4,7 @@ const { SECRET } = require('../util/config')
 const router = require('express').Router()
 const { body, validationResult } = require('express-validator')
 const User = require('../models/user')
+const Session = require('../models/session')
 
 router.post('/',
   body('username')
@@ -52,13 +53,19 @@ router.post('/',
       { expiresIn: 60*60 }
     )
 
+    await Session.create({
+      userId: user.id,
+      token
+    })
+
     res
       .status(200)
       .send({
           token, 
           id: user.id,
           username: user.username,
-          name: user.name })
+          name: user.name
+      })
 })
 
 module.exports = router

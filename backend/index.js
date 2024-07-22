@@ -10,6 +10,7 @@ const notificationRouter = require('./controllers/notifications')
 const userRouter = require('./controllers/users')
 const signinRouter = require('./controllers/signin')
 const signupRouter = require('./controllers/signup')
+const signoutRouter = require('./controllers/signout')
 
 const { errorHandler } = require('./util/middleware')
 
@@ -19,6 +20,7 @@ app.use('/api/notifications', notificationRouter)
 app.use('/api/users', userRouter)
 app.use('/api/signin', signinRouter)
 app.use('/api/signup', signupRouter)
+app.use('/api/signout', signoutRouter)
 
 app.use(errorHandler)
 

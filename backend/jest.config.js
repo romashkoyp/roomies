@@ -7,5 +7,6 @@ module.exports = {
   //testMatch: ['**/tests/Jest/**/notifications.test.js'],
   //testMatch: ['**/tests/Jest/**/signin.test.js'],
   //testMatch: ['**/tests/Jest/**/signup.test.js'],
+  //testMatch: ['**/tests/Jest/**/signout.test.js'],
   testPathIgnorePatterns: ['/node_modules/']
 }
