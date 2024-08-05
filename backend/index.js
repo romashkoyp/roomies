@@ -11,16 +11,19 @@ const userRouter = require('./controllers/users')
 const signinRouter = require('./controllers/signin')
 const signupRouter = require('./controllers/signup')
 const signoutRouter = require('./controllers/signout')
+const roomRouter = require('./controllers/rooms')
 
 const { errorHandler } = require('./util/middleware')
 
 app.use(express.json())
+app.use(express.static('public'))
 
 app.use('/api/notifications', notificationRouter)
 app.use('/api/users', userRouter)
 app.use('/api/signin', signinRouter)
 app.use('/api/signup', signupRouter)
 app.use('/api/signout', signoutRouter)
+app.use('/api/rooms', roomRouter)
 
 app.use(errorHandler)
 

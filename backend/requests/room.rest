@@ -1,0 +1,42 @@
+### Sign in admin
+POST http://localhost:4000/api/signin
+Content-Type: application/json
+
+{
+    "username": "admin@admin.com",
+    "password": "pd$rCh8,"
+}
+
+### Get all rooms
+GET http://localhost:4000/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+
+
+### Add new room
+POST http://localhost:4000/api/rooms
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+
+{
+    "name": "Forest",
+    "capacity": 10,
+    "size": 50,
+    "image_path": "/images/forest.jpeg"
+}
+
+### Get desired room
+GET http://localhost:4000/api/rooms/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+
+### Delete desired room
+DELETE http://localhost:4000/api/rooms/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+
+### Change rooms characteristics
+PUT http://localhost:4000/api/rooms/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+
+{
+    "capacity": 10
+}

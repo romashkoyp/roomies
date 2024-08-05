@@ -68,6 +68,42 @@ module.exports = {
       }
     })
 
+    await queryInterface.createTable('rooms', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      name: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true,
+      },
+      capacity: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      size: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      image_path: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
     await queryInterface.createTable('sessions', {
       id: {
         type: DataTypes.INTEGER,
@@ -86,6 +122,12 @@ module.exports = {
       references: { model: 'users', key: 'id', onDelete: 'CASCADE' },
     }),
 
+    await queryInterface.addColumn('rooms', 'user_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id', onDelete: 'CASCADE' },
+    }),
+
     await queryInterface.addColumn('sessions', 'user_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -98,6 +140,8 @@ module.exports = {
     await queryInterface.dropTable('notifications')
     await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
     await queryInterface.dropTable('sessions')
+    await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')
+    await queryInterface.dropTable('rooms')
     await queryInterface.dropTable('users')
   }
 }

@@ -8,5 +8,6 @@ module.exports = {
   //testMatch: ['**/tests/Jest/**/signin.test.js'],
   //testMatch: ['**/tests/Jest/**/signup.test.js'],
   //testMatch: ['**/tests/Jest/**/signout.test.js'],
+  //testMatch: ['**/tests/Jest/**/rooms.test.js'],
   testPathIgnorePatterns: ['/node_modules/']
 }

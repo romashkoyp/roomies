@@ -1,4 +1,4 @@
-const { User, Notification, Session } = require('../../models')
+const { User, Notification, Session, Room } = require('../../models')
 const { passwordHash } = require('../../util/middleware')
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('../../util/config')
@@ -72,6 +72,25 @@ const initialNotifications = [
   }
 ]
 
+const initialRooms = [
+  {
+    id: 10,
+    name: 'Air',
+    capacity: 10,
+    size: 50,
+    imagePath: '/images/air.jpeg',
+    userId: 10
+  },
+  {
+    id: 20,
+    name: 'Forest',
+    capacity: 20,
+    size: 70,
+    imagePath: '/images/forest.jpeg',
+    userId: 10
+  }
+]
+
 const seedDatabase = async () => {
   try {
     await User.sync({ force: true })
@@ -83,6 +102,9 @@ const seedDatabase = async () => {
     
     await Notification.sync({ force: true }) //order make sense!!!!!!!!
     await Notification.bulkCreate(initialNotifications)
+
+    await Room.sync({ force: true })
+    await Room.bulkCreate(initialRooms)
 
     await Session.sync({ force: true })
     const sessions = await Promise.all(initialUsers.map(async (user) => {
@@ -101,6 +123,7 @@ const seedDatabase = async () => {
 const clearDatabase = async () => {
   try {
     await Notification.drop({ cascade: true })
+    await Room.drop({ cascade: true })
     await User.drop({ cascade: true })
     await Session.drop({ cascade: true })
     console.log('Test database cleared!')
@@ -114,5 +137,6 @@ module.exports = {
   seedDatabase,
   clearDatabase,
   initialUsers,
-  initialNotifications
+  initialNotifications,
+  initialRooms
 }

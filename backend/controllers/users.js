@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User, Notification, Session } = require('../models')
+const { User, Notification, Session, Room } = require('../models')
 const { body, validationResult } = require('express-validator')
 const { tokenExtractor } = require('../util/middleware')
 
@@ -36,6 +36,8 @@ router.get('/', tokenExtractor,
       attributes: { exclude: ['passwordHash'] },
       include: {
         model: Notification,
+        attributes: { exclude: ['userId'] },
+        model: Room,
         attributes: { exclude: ['userId'] }
       }
     })
