@@ -92,6 +92,21 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      enabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+      },
+      time_begin: {
+        type: DataTypes.TIME,
+        allowNull: false,
+        defaultValue: '00:00:00'
+      },
+      time_end: {
+        type: DataTypes.TIME,
+        allowNull: false,
+        defaultValue: '00:00:00'
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

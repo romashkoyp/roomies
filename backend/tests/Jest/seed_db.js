@@ -79,6 +79,8 @@ const initialRooms = [
     capacity: 10,
     size: 50,
     imagePath: '/images/air.jpeg',
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00',
     userId: 10
   },
   {
