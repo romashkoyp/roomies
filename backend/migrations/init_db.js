@@ -119,6 +119,45 @@ module.exports = {
       }
     })
 
+    await queryInterface.createTable('bookings', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      name: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      enabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+      },
+      time_begin: {
+        type: DataTypes.TIME,
+        allowNull: false
+      },
+      time_end: {
+        type: DataTypes.TIME,
+        allowNull: false
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
     await queryInterface.createTable('sessions', {
       id: {
         type: DataTypes.INTEGER,
@@ -143,6 +182,18 @@ module.exports = {
       references: { model: 'users', key: 'id', onDelete: 'CASCADE' },
     }),
 
+    await queryInterface.addColumn('bookings', 'user_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id', onDelete: 'CASCADE' }
+    }),
+
+    await queryInterface.addColumn('bookings', 'room_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
+    })
+
     await queryInterface.addColumn('sessions', 'user_id', {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -153,10 +204,16 @@ module.exports = {
   down: async ({ context: queryInterface }) => {
     await queryInterface.removeConstraint('notifications', 'notifications_user_id_fkey')
     await queryInterface.dropTable('notifications')
+
     await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
     await queryInterface.dropTable('sessions')
+    
+    await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey', 'bookings_room_id_fkey')
+    await queryInterface.dropTable('bookings')
+
     await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')
     await queryInterface.dropTable('rooms')
+
     await queryInterface.dropTable('users')
   }
 }

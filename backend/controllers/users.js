@@ -34,12 +34,16 @@ router.get('/', tokenExtractor,
 
     const users = await User.findAll({
       attributes: { exclude: ['passwordHash'] },
-      include: {
-        model: Notification,
-        attributes: { exclude: ['userId'] },
-        model: Room,
-        attributes: { exclude: ['userId'] }
-      }
+      include: [
+        { 
+          model: Notification,
+          attributes: { exclude: ['userId'] }
+        },
+        {
+          model: Room,
+          attributes: { exclude: ['userId'] }
+        }
+      ]
     })
 
     if (Array.isArray(users) && users.length !== 0) {
