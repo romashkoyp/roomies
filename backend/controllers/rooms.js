@@ -137,6 +137,9 @@ router.post('/', tokenExtractor,
 
 router.put('/:id', roomFinder, tokenExtractor,
   async (req, res) => {
+
+    console.log('Request Body:', req.body)
+
     const user = await User.findByPk(req.decodedToken.id)
     const token = req.headers.authorization.substring(7)
 
@@ -165,32 +168,65 @@ router.put('/:id', roomFinder, tokenExtractor,
 
     const validationChain = []
 
-    if (req.body.name) {
-      validationChain.push(
-        body('name').notEmpty().withMessage('Name is required')
-      )
-    }
-
     if (req.body.capacity) { 
       validationChain.push(
-        body('capacity')
-          .notEmpty().withMessage('Capacity is required')
-          .isInt({gt: 1}).withMessage('Capacity should be an integer')
+        body('capacity').isInt({gt: 1}).withMessage('Capacity must be an integer')
       )
     }
 
     if (req.body.size) {
       validationChain.push(
-        body('size')
-          .notEmpty().withMessage('Size is required')
-          .isInt({gt: 1}).withMessage('Size should be an integer')
+        body('size').isInt({gt: 1}).withMessage('Size must be an integer')
       )
     }
 
-    if (req.body.image_path) {
+    if (req.body.enabled !== undefined) {
       validationChain.push(
-        body('image_path')
-          .notEmpty().withMessage('Image path is required')
+        body('enabled').isBoolean().withMessage('Enabled must be true or false')
+      )
+    }
+
+    if (req.body.time_begin && !req.body.time_end) {
+      validationChain.push(
+        body('time_begin')
+          .isTime().withMessage('Beginning time must be in HH:MM format')
+          .custom((value, {req}) => {
+            const newBeginTime = value + ':00'
+            if (newBeginTime >= req.room.timeEnd) {
+              throw new Error('Time begin (request) must be before time end (database)')
+            }
+            return true
+          })
+      )
+    }
+
+    if (req.body.time_end && !req.body.time_begin) {
+      validationChain.push(
+        body('time_end')
+          .isTime().withMessage('Ending time must be in HH:MM format')
+          .custom((value, {req}) => {
+            const newEndTime = value + ':00'
+            if (newEndTime <= req.room.timeBegin) {
+              throw new Error('Time end (request) must be after time begin (database)')
+            }
+            return true
+          })
+      )
+    }
+
+    if (req.body.time_begin && req.body.time_end) {
+      validationChain.push(
+        body('time_begin')
+          .isTime().withMessage('Begin time must be in HH:MM format'),
+        body('time_end')
+          .isTime().withMessage('Ending time must be in HH:MM format'),
+        body('time_begin')
+          .custom((value, {req}) => {
+            if (value >= req.body.time_end) {
+              throw new Error('Time begin (request) must be before time end (request)')
+            }
+            return true
+          })
       )
     }
 
@@ -202,11 +238,7 @@ router.put('/:id', roomFinder, tokenExtractor,
       validationError.errors = errors.array()
       throw validationError
     }
-
-    if (!req.body) { 
-      throw new Error('No update data provided')
-    }
-    
+ 
     if (req.body.name) {
       req.room.name = req.body.name
       console.log('Name updated')
@@ -222,9 +254,24 @@ router.put('/:id', roomFinder, tokenExtractor,
       console.log('Size updated')
     }
 
+    if (req.body.enabled === false || req.body.enabled === true) {
+      req.room.enabled = req.body.enabled
+      console.log('Enabled updated')
+    }
+
     if (req.body.image_path) {
-      req.room.image_path = req.body.image_path
+      req.room.imagePath = req.body.image_path
       console.log('Image path updated')
+    }
+
+    if (req.body.time_begin) {
+      req.room.timeBegin = req.body.time_begin
+      console.log('Beginning time updated')
+    }
+
+    if (req.body.time_end) {
+      req.room.timeEnd = req.body.time_end
+      console.log('Ending time updated')
     }
 
     await req.room.save()

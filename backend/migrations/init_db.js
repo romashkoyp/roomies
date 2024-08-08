@@ -88,7 +88,7 @@ module.exports = {
         allowNull: false
       },
       image_path: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
       },
@@ -100,12 +100,12 @@ module.exports = {
       time_begin: {
         type: DataTypes.TIME,
         allowNull: false,
-        defaultValue: '00:00:00'
+        defaultValue: '08:00:00'
       },
       time_end: {
         type: DataTypes.TIME,
         allowNull: false,
-        defaultValue: '00:00:00'
+        defaultValue: '16:00:00'
       },
       created_at: {
         type: DataTypes.DATE,
@@ -208,7 +208,7 @@ module.exports = {
     await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
     await queryInterface.dropTable('sessions')
     
-    await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey', 'bookings_room_id_fkey')
+    await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey', 'bookings_room_id_fkey', 'bookings_room_enabled_fkey')
     await queryInterface.dropTable('bookings')
 
     await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')

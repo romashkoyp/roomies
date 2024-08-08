@@ -22,7 +22,7 @@ Room.init({
     allowNull: false
   },
   imagePath: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
     unique: true,
   },
@@ -34,12 +34,12 @@ Room.init({
   timeBegin: {
     type: DataTypes.TIME,
     allowNull: false,
-    defaultValue: '00:00:00'
+    defaultValue: '08:00:00'
   },
   timeEnd: {
     type: DataTypes.TIME,
     allowNull: false,
-    defaultValue: '00:00:00'
+    defaultValue: '16:00:00'
   },
 }, {
   sequelize,

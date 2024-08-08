@@ -10,25 +10,25 @@ Content-Type: application/json
 ### Add new room
 POST http://localhost:4000/api/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMDQwMzcsImV4cCI6MTcyMzEwNzYzN30.rHG4ZPcCzFRatuKLvIbnUKDE8jInglqdh9RCIArDqBE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMjQ0MzksImV4cCI6MTcyMzEyODAzOX0.1apaQs0stXLaFdlixDN5E3uZ5PpDzm6C_mxGPfm0KUI
 
 {
-    "name": "Forest",
+    "name": "Air",
     "capacity": 10,
     "size": 50,
-    "image_path": "/images/forest.jpeg"
+    "image_path": "/images/air.jpeg"
 }
 
 ### Add new booking of the room
 POST http://localhost:4000/api/bookings
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMDQwMzcsImV4cCI6MTcyMzEwNzYzN30.rHG4ZPcCzFRatuKLvIbnUKDE8jInglqdh9RCIArDqBE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMjQ0MzksImV4cCI6MTcyMzEyODAzOX0.1apaQs0stXLaFdlixDN5E3uZ5PpDzm6C_mxGPfm0KUI
 
 {
-    "name": "New meeting3",
+    "name": "New meeting",
     "date": "2024-08-28",
-    "time_begin": "11:00",
-    "time_end": "12:00",
+    "time_begin": "12:00",
+    "time_end": "13:00",
     "room_id": 1
 }
 
