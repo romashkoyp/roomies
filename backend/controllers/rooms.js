@@ -137,9 +137,6 @@ router.post('/', tokenExtractor,
 
 router.put('/:id', roomFinder, tokenExtractor,
   async (req, res) => {
-
-    console.log('Request Body:', req.body)
-
     const user = await User.findByPk(req.decodedToken.id)
     const token = req.headers.authorization.substring(7)
 
@@ -151,7 +148,7 @@ router.put('/:id', roomFinder, tokenExtractor,
       throw new Error('Account disabled') 
     }
 
-    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
+    if (user.admin !== true) {
       throw new Error('Not enough rights') 
     }
 

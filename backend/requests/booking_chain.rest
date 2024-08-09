@@ -10,7 +10,7 @@ Content-Type: application/json
 ### Add new room
 POST http://localhost:4000/api/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMjQ0MzksImV4cCI6MTcyMzEyODAzOX0.1apaQs0stXLaFdlixDN5E3uZ5PpDzm6C_mxGPfm0KUI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxODM4OTEsImV4cCI6MTcyMzE4NzQ5MX0.ypHU1nou05T7EbzAe72b20dYMLaKWArOkT-h5WY5PS8
 
 {
     "name": "Air",
@@ -20,19 +20,40 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkb
 }
 
 ### Add new booking of the room
-POST http://localhost:4000/api/bookings
+POST http://localhost:4000/api/rooms/1/bookings
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMjQ0MzksImV4cCI6MTcyMzEyODAzOX0.1apaQs0stXLaFdlixDN5E3uZ5PpDzm6C_mxGPfm0KUI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxOTIyNDIsImV4cCI6MTcyMzE5NTg0Mn0.jhx6bBEY2UZZZTqj9tY2s-lKDRYza7xfE772x0ZLZc0
 
 {
-    "name": "New meeting",
-    "date": "2024-08-28",
-    "time_begin": "12:00",
-    "time_end": "13:00",
+    "name": "Meeting",
+    "date": "2024-08-09",
+    "time_begin": "14:00",
+    "time_end": "15:00",
     "room_id": 1
 }
 
 ### Get all bookings
 GET http://localhost:4000/api/bookings
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMDQwMzcsImV4cCI6MTcyMzEwNzYzN30.rHG4ZPcCzFRatuKLvIbnUKDE8jInglqdh9RCIArDqBE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxODM4OTEsImV4cCI6MTcyMzE4NzQ5MX0.ypHU1nou05T7EbzAe72b20dYMLaKWArOkT-h5WY5PS8
+
+### Get desired booking
+GET http://localhost:4000/api/bookings/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxODM4OTEsImV4cCI6MTcyMzE4NzQ5MX0.ypHU1nou05T7EbzAe72b20dYMLaKWArOkT-h5WY5PS8
+
+### Delete desired bookeng
+DELETE http://localhost:4000/api/bookings/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMzcwODUsImV4cCI6MTcyMzE0MDY4NX0.eE-UGnet0305FOsjWYOVg2Jrw7j9qASCtgCX1I0PPns
+
+### Change desired booking
+PUT http://localhost:4000/api/bookings/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxOTYxMjcsImV4cCI6MTcyMzE5OTcyN30.l8nCuCcvLnvzbitc0UOCw4tBtYjYvkrcdr32vAGF06w
+
+{
+    "time_begin": "11:00",
+    "date": "2024-08-10",
+    "room_id": 1
+}
