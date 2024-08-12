@@ -92,10 +92,39 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      enabled: {
-        type: DataTypes.BOOLEAN,
+      created_at: {
+        type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: true
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('weekdays',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      day_of_week: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 0,
+          max: 6,
+          isIn: {
+            args: [[0, 1, 2, 3, 4, 5, 6]],
+            msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+          }
+        }
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
       },
       time_begin: {
         type: DataTypes.TIME,
@@ -106,6 +135,162 @@ module.exports = {
         type: DataTypes.TIME,
         allowNull: false,
         defaultValue: '16:00:00'
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('global_weekdays',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      day_of_week: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 0,
+          max: 6,
+          isIn: {
+            args: [[0, 1, 2, 3, 4, 5, 6]],
+            msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+          }
+        }
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      },
+      time_begin: {
+        type: DataTypes.TIME,
+        allowNull: true,
+        defaultValue: '08:00:00'
+      },
+      time_end: {
+        type: DataTypes.TIME,
+        allowNull: true,
+        defaultValue: '16:00:00'
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('dates',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      },
+      time_begin: {
+        type: DataTypes.TIME,
+        allowNull: true
+      },
+      time_end: {
+        type: DataTypes.TIME,
+        allowNull: true
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('global_dates',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      },
+      time_begin: {
+        type: DataTypes.TIME,
+        allowNull: true
+      },
+      time_end: {
+        type: DataTypes.TIME,
+        allowNull: true
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('availabilities',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      }
+    })
+
+    await queryInterface.createTable('global_availabilities',{
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      availability: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
       },
       created_at: {
         type: DataTypes.DATE,
@@ -199,6 +384,50 @@ module.exports = {
       allowNull: false,
       references: { model: 'users', key: 'id', onDelete: 'CASCADE' }
     })
+
+    await queryInterface.addColumn('weekdays', 'room_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
+    })
+
+    await queryInterface.addColumn('dates', 'room_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
+    })
+
+    await queryInterface.addColumn('availabilities', 'room_id', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
+    })
+
+    await queryInterface.addColumn('global_dates', 'day_of_week', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0,
+        max: 6,
+        isIn: {
+          args: [[0, 1, 2, 3, 4, 5, 6]],
+          msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+        }
+      }
+    })
+
+    await queryInterface.addColumn('dates', 'day_of_week', {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0,
+        max: 6,
+        isIn: {
+          args: [[0, 1, 2, 3, 4, 5, 6]],
+          msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+        }
+      }
+    })
   },
 
   down: async ({ context: queryInterface }) => {
@@ -208,11 +437,25 @@ module.exports = {
     await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
     await queryInterface.dropTable('sessions')
     
-    await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey', 'bookings_room_id_fkey', 'bookings_room_enabled_fkey')
+    await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey')
+    await queryInterface.removeConstraint('bookings', 'bookings_room_id_fkey')
     await queryInterface.dropTable('bookings')
+
+    await queryInterface.removeConstraint('weekdays', 'weekdays_room_id_fkey')
+    await queryInterface.dropTable('weekdays')
+
+    await queryInterface.removeConstraint('dates', 'dates_room_id_fkey')
+    await queryInterface.dropTable('dates')
+
+    await queryInterface.removeConstraint('availabilities', 'availabilities_room_id_fkey')
+    await queryInterface.dropTable('availabilities')    
 
     await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')
     await queryInterface.dropTable('rooms')
+
+    await queryInterface.dropTable('global_weekdays')
+    await queryInterface.dropTable('global_dates')
+    await queryInterface.dropTable('global_availabilities')
 
     await queryInterface.dropTable('users')
   }

@@ -25,22 +25,7 @@ Room.init({
     type: DataTypes.TEXT,
     allowNull: false,
     unique: true,
-  },
-  enabled: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: true
-  },
-  timeBegin: {
-    type: DataTypes.TIME,
-    allowNull: false,
-    defaultValue: '08:00:00'
-  },
-  timeEnd: {
-    type: DataTypes.TIME,
-    allowNull: false,
-    defaultValue: '16:00:00'
-  },
+  }
 }, {
   sequelize,
   underscored: true,

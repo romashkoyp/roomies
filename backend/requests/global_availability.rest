@@ -1,0 +1,17 @@
+### Sign in admin
+POST http://localhost:4000/api/signin
+Content-Type: application/json
+
+{
+    "username": "admin@admin.com",
+    "password": "pd$rCh8,"
+}
+
+### Set global availability for rooms
+PUT http://localhost:4000/api/rooms/global/availability
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM0NzcwMzEsImV4cCI6MTcyMzQ4MDYzMX0.OdKDK4OBN5ry-Xmd4432Ee17znE3HBvsoQax3Fs0KQ8
+
+{
+    "availability": false
+}

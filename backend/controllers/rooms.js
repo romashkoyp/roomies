@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Room, User, Session } = require('../models')
+const { Room, User, Session, GlobalAvailability } = require('../models')
 const { tokenExtractor } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 
@@ -73,6 +73,71 @@ router.get('/:id', roomFinder, tokenExtractor,
 
     res.status(200).json(req.room)
 })
+
+router.put('/global/availability', tokenExtractor,
+  body('availability').isBoolean().withMessage('Availability must be true or false'),
+
+  async (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      const validationError = new Error('Validation failed')
+      validationError.errors = errors.array()
+      throw validationError
+    }
+  
+    const user = await User.findByPk(req.decodedToken.id)
+    const token = req.headers.authorization.substring(7)
+
+    if (!user.id) {
+      throw new Error('User not found from token')
+    }
+
+    if (user.enabled !== true) {
+      throw new Error('Account disabled') 
+    }
+
+    if (user.admin !== true) {
+      throw new Error('Not enough rights') 
+    }
+
+    const session = await Session.findOne({
+      where: {
+        user_id: user.id,
+        token: token
+      }
+    })
+  
+    if (!session) {
+      throw new Error('Session not found')
+    }
+
+    if (req.body.availability === false || req.body.availability === true) {
+      const existingRecord = await GlobalAvailability.findOne()
+
+      if (existingRecord) {
+        const [updatedRowCount] = await GlobalAvailability.update(
+          { availability: req.body.availability },
+          { where: {} }
+        )
+
+        if (updatedRowCount === 1) {
+          return res.status(200).json(await GlobalAvailability.findOne())
+        } else throw new Error('Global availability not updated')
+
+      } else {
+        const newRecord = await GlobalAvailability.create({
+          availability: req.body.availability
+        })
+
+        if (newRecord) {
+          return res.status(201).json(newRecord)
+        } else {
+          throw new Error('Global availability not created')
+        }
+      }
+    }
+  })
 
 router.post('/', tokenExtractor,
   body('name')

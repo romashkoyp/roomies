@@ -5,6 +5,7 @@ const app = express()
 const { PORT, TEST } = require('./util/config')
 const { connectToDatabase } = require('./util/db')
 const { createAdminUser } = require('./util/adminCreator')
+const { createGlobalRoomsAvailability } = require('./util/globalRoomsAvailabilityCreator')
 
 const notificationRouter = require('./controllers/notifications')
 const userRouter = require('./controllers/users')
@@ -36,8 +37,7 @@ const start = async () => {
 
   if (TEST === false) {
     await createAdminUser()
-  } else {
-    console.log('Admin user not created!')
+    await createGlobalRoomsAvailability()
   }
 }
 
