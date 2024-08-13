@@ -6,9 +6,9 @@ const createGlobalRoomsAvailability = async () => {
     await GlobalAvailability.create({
       availability: true,
     })
-    console.log('Global availability settings for all rooms created!')
+    console.log('Global availability settings created!')
   } else {
-    console.log('Global availability settings for all rooms exist in database!')
+    console.log('Global availability settings exist in database!')
   }
 }
 

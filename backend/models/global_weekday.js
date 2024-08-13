@@ -11,6 +11,7 @@ GlobalWeekday.init({
   dayOfWeek: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: true,
     validate: {
       min: 0,
       max: 6,
@@ -22,23 +23,21 @@ GlobalWeekday.init({
   },
   availability: {
     type: DataTypes.BOOLEAN,
-    allowNull: true
+    allowNull: false
   },
   timeBegin: {
     type: DataTypes.TIME,
-    allowNull: false,
-    defaultValue: '08:00:00'
+    allowNull: false
   },
   timeEnd: {
     type: DataTypes.TIME,
-    allowNull: false,
-    defaultValue: '16:00:00'
+    allowNull: false
   },
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'weekday'
+  modelName: 'globalWeekday'
 })
 
 module.exports = GlobalWeekday

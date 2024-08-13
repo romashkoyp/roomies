@@ -1,0 +1,11 @@
+### Sign in admin
+POST http://localhost:4000/api/signin
+Content-Type: application/json
+
+{
+    "username": "admin@admin.com",
+    "password": "pd$rCh8,"
+}
+
+### Set global availability for rooms
+GET http://localhost:4000/api/rooms/global/weekdays

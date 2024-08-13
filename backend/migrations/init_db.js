@@ -128,13 +128,11 @@ module.exports = {
       },
       time_begin: {
         type: DataTypes.TIME,
-        allowNull: false,
-        defaultValue: '08:00:00'
+        allowNull: true
       },
       time_end: {
         type: DataTypes.TIME,
-        allowNull: false,
-        defaultValue: '16:00:00'
+        allowNull: true
       },
       created_at: {
         type: DataTypes.DATE,
@@ -157,6 +155,7 @@ module.exports = {
       day_of_week: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: true,
         validate: {
           min: 0,
           max: 6,
@@ -168,17 +167,15 @@ module.exports = {
       },
       availability: {
         type: DataTypes.BOOLEAN,
-        allowNull: true
+        allowNull: false
       },
       time_begin: {
         type: DataTypes.TIME,
-        allowNull: true,
-        defaultValue: '08:00:00'
+        allowNull: false
       },
       time_end: {
         type: DataTypes.TIME,
-        allowNull: true,
-        defaultValue: '16:00:00'
+        allowNull: false
       },
       created_at: {
         type: DataTypes.DATE,
@@ -247,50 +244,6 @@ module.exports = {
       time_end: {
         type: DataTypes.TIME,
         allowNull: true
-      },
-      created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      }
-    })
-
-    await queryInterface.createTable('availabilities',{
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      availability: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true
-      },
-      created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      }
-    })
-
-    await queryInterface.createTable('global_availabilities',{
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      availability: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
       },
       created_at: {
         type: DataTypes.DATE,
@@ -397,12 +350,6 @@ module.exports = {
       references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
     })
 
-    await queryInterface.addColumn('availabilities', 'room_id', {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: 'rooms', key: 'id', onDelete: 'CASCADE' }
-    })
-
     await queryInterface.addColumn('global_dates', 'day_of_week', {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -445,17 +392,13 @@ module.exports = {
     await queryInterface.dropTable('weekdays')
 
     await queryInterface.removeConstraint('dates', 'dates_room_id_fkey')
-    await queryInterface.dropTable('dates')
-
-    await queryInterface.removeConstraint('availabilities', 'availabilities_room_id_fkey')
-    await queryInterface.dropTable('availabilities')    
+    await queryInterface.dropTable('dates')  
 
     await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')
     await queryInterface.dropTable('rooms')
 
     await queryInterface.dropTable('global_weekdays')
     await queryInterface.dropTable('global_dates')
-    await queryInterface.dropTable('global_availabilities')
 
     await queryInterface.dropTable('users')
   }

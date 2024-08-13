@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Room, User, Session, GlobalAvailability } = require('../models')
+const { Room, User, Session, GlobalAvailability, GlobalWeekday } = require('../models')
 const { tokenExtractor } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 
@@ -137,7 +137,23 @@ router.put('/global/availability', tokenExtractor,
         }
       }
     }
-  })
+})
+
+router.get('/global/weekdays', 
+  async(req, res) => {
+    const weekdays = await GlobalWeekday.findAll({
+      order: [['dayOfWeek', 'ASC']],
+    })
+      
+    if (Array.isArray(weekdays) && weekdays.length !== 0) {
+      res.json(weekdays)
+    } else {
+      throw new Error('Global weekdays not found')
+    }
+  }
+)
+
+
 
 router.post('/', tokenExtractor,
   body('name')
