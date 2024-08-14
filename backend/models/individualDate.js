@@ -1,17 +1,36 @@
 const { DataTypes, Model } = require('sequelize')
 const { sequelize } = require('../util/db')
 
-class GlobalWeekday extends Model {}
-GlobalWeekday.init({
+class IndividualDate extends Model {}
+IndividualDate.init({
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
+  date: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  availability: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true
+  },
+  name: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  timeBegin: {
+    type: DataTypes.TIME,
+    allowNull: true
+  },
+  timeEnd: {
+    type: DataTypes.TIME,
+    allowNull: true
+  },
   dayOfWeek: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    unique: true,
     validate: {
       min: 0,
       max: 6,
@@ -21,23 +40,11 @@ GlobalWeekday.init({
       }
     }
   },
-  availability: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
-  },
-  timeBegin: {
-    type: DataTypes.TIME,
-    allowNull: false
-  },
-  timeEnd: {
-    type: DataTypes.TIME,
-    allowNull: false
-  },
 }, {
   sequelize,
   underscored: true,
   timestamps: true,
-  modelName: 'globalWeekday'
+  modelName: 'individualDate'
 })
 
-module.exports = GlobalWeekday
+module.exports = IndividualDate

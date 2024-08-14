@@ -1,4 +1,4 @@
-const { User, Notification, Session, Room } = require('../../models')
+const { User, Notification, Session, Room, GlobalWeekday, GlobalDate, IndividualDate } = require('../../models')
 const { passwordHash } = require('../../util/middleware')
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('../../util/config')
@@ -79,8 +79,6 @@ const initialRooms = [
     capacity: 10,
     size: 50,
     imagePath: '/images/air.jpeg',
-    timeBegin: '08:00:00',
-    timeEnd: '16:00:00',
     userId: 10
   },
   {
@@ -91,6 +89,102 @@ const initialRooms = [
     imagePath: '/images/forest.jpeg',
     userId: 10
   }
+]
+
+const initialGlobalWeekdays = [
+  {
+    id: 10,
+    dayOfWeek: 0,
+    availability: false,
+    timeBegin: null,
+    timeEnd: null
+  },
+  {
+    id: 20,
+    dayOfWeek: 1,
+    availability: true,
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00'
+  },
+  {
+    id: 30,
+    dayOfWeek: 2,
+    availability: true,
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00'
+  },
+  {
+    id: 40,
+    dayOfWeek: 3,
+    availability: true,
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00'
+  },
+  {
+    id: 50,
+    dayOfWeek: 4,
+    availability: true,
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00'
+  },
+  {
+    id: 60,
+    dayOfWeek: 5,
+    availability: true,
+    timeBegin: '08:00:00',
+    timeEnd: '16:00:00'
+  },
+  {
+    id: 70,
+    dayOfWeek: 6,
+    availability: false,
+    timeBegin: null,
+    timeEnd: null
+  },
+]
+
+const initialGlobalDates = [
+  {
+    id: 10,
+    date: '2024-04-20',
+    name: 'Easter',
+    availability: false,
+    timeBegin: null,
+    timeEnd: null,
+    dayOfWeek: 6 
+  },
+  {
+    id: 20,
+    date: '2024-04-21',
+    name: 'Easter Monday',
+    availability: false,
+    timeBegin: null,
+    timeEnd: null,
+    dayOfWeek: 0 
+  },
+]
+
+const initialIndividualDates = [
+  {
+    id: 10,
+    date: '2024-04-19',
+    availability: true,
+    name: 'Good Friday',
+    timeBegin: '08:00:00',
+    timeEnd: '12:00:00',
+    dayOfWeek: 5,
+    roomId: 10 
+  },
+  {
+    id: 20,
+    date: '2024-05-01',
+    availability: false,
+    name: 'May Day',
+    timeBegin: null,
+    timeEnd: null,
+    dayOfWeek: 3,
+    roomId: 10 
+  },
 ]
 
 const seedDatabase = async () => {
@@ -107,6 +201,15 @@ const seedDatabase = async () => {
 
     await Room.sync({ force: true })
     await Room.bulkCreate(initialRooms)
+
+    await GlobalWeekday.sync({ force: true })
+    await GlobalWeekday.bulkCreate(initialGlobalWeekdays)
+
+    await GlobalDate.sync({ force: true })
+    await GlobalDate.bulkCreate(initialGlobalDates)
+
+    await IndividualDate.sync({ force: true })
+    await IndividualDate.bulkCreate(initialIndividualDates)
 
     await Session.sync({ force: true })
     const sessions = await Promise.all(initialUsers.map(async (user) => {
@@ -126,6 +229,9 @@ const clearDatabase = async () => {
   try {
     await Notification.drop({ cascade: true })
     await Room.drop({ cascade: true })
+    await GlobalWeekday.drop({ cascade: true })
+    await GlobalDate.drop({ cascade: true })
+    await IndividualDate.drop({ cascade: true })
     await User.drop({ cascade: true })
     await Session.drop({ cascade: true })
     console.log('Test database cleared!')
@@ -140,5 +246,8 @@ module.exports = {
   clearDatabase,
   initialUsers,
   initialNotifications,
-  initialRooms
+  initialRooms,
+  initialGlobalWeekdays,
+  initialGlobalDates,
+  initialIndividualDates
 }

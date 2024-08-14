@@ -1,0 +1,23 @@
+### Get all global dates for all rooms
+GET http://localhost:4000/api/settings/global/dates
+
+### Post new date for all rooms
+POST http://localhost:4000/api/settings/global/dates
+Content-Type: application/json
+
+{
+    "date": "2024-01-01",
+    "name": "New Year's Day",
+    "availability": true,
+    "time_begin": "10:00",
+    "time_end": "11:00"
+}
+
+### Get one date
+GET http://localhost:4000/api/settings/global/dates/2024-01-01
+
+### Delete one date for all rooms
+DELETE http://localhost:4000/api/settings/global/dates/2024-01-01
+
+### Delete all dates for all rooms
+DELETE http://localhost:4000/api/settings/global/dates

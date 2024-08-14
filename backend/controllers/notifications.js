@@ -158,13 +158,9 @@ router.delete('/:id', tokenExtractor, notificationFinder, async (req, res) => {
     throw new Error('Session not found')
   }
 
-  try {
-    await req.notification.destroy()
-    console.log('Notification deleted')
-    res.status(204).end()
-  } catch(error) {
-    return res.status(400).json({ error })
-  }
+  await Notification.destroy({ where: { id: req.params.id } })
+  res.status(204).end()
+  console.log('Notification deleted')
 })
 
 module.exports = router

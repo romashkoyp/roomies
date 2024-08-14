@@ -5,9 +5,7 @@ const { tokenExtractor } = require('../util/middleware')
 
 const userFinder = async (req, res, next) => {
   req.user = await User.findByPk(req.params.id)
-  if (!req.user) {
-    throw new Error('User not found')
-  }
+  if (!req.user) throw new Error('User not found')
   next()
 }
 
@@ -204,13 +202,9 @@ router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
     throw new Error('Session not found')
   }
 
-  try {
-    await req.user.destroy()
-    console.log('User deleted')
-    res.status(204).end()
-  } catch(error) {
-    return res.status(400).json({ error })
-  }
+  await User.destroy({ where: { id: req.params.id }, cascade: false })
+  res.status(204).end()
+  console.log('User deleted')
 })
 
 module.exports = router

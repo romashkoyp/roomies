@@ -222,13 +222,9 @@ router.delete('/:id', tokenExtractor,
       throw new Error('Booking not found')
     }
 
-    try {
-      await booking.destroy()
-      console.log('Booking deleted')
-      res.status(204).end()
-    } catch(error) {
-      return res.status(400).json({ error })
-    }
+    await booking.destroy()
+    res.status(204).end()
+    console.log('Booking deleted')
   }
 )
 

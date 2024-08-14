@@ -9,19 +9,46 @@ Content-Type: application/json
 
 ### Get all rooms
 GET http://localhost:4000/api/rooms
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMTUzMzMsImV4cCI6MTcyMzExODkzM30.8sF1DNfaZAVOg6hU7GsemxEUE4dLvMz_MWeubZcf648
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM2NDIwNjIsImV4cCI6MTcyMzY0NTY2Mn0.0HvZ3pT1-dA-MZcQhxGgaU6UT3owAVo_cXLPPeGdR6U
 
 ### Add new room
 POST http://localhost:4000/api/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMTU4NzAsImV4cCI6MTcyMzExOTQ3MH0.s9ncFbECg5rVfS1HTprV1xlQSYb716_9VRcYFq-FABk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM2NDIwNjIsImV4cCI6MTcyMzY0NTY2Mn0.0HvZ3pT1-dA-MZcQhxGgaU6UT3owAVo_cXLPPeGdR6U
 
 {
-    "name": "Forest",
+    "name": "air",
     "capacity": 10,
     "size": 50,
-    "image_path": "/images/forest.jpeg"
+    "image_path": "/images/air.jpeg"
 }
+
+### Add new date for one room
+POST http://localhost:4000/api/rooms/1/settings/dates
+Content-Type: application/json
+
+{
+    "date": "2024-01-02",
+    "name": "New Year's Day",
+    "availability": false,
+    "time_begin": "10:00",
+    "time_end": "11:00"
+}
+
+### Get all dates for all rooms
+GET http://localhost:4000/api/rooms/settings/dates
+
+### Get all dates for desired room
+GET http://localhost:4000/api/rooms/2/settings/dates
+
+### Delete desired date for desired room
+DELETE http://localhost:4000/api/rooms/1/settings/dates/2024-01-01
+
+### Delete all dates for desired room
+DELETE http://localhost:4000/api/rooms/2/settings/dates
+
+### Delete all dates for all rooms
+DELETE http://localhost:4000/api/rooms/settings/dates
 
 ### Get desired room
 GET http://localhost:4000/api/rooms/1

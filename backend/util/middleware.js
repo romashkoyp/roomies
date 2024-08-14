@@ -20,6 +20,10 @@ const errorHandler = (error, req, res, next) => {
     return res.status(401).json({ error: 'invalid token' })
   } else if (error.name === 'TokenExpiredError') {
     return res.status(401).json({ error: 'token expired' })
+  } else if (error.name === 'SequelizeUniqueConstraintError') {
+    const errorMessage = error.errors.map(err => err.message).join(', ')
+    return res.status(400).json({ error: errorMessage })
+    //return res.status(400).json({ error: error.errors[0].message })
   }
   
   //next(error)

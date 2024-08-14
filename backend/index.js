@@ -14,6 +14,7 @@ const signupRouter = require('./controllers/signup')
 const signoutRouter = require('./controllers/signout')
 const roomRouter = require('./controllers/rooms')
 const bookingRouter = require('./controllers/bookings')
+const settingRouter = require('./controllers/settings')
 
 const { errorHandler } = require('./util/middleware')
 
@@ -27,6 +28,7 @@ app.use('/api/signup', signupRouter)
 app.use('/api/signout', signoutRouter)
 app.use('/api/rooms', roomRouter)
 app.use('/api/bookings', bookingRouter)
+app.use('/api/settings', settingRouter)
 
 app.use(errorHandler)
 

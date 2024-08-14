@@ -3,10 +3,9 @@ const User = require('./user')
 const Session = require('./session')
 const Room = require('./room')
 const Booking = require('./booking')
-const Weekday = require('./weekday')
-const Date = require('./date')
-const GlobalWeekday = require('./global_weekday')
-const GlobalDate = require('./global_date')
+const GlobalWeekday = require('./globalWeekday')
+const GlobalDate = require('./globalDate')
+const IndividualDate = require('./individualDate')
 
 Notification.belongsTo(User)
 User.hasMany(Notification)
@@ -20,11 +19,8 @@ Room.hasMany(Booking)
 Booking.belongsTo(User)
 User.hasMany(Booking)
 
-Weekday.belongsTo(Room)
-Room.hasMany(Weekday)
-
-Date.belongsTo(Room)
-Room.hasMany(Date)
+IndividualDate.belongsTo(Room)
+Room.hasMany(IndividualDate)
 
 Session.belongsTo(User)
 User.hasMany(Session)
@@ -35,8 +31,7 @@ module.exports = {
   Session,
   Room,
   Booking,
-  Weekday,
-  Date,
   GlobalWeekday,
-  GlobalDate
+  GlobalDate,
+  IndividualDate
 }
