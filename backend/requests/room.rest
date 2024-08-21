@@ -9,12 +9,12 @@ Content-Type: application/json
 
 ### Get all rooms
 GET http://localhost:4000/api/rooms
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM2NDIwNjIsImV4cCI6MTcyMzY0NTY2Mn0.0HvZ3pT1-dA-MZcQhxGgaU6UT3owAVo_cXLPPeGdR6U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyMjc4NzYsImV4cCI6MTcyNDIzMTQ3Nn0.853-C9sJekM_6tPrKjolUKz1y6kp--_3h7-fGpiPuHk
 
 ### Add new room
 POST http://localhost:4000/api/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM2NDIwNjIsImV4cCI6MTcyMzY0NTY2Mn0.0HvZ3pT1-dA-MZcQhxGgaU6UT3owAVo_cXLPPeGdR6U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyMjc4NzYsImV4cCI6MTcyNDIzMTQ3Nn0.853-C9sJekM_6tPrKjolUKz1y6kp--_3h7-fGpiPuHk
 
 {
     "name": "air",
@@ -39,10 +39,10 @@ Content-Type: application/json
 GET http://localhost:4000/api/rooms/settings/dates
 
 ### Get all dates for desired room
-GET http://localhost:4000/api/rooms/2/settings/dates
+GET http://localhost:4000/api/rooms/1/settings/dates
 
 ### Delete desired date for desired room
-DELETE http://localhost:4000/api/rooms/1/settings/dates/2024-01-01
+DELETE http://localhost:4000/api/rooms/1/settings/dates/2024-08-22
 
 ### Delete all dates for desired room
 DELETE http://localhost:4000/api/rooms/2/settings/dates
@@ -50,13 +50,13 @@ DELETE http://localhost:4000/api/rooms/2/settings/dates
 ### Delete all dates for all rooms
 DELETE http://localhost:4000/api/rooms/settings/dates
 
-### Get desired room
-GET http://localhost:4000/api/rooms/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxMTU4NzAsImV4cCI6MTcyMzExOTQ3MH0.s9ncFbECg5rVfS1HTprV1xlQSYb716_9VRcYFq-FABk
+### Get desired room for desired day
+GET http://localhost:4000/api/rooms/1/2024-08-22
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyMjc4NzYsImV4cCI6MTcyNDIzMTQ3Nn0.853-C9sJekM_6tPrKjolUKz1y6kp--_3h7-fGpiPuHk
 
 ### Delete desired room
 DELETE http://localhost:4000/api/rooms/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjI4Njc0NzksImV4cCI6MTcyMjg3MTA3OX0.CVhgBCJpGj7H6jwn6d-BUZTm3bD5k_d9_0tnivRz4Sw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM4MTA0MTgsImV4cCI6MTcyMzgxNDAxOH0.HH3xOpXXXkePd7LgEkSDAhBDN2S2PlhzLIearIJqc7s
 
 ### Change rooms characteristics
 PUT http://localhost:4000/api/rooms/1

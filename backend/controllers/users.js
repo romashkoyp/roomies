@@ -1,35 +1,20 @@
 const router = require('express').Router()
-const { User, Notification, Session, Room } = require('../models')
+const { User, Notification, Room } = require('../models')
 const { body, validationResult } = require('express-validator')
-const { tokenExtractor } = require('../util/middleware')
-
-const userFinder = async (req, res, next) => {
-  req.user = await User.findByPk(req.params.id)
-  if (!req.user) throw new Error('User not found')
-  next()
-}
+const { tokenExtractor, isParamUser, isTokenUser, isAdminOrParamTokenUser, isSession, isAdmin } = require('../util/middleware')
 
 const excludePasswordHash = (user) => {
   const { passwordHash, ...userWithoutPassword } = user.toJSON()
   return userWithoutPassword
 }
 
-router.get('/', tokenExtractor,
+router.get('/:id', tokenExtractor, isTokenUser, isParamUser, isSession, isAdminOrParamTokenUser,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
+    res.status(200).json(excludePasswordHash(req.paramUser))
+})
 
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
+router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async (req, res) => {
     const users = await User.findAll({
       attributes: { exclude: ['passwordHash'] },
       include: [
@@ -44,72 +29,13 @@ router.get('/', tokenExtractor,
       ]
     })
 
-    if (Array.isArray(users) && users.length !== 0) {
-      res.json(users)
-    } else {
-      throw new Error ('No users found')
-    }
+    if (!users) throw new Error ('No users found')
+
+    res.status(200).json(users)
 })
 
-router.get('/:id', userFinder, tokenExtractor,
+router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
-      throw new Error('Not enough rights')
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-    
-    res.status(200).json(excludePasswordHash(req.user))
-})
-
-router.put('/:id', userFinder, tokenExtractor,
-  async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const validationChain = []
 
     if (req.body.username) {
@@ -139,23 +65,21 @@ router.put('/:id', userFinder, tokenExtractor,
       throw validationError
     }
 
-    if (!req.body) { 
-      throw new Error('No update data provided')
-    }
+    if (!req.body) throw new Error('No update data provided')
     
     if (req.body.username) {
-      req.user.username = req.body.username
+      req.paramUser.username = req.body.username
       console.log('Username updated')
     }
 
     if (req.body.name) {
-      req.user.name = req.body.name
+      req.paramUser.name = req.body.name
       console.log('Name updated')
     }
 
     if (req.body.admin === false || req.body.admin === true) {
-      if (user.admin === true) {
-        req.user.admin = req.body.admin
+      if (req.tokenUser.admin === true) {
+        req.paramUser.admin = req.body.admin
         console.log('Admin rights updated')
       } else {
         throw new Error ('Not enough rights')
@@ -163,48 +87,23 @@ router.put('/:id', userFinder, tokenExtractor,
     }
 
     if (req.body.enabled === false || req.body.enabled === true) {
-      if (user.admin === true) {
-        req.user.enabled = req.body.enabled
+      if (req.tokenUser.admin === true) {
+        req.paramUser.enabled = req.body.enabled
         console.log('Users\'s status updated')
       } else {
         throw new Error ('Not enough rights')
       }
     }
 
-    await req.user.save()
-    return res.status(201).json(excludePasswordHash(req.user))
+    await req.paramUser.save()
+    return res.status(201).json(excludePasswordHash(req.paramUser))
 })
 
-router.delete('/:id', userFinder, tokenExtractor, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id)
-  const token = req.headers.authorization.substring(7)
-
-  if (!user.id) {
-    throw new Error('User not found from token')
-  }
-
-  if (user.enabled !== true) {
-    throw new Error('Account disabled') 
-  }
-
-  if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
-    throw new Error('Not enough rights') 
-  }
-
-  const session = await Session.findOne({
-    where: {
-      user_id: user.id,
-      token: token
-    }
-  })
-
-  if (!session) {
-    throw new Error('Session not found')
-  }
-
-  await User.destroy({ where: { id: req.params.id }, cascade: false })
-  res.status(204).end()
-  console.log('User deleted')
+router.delete('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
+  async (req, res) => {
+    await User.destroy({ where: { id: req.params.id }, cascade: false })
+    res.status(204).end()
+    console.log('User deleted')
 })
 
 module.exports = router

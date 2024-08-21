@@ -65,8 +65,8 @@ describe('Rooms API', () => {
     it('nonregistered user cannot get all rooms', async () => {
       const res = await request(app)
         .get('/api/rooms')
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
   })
 
@@ -98,8 +98,8 @@ describe('Rooms API', () => {
     it('nonregistered user cannot get a specific room', async () => {
       const res = await request(app)
         .get('/api/rooms/10')
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
   })
 
@@ -116,6 +116,9 @@ describe('Rooms API', () => {
         })
       expect(res.status).toBe(201)
       expect(res.body.name).toBe('New Room')
+      expect(res.body.capacity).toBe(15)
+      expect(res.body.size).toBe(80)
+      expect(res.body.imagePath).toBe('/images/newroom.jpeg')
     })
 
     it('user cannot create a room', async () => {
@@ -155,8 +158,8 @@ describe('Rooms API', () => {
           size: 80,
           image_path: '/images/newroom.jpeg'
         })
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed out user cannot create a room', async () => {
@@ -231,8 +234,8 @@ describe('Rooms API', () => {
           size: 90,
           image_path: '/images/updatedroom.jpeg'
         })
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed out user cannot update a room', async () => {
@@ -282,8 +285,8 @@ describe('Rooms API', () => {
     it('nonregistered user cannot delete a room', async () => {
       const res = await request(app)
         .delete('/api/rooms/10')
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed out user cannot delete a room', async () => {

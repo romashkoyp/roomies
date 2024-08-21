@@ -6,12 +6,27 @@ POST http://localhost:4000/api/settings/global/dates
 Content-Type: application/json
 
 {
-    "date": "2024-01-01",
-    "name": "New Year's Day",
+    "date": "2024-08-22",
+    "name": "Ramdom holiday",
+    "availability": false,
+    "time_begin": "10:00",
+    "time_end": "11:00"
+}
+
+### Post new date for desired room
+POST http://localhost:4000/api/rooms/1/settings/dates
+Content-Type: application/json
+
+{
+    "date": "2024-08-22",
+    "name": "Ramdom holiday 2",
     "availability": true,
     "time_begin": "10:00",
     "time_end": "11:00"
 }
+
+### Get dates for desired room
+GET http://localhost:4000/api/rooms/1/settings/dates
 
 ### Get one date
 GET http://localhost:4000/api/settings/global/dates/2024-01-01

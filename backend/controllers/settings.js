@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { User, Session, GlobalWeekday, GlobalDate } = require('../models')
+const { GlobalWeekday, GlobalDate } = require('../models')
 const { tokenExtractor } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 const { createGlobalRoomsWeekdays } = require('../util/globalRoomsWeekdaysCreator')
@@ -16,17 +16,16 @@ const weekdaysCorrector = async (req, res, next) => {
     })
   }
 
-  if (req.weekdays.length !== 7)
-    throw new Error('Check the database for correct storing global weekdays')
-    
+  if (req.weekdays.length !== 7) throw new Error('Check the database for correct storing global weekdays')
   next()
 }
 
 const weekdayFinder = async (req, res, next) => {
   const dayPattern = /^[0-6]$/
   if (!dayPattern.test(req.params.dayOfWeek)) throw new Error('Invalid day of week format. Required number 0-6')
-  const dayOfWeekNumber = parseInt(req.params.dayOfWeek, 10)
-  req.dayOfWeek = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeekNumber } })
+  //const dayOfWeekNumber = parseInt(req.params.dayOfWeek, 10)
+  req.dayOfWeek = await GlobalWeekday.findByPk(req.params.dayOfWeek)
+  //req.dayOfWeek = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeekNumber } })
   if (!req.dayOfWeek) throw new Error('Day of week not found')
   next()
 }
@@ -34,8 +33,8 @@ const weekdayFinder = async (req, res, next) => {
 const dateFinder = async (req, res, next) => {
   const datePattern = /^\d{4}-\d{2}-\d{2}$/
   if (!datePattern.test(req.params.date)) throw new Error('Invalid date format. Use YYYY-MM-DD')
-  req.date = await GlobalDate.findOne({ where: { date: req.params.date } })
-  if (!req.date) throw new Error('Global date not found')
+  req.date = await GlobalDate.findByPk(req.params.date)
+  if (!req.date) throw new Error('Date not found')
   next()
 }
 
@@ -281,11 +280,7 @@ router.post('/global/dates',
       dayOfWeek: dayOfWeekNumber
     })
 
-    if (globalDate) {
-      res.status(201).json(globalDate)
-    } else {
-      throw new Error ('Settings for desired date not created')
-    }
+    res.status(201).json(globalDate)
   }
 )
 

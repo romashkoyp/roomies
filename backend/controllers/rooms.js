@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const { Room, User, Session, IndividualDate } = require('../models')
-const { tokenExtractor } = require('../util/middleware')
+const { Room, IndividualDate, GlobalDate, GlobalWeekday, Booking } = require('../models')
+const { tokenExtractor, isTokenUser, isAdmin, isSession } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 
 const roomFinder = async (req, res, next) => {
@@ -9,53 +9,33 @@ const roomFinder = async (req, res, next) => {
   next()
 }
 
-const dateFinder = async (req, res, next) => {
+const dateValidation = async (req, res, next) => {
   const datePattern = /^\d{4}-\d{2}-\d{2}$/
   if (!datePattern.test(req.params.date)) throw new Error('Invalid date format. Use YYYY-MM-DD')
+  next()
+}
+
+const dateFinder = async (req, res, next) => {
   req.date = await IndividualDate.findOne({ where: { date: req.params.date, roomId: req.params.id } })
   if (!req.date) throw new Error('Date not found for room')
   next()
 }
 
 // Get all rooms
-router.get('/', tokenExtractor,
+router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-  
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-  
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-  
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const rooms = await Room.findAll({
       order: [['capacity', 'ASC']],
       attributes: { exclude: ['userId'] }
     })
       
-    if (Array.isArray(rooms) && rooms.length !== 0) {
-      res.json(rooms)
-    } else {
-      throw new Error('Rooms not found')
+    if (rooms.length === 0) throw new Error('Rooms not found')
+    res.status(200).json(rooms)     
     }
-})
+)
 
 // Create new room
-router.post('/', tokenExtractor,
+router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   body('name')
     .notEmpty().withMessage('Name is required'),
   body('capacity')
@@ -75,99 +55,56 @@ router.post('/', tokenExtractor,
       validationError.errors = errors.array()
       throw validationError
     }
-  
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
 
     const room = await Room.create({
       ...req.body,
       imagePath: req.body.image_path,
-      userId: user.id
+      userId: req.tokenUser.id
     })
 
     res.status(201).json(room)
 })
 
-// Get desired room
-router.get('/:id', roomFinder, tokenExtractor,
+// Get desired room for desired date
+router.get('/:id/:date', roomFinder, dateValidation,//tokenExtractor, roomFinder, isTokenUser, isSession, dateFinder,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-  
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-  
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-  
-    const session = await Session.findOne({
+    const individualDate = await IndividualDate.findOne({
       where: {
-        user_id: user.id,
-        token: token
+        date: req.params.date,
+        roomId: req.room.id
       }
     })
-  
-    if (!session) {
-      throw new Error('Session not found')
+
+    const bookings = await Booking.findAll({
+      where: {
+        date: req.params.date,
+        roomId: req.room.id,
+        enabled: true
+      }
+    })
+
+    if (individualDate) {
+      req.room.dataValues.settings = individualDate
+    } else {
+      const globalDate = await GlobalDate.findOne({ where: { date: req.params.date } })
+      const dayOfWeek = new Date(req.params.date).getDay()
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeek } })
+      if (globalDate) {
+        req.room.dataValues.settings = globalDate
+      } else if (globalWeekday) {
+        req.room.dataValues.settings = globalWeekday
+      } else {
+        throw new Error('No global weekdays settings found')
+      }
     }
 
+    req.room.dataValues.bookings = bookings
     res.status(200).json(req.room)
 })
 
 // Change room characteristics
-router.put('/:id', roomFinder, tokenExtractor,
+router.put('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const validationChain = []
 
     if (req.body.capacity) { 
@@ -227,179 +164,49 @@ router.put('/:id', roomFinder, tokenExtractor,
 })
 
 // Delete desired room
-router.delete('/:id', roomFinder, tokenExtractor,
+router.delete('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
-    await Room.destroy({ where: { roomId: req.params.id }, cascade: false })
+    await req.room.destroy()
     console.log('Room deleted')
     res.status(204).end()
   }
 )
 
 // Delete all rooms
-router.delete('/:id', tokenExtractor,
+router.delete('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     await req.room.destroy({ truncate: true, cascade: false })
   }
 )
 
 // Get all dates for desired room
-router.get('/:id/settings/dates', roomFinder, tokenExtractor,
+router.get('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const dates = await IndividualDate.findAll({
       where: { roomId: req.params.id },
       order: [['date', 'ASC']]
     })
 
     if (dates.length === 0) throw new Error('No dates available for current room')
-    res.json(dates)
+    res.status(200).json(dates)
   }
 )
 
 // Get all dates for all rooms
-router.get('/settings/dates', tokenExtractor,
+router.get('/settings/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const dates = await IndividualDate.findAll({
       order: [['date', 'ASC']]
     })
 
     if (dates.length === 0) throw new Error('No dates available for rooms')
-    res.json(dates)
+    res.status(200).json(dates)
   }
 )
 
 // Add new date for desired room
-router.post('/:id/settings/dates', roomFinder, tokenExtractor,
+router.post('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const validationChain = []
 
     if (req.body.date) {
@@ -468,117 +275,35 @@ router.post('/:id/settings/dates', roomFinder, tokenExtractor,
       roomId: req.room.id
     })
 
-    if (date) {
-      res.status(201).json(date)
-      console.log('New date settings for room created')
-    } else {
-      throw new Error ('Settings for desired date not created')
-    }
+    res.status(201).json(date)
+    console.log('New date settings for room created')
   }
 )
 
 // Delete all dates for desired room
-router.delete('/:id/settings/dates', roomFinder, tokenExtractor,
+router.delete('/:id/settings/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     await IndividualDate.destroy({ where: { roomId: req.params.id }, cascade: false })
     res.status(204).end()
-    console.log('All dates deleted from room settings')
+    console.log('All individual dates deleted from room settings')
   }
 )
 
 // Delete desired date for desired room
-router.delete('/:id/settings/dates/:date', roomFinder, dateFinder, tokenExtractor,
+router.delete('/:id/settings/dates/:date', roomFinder, dateValidation, dateFinder, tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     await IndividualDate.destroy({ where: { roomId: req.params.id, date: req.params.date }, cascade: false })
     res.status(204).end()
-    console.log('All dates deleted from room settings')
+    console.log('All individual dates deleted from room settings')
   }
 )
 
 // Delete all dates for all rooms
-router.delete('/settings/dates/', tokenExtractor,
-  async(req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-    
+router.delete('/settings/dates/', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {    
     await IndividualDate.destroy({ truncate: true, cascade: false })
     res.status(204).end()
-    console.log('Dates deleted for all rooms')
+    console.log('All individual dates deleted for all rooms')
   }
 )
 

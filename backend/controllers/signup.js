@@ -17,9 +17,7 @@ router.post('/',
   body('confirmPassword')
     .notEmpty().withMessage('Please confirm your password')
     .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Passwords do not match')
-      }
+      if (value !== req.body.password) throw new Error('Passwords do not match')
       return true
     }),
   async (req, res) => {

@@ -10,7 +10,7 @@ Content-Type: application/json
 ### Add new room
 POST http://localhost:4000/api/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxODM4OTEsImV4cCI6MTcyMzE4NzQ5MX0.ypHU1nou05T7EbzAe72b20dYMLaKWArOkT-h5WY5PS8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyNDM1MjEsImV4cCI6MTcyNDI0NzEyMX0.Ca7_UcjO2Ogaq41p2Cbyf5Db1BATYX6jJELBdvGaKyc
 
 {
     "name": "Air",
@@ -20,22 +20,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkb
 }
 
 ### Add new booking of the room
-POST http://localhost:4000/api/rooms/1/bookings
+POST http://localhost:4000/api/bookings/rooms/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxOTIyNDIsImV4cCI6MTcyMzE5NTg0Mn0.jhx6bBEY2UZZZTqj9tY2s-lKDRYza7xfE772x0ZLZc0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyNDM1MjEsImV4cCI6MTcyNDI0NzEyMX0.Ca7_UcjO2Ogaq41p2Cbyf5Db1BATYX6jJELBdvGaKyc
 
 {
     "name": "Meeting",
-    "date": "2024-08-09",
-    "time_begin": "14:00",
-    "time_end": "15:00",
-    "room_id": 1
+    "date": "2024-08-22",
+    "time_begin": "10:00",
+    "time_end": "11:00"
 }
 
 ### Get all bookings
-GET http://localhost:4000/api/bookings
+GET http://localhost:4000/api/bookings/rooms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMxODM4OTEsImV4cCI6MTcyMzE4NzQ5MX0.ypHU1nou05T7EbzAe72b20dYMLaKWArOkT-h5WY5PS8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjQyNDM1MjEsImV4cCI6MTcyNDI0NzEyMX0.Ca7_UcjO2Ogaq41p2Cbyf5Db1BATYX6jJELBdvGaKyc
 
 ### Get desired booking
 GET http://localhost:4000/api/bookings/1

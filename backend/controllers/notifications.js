@@ -1,13 +1,11 @@
 const router = require('express').Router()
-const { Notification, User, Session } = require('../models')
-const { tokenExtractor } = require('../util/middleware')
+const { Notification, User } = require('../models')
+const { tokenExtractor, isTokenUser, isAdmin, isSession } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 
 const notificationFinder = async (req, res, next) => {
   req.notification = await Notification.findByPk(req.params.id)
-  if (!req.notification) {
-    throw new Error('Notification not found')
-  }
+  if (!req.notification) throw new Error('Notification not found')
   next()
 }
 
@@ -21,11 +19,8 @@ router.get('/', async (req, res) => {
     }
   })
     
-  if (Array.isArray(notifications) && notifications.length !== 0) {
-    res.json(notifications)
-  } else {
-    throw new Error('Notifications not found')
-  }
+  if (!notifications) throw new Error('Notifications not found')
+  res.json(notifications)
 })
 
 router.get('/:id', notificationFinder,
@@ -33,7 +28,7 @@ router.get('/:id', notificationFinder,
     res.status(200).json(req.notification)
 })
 
-router.post('/', tokenExtractor,
+router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   body('content')
     .notEmpty().withMessage('Content is required'),
   async (req, res) => {
@@ -45,46 +40,15 @@ router.post('/', tokenExtractor,
       throw validationError
     }
   
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const notification = await Notification.create({
       ...req.body, 
-      userId: user.id
+      userId: req.tokenUser.id
     })
 
-    if (notification) {
-      console.log(notification.toJSON())
-      res.status(201).json(notification)
-    } else {
-      throw new Error ('Notification not created')
-    }
+    res.status(201).json(notification)
 })
 
-router.put('/:id', notificationFinder, tokenExtractor,
+router.put('/:id', tokenExtractor, notificationFinder, isTokenUser, isSession, isAdmin,
   body('content').notEmpty().withMessage('Content is required'),
   async (req, res) => {
     const errors = validationResult(req)
@@ -95,72 +59,17 @@ router.put('/:id', notificationFinder, tokenExtractor,
       throw validationError
     }
 
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-    
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
-    if (req.body.content) {
-      req.notification.content = req.body.content
-      await req.notification.save()
-      res.json(req.notification)
-      console.log('notification updated')
-    } else {
-      throw new Error ('Notification not updated')
-    }
+    req.notification.content = req.body.content
+    await req.notification.save()
+    res.json(req.notification)
+    console.log('notification updated')
 })
 
-router.delete('/:id', tokenExtractor, notificationFinder, async (req, res) => {
-  const user = await User.findByPk(req.decodedToken.id)
-  const token = req.headers.authorization.substring(7)
-
-  if (!user.id) {
-    throw new Error('User not found from token')
-  }
-
-  if (user.enabled !== true) {
-    throw new Error('Account disabled') 
-  }
-
-  if (user.admin !== true) {
-    throw new Error('Not enough rights') 
-  }
-
-  const session = await Session.findOne({
-    where: {
-      user_id: user.id,
-      token: token
-    }
-  })
-
-  if (!session) {
-    throw new Error('Session not found')
-  }
-
-  await Notification.destroy({ where: { id: req.params.id } })
-  res.status(204).end()
-  console.log('Notification deleted')
+router.delete('/:id', tokenExtractor, notificationFinder, isTokenUser, isSession, isAdmin,
+  async (req, res) => {
+    await Notification.destroy({ where: { id: req.params.id } })
+    res.status(204).end()
+    console.log('Notification deleted')
 })
 
 module.exports = router

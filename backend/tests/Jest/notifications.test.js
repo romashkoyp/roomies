@@ -102,8 +102,8 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by disabled admin'
         })
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed out user cannot create notification', async () => {
@@ -173,8 +173,8 @@ describe('Notifications API', () => {
         .send({
           content: 'test content'
         })
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed our user cannot change notification', async () => {
@@ -221,8 +221,8 @@ describe('Notifications API', () => {
     it('nonregistered user cannot delete notification', async () => {
       const res = await request(app)
         .delete('/api/notifications/10')
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
 
     it('signed out user cannot delete notification', async () => {

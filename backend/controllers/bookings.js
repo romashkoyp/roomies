@@ -1,10 +1,17 @@
 const router = require('express').Router()
-const { Room, User, Session, Booking } = require('../models')
-const { tokenExtractor } = require('../util/middleware')
+const { Room, User, Booking, IndividualDate, GlobalDate, GlobalWeekday } = require('../models')
+const { tokenExtractor, isTokenUser } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 const { Op } = require('sequelize')
 
-router.post('/rooms/:roomId/bookings', tokenExtractor,
+const roomFinder = async (req, res, next) => {
+  req.room = await Room.findByPk(req.params.roomId)
+  if (!req.room) throw new Error('Room not found')
+  next()
+}
+
+// Create new booking
+router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
   body('name')
     .notEmpty().withMessage('Name is required'),
   body('date')
@@ -37,62 +44,58 @@ router.post('/rooms/:roomId/bookings', tokenExtractor,
       validationError.errors = errors.array()
       throw validationError
     }
-  
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-    
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-    
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-    
-    const session = await Session.findOne({
+
+    let settings = null
+
+    const individualDate = await IndividualDate.findOne({
       where: {
-        user_id: user.id,
-        token: token
+        date: req.body.date,
+        roomId: req.room.id
       }
     })
-    
-    if (!session) {
-      throw new Error('Session not found')
-    }
 
-    const roomId = parseInt(req.params.roomId, 10)
-
-    const room = await Room.findOne({
-      where: {
-        id: roomId,
-        enabled: true
+    if (individualDate) {
+      settings = individualDate
+    } else {
+      const globalDate = await GlobalDate.findOne({ where: { date: req.body.date } })
+      const dayOfWeek = new Date(req.body.date).getDay()
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeek } })
+      if (globalDate) {
+        settings = globalDate
+      } else if (globalWeekday) {
+        settings = globalWeekday
+      } else {
+        throw new Error('No global weekdays settings found')
       }
-    })
-      
-    if (!room) {
-      throw new Error('Room not found')
     }
+    
+    const { timeBegin, timeEnd, availability } = settings
 
-    const bookingBegins = req.body.time_begin + ':00'
-    const bookingEnds = req.body.time_end + ':00'
+    if (availability !== true) throw new Error('Room not available on this date')
 
+    const seconds = ':00'
+    const bookingBegins = req.body.time_begin + seconds
+    const bookingEnds = req.body.time_end + seconds
+
+    // Compare time between request and time schedule from room settings
     if (
-      bookingBegins < room.timeBegin ||
-      bookingBegins >= room.timeEnd ||
-      bookingEnds > room.timeEnd ||
-      bookingEnds <= room.timeBegin
+      bookingBegins < timeBegin ||
+      bookingBegins >= timeEnd ||
+      bookingEnds > timeEnd ||
+      bookingEnds <= timeBegin
     ) {
       throw new Error('Booking time is outside the room\'s available hours')
     }
 
     const existingBookings = await Booking.findAll({
       where: {
-        roomId: room.id,
+        roomId: req.room.id,
         date: req.body.date,
         enabled: true
       }
     })
 
+    // Compare time between request and time from all bookings
     for (const existingBooking of existingBookings) {
       const existingBegins = existingBooking.timeBegin
       const existingEnds = existingBooking.timeEnd
@@ -110,112 +113,33 @@ router.post('/rooms/:roomId/bookings', tokenExtractor,
       ...req.body,
       timeBegin: req.body.time_begin,
       timeEnd: req.body.time_end,
-      userId: user.id,
-      roomId: room.id
+      userId: req.tokenUser.id,
+      roomId: req.room.id
     })
 
-    if (booking) {
-      console.log(booking.toJSON())
-      res.status(201).json(booking)
-    } else {
-      throw new Error ('Booking not created')
-    }
+    if (!booking) throw new Error('Booking not created')
+    res.status(201).json(booking)
 })
 
-router.get('/', tokenExtractor,
+// Get all bookings for all rooms
+router.get('/rooms', tokenExtractor,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-    
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-    
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-    
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-    
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const bookings = await Booking.findAll()
-      
-    if (Array.isArray(bookings) && bookings.length !== 0) {
-      res.json(bookings)
-    } else {
-      throw new Error('Bookings not found')
-    }
-})
+    if (bookings.length === 0) throw new Error('Bookings for all rooms not found')
+    res.status(200).json(bookings)
+  }
+)
 
-router.get('/:id', tokenExtractor,
+// Get all bookings for desired room
+router.get('/rooms/:roomId/', tokenExtractor,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-    
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-    
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-    
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-    
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const booking = await Booking.findByPk(req.params.id)
-
-    if (!booking) {
-      throw new Error('Booking not found')
-    }
-    
+    if (!booking) throw new Error('Booking not found for room')
     res.status(200).json(booking)
 })
 
-router.delete('/:id', tokenExtractor,
+router.delete('/:id', //tokenExtractor,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (user.admin !== true) {
-      throw new Error('Not enough rights') 
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-
-    if (!session) {
-      throw new Error('Session not found')
-    }
-
     const booking = await Booking.findByPk(req.params.id)
 
     if (!booking) {
@@ -228,33 +152,10 @@ router.delete('/:id', tokenExtractor,
   }
 )
 
-router.put('/:id', tokenExtractor,
+router.put('/:id', //tokenExtractor,
   async (req, res) => {
     const user = await User.findByPk(req.decodedToken.id)
     const token = req.headers.authorization.substring(7)
-
-    if (!user.id) {
-      throw new Error('User not found from token')
-    }
-
-    if (user.enabled !== true) {
-      throw new Error('Account disabled') 
-    }
-
-    if (parseInt(req.params.id, 10) !== user.id && user.admin !== true) {
-      throw new Error('Not enough rights')
-    }
-
-    const session = await Session.findOne({
-      where: {
-        user_id: user.id,
-        token: token
-      }
-    })
-  
-    if (!session) {
-      throw new Error('Session not found')
-    }
 
     const currentBooking = await Booking.findByPk(req.params.id)
     const existingBookings = await Booking.findAll({

@@ -73,8 +73,8 @@ describe('Users API', () => {
     it('returns 401 if no token provided', async () => {
       const res = await request(app)
         .get('/api/users')
-      expect(res.status).toBe(401)
-      expect(res.body.error).toBe('token missing')
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBe('Token missing')
     })
   })
 
@@ -118,7 +118,7 @@ describe('Users API', () => {
         .get('/api/users/999999')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(404)
-      expect(res.body.error).toBe('User not found')
+      expect(res.body.error).toBe('User not found in database')
     })
 
     it('signed out user cannot get his own data', async () => {

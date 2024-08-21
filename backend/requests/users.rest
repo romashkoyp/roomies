@@ -1,22 +1,30 @@
 ### Get all users
 GET http://localhost:4000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMwOTY3NDcsImV4cCI6MTcyMzEwMDM0N30.XEly499Kv3kaHgSEVINTpLJaH9GuYIJKAN5CBvp-ZOg
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM3OTgzNTYsImV4cCI6MTcyMzgwMTk1Nn0.IvSmM8GeYG0jBKhVSaZm0csV_bgbyAtjXZ59qOiItE4
 
 ### Get desired user
 GET http://localhost:4000/api/users/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjMwOTY3NDcsImV4cCI6MTcyMzEwMDM0N30.XEly499Kv3kaHgSEVINTpLJaH9GuYIJKAN5CBvp-ZOg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM3OTgzNTYsImV4cCI6MTcyMzgwMTk1Nn0.IvSmM8GeYG0jBKhVSaZm0csV_bgbyAtjXZ59qOiItE4
 
 
 ### Change username, name for desired user
 PUT http://localhost:4000/api/users/1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyQGdtYWlsLmNvbSIsImlkIjoyLCJpYXQiOjE3MjEwNTI1ODUsImV4cCI6MTcyMTA1NjE4NX0.s4H_xOABGUaH0F1OqASEe5wg6zJt85f1AFGNklL_LCw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM3OTgzNTYsImV4cCI6MTcyMzgwMTk1Nn0.IvSmM8GeYG0jBKhVSaZm0csV_bgbyAtjXZ59qOiItE4
 
 {
-    "admin": true
+    "name": "dfgbdfgbdfgb"
+}
+
+### Change username, name for desired user
+PUT http://localhost:4000/api/users/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM3OTgzNTYsImV4cCI6MTcyMzgwMTk1Nn0.IvSmM8GeYG0jBKhVSaZm0csV_bgbyAtjXZ59qOiItE4
+
+{
+    "enabled": true
 }
 
 ### Delete desired user
 DELETE http://localhost:4000/api/users/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyQGdtYWlsLmNvbSIsImlkIjoyLCJpYXQiOjE3MjEwNTI1ODUsImV4cCI6MTcyMTA1NjE4NX0.s4H_xOABGUaH0F1OqASEe5wg6zJt85f1AFGNklL_LCw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJpYXQiOjE3MjM3OTgzNTYsImV4cCI6MTcyMzgwMTk1Nn0.IvSmM8GeYG0jBKhVSaZm0csV_bgbyAtjXZ59qOiItE4
