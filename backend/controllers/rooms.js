@@ -68,38 +68,52 @@ router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
 // Get desired room for desired date
 router.get('/:id/:date', roomFinder, dateValidation,//tokenExtractor, roomFinder, isTokenUser, isSession, dateFinder,
   async (req, res) => {
-    const individualDate = await IndividualDate.findOne({
-      where: {
-        date: req.params.date,
-        roomId: req.room.id
-      }
+    const { id, date } = req.params
+    const room = await Room.findOne({
+      where: { id },
+      include: [
+        {
+          model: Booking,
+          where: { date, enabled: true },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        },
+        {
+          model: IndividualDate,
+          where: { date },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        }
+      ]
     })
 
-    const bookings = await Booking.findAll({
-      where: {
-        date: req.params.date,
-        roomId: req.room.id,
-        enabled: true
-      }
-    })
+    if (room.individualDates.length === 1) {
+      room.settings = room.individualDates
+    } else if (room.individualDates.length === 0) {
+      const globalDate = await GlobalDate.findOne({ where: { date } });
+      const dayOfWeek = new Date(date).getDay();
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } });
 
-    if (individualDate) {
-      req.room.dataValues.settings = individualDate
-    } else {
-      const globalDate = await GlobalDate.findOne({ where: { date: req.params.date } })
-      const dayOfWeek = new Date(req.params.date).getDay()
-      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeek } })
       if (globalDate) {
-        req.room.dataValues.settings = globalDate
+        room.settings = globalDate
       } else if (globalWeekday) {
-        req.room.dataValues.settings = globalWeekday
+        room.settings = globalWeekday
       } else {
-        throw new Error('No global weekdays settings found')
+        throw new Error('No settings found')
       }
     }
 
-    req.room.dataValues.bookings = bookings
-    res.status(200).json(req.room)
+    const response = {
+      id: room.id,
+      name: room.name,
+      capacity: room.capacity,
+      size: room.size,
+      imagePath: room.imagePath,
+      bookings: room.bookings,
+      settings: room.settings
+    }
+
+    res.status(200).json(response)
 })
 
 // Change room characteristics
@@ -264,6 +278,9 @@ router.post('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTo
       req.body.time_begin = null
       req.body.time_end = null
     }
+
+    const existingDay = await IndividualDate.findOne({ where: { roomId: req.params.id, date: req.body.date } })
+    if (existingDay.length !== 0) throw new Error('Settings for the room on current date already exist. Delete previous settings.')
 
     const dayOfWeekNumber = new Date(req.body.date).getDay()
 

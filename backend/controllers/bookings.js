@@ -1,17 +1,23 @@
 const router = require('express').Router()
-const { Room, User, Booking, IndividualDate, GlobalDate, GlobalWeekday } = require('../models')
-const { tokenExtractor, isTokenUser } = require('../util/middleware')
+const { Booking, IndividualDate, GlobalDate, GlobalWeekday } = require('../models')
+const { tokenExtractor, isTokenUser, isSession } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 const { Op } = require('sequelize')
 
-const roomFinder = async (req, res, next) => {
-  req.room = await Room.findByPk(req.params.roomId)
-  if (!req.room) throw new Error('Room not found')
+const bookingFinder = async (req, res, next) => {
+  req.booking = await Booking.findByPk(req.params.id)
+  if (!req.booking) throw new Error('Booking not found')
   next()
 }
 
-// Create new booking
-router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
+const isUsersBookingOrAdmin = async (req, res, next) => {
+  if (req.booking.userId !== req.tokenUser.id && req.tokenUser.admin !== true)
+    throw new Error('Not enough rights')
+  next()
+}
+
+// Create new booking for desired room on desired date
+router.post('/', tokenExtractor, isTokenUser, isSession,
   body('name')
     .notEmpty().withMessage('Name is required'),
   body('date')
@@ -22,6 +28,9 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
       const today = new Date().toISOString().slice(0, 10)
       return value >= today
     }).withMessage('Date must be today or a future date'),
+  body('room_id')
+    .notEmpty().withMessage('Room ID is required')
+    .isInt().withMessage('Room ID must be an integer'),
   body('time_begin')
     .notEmpty().withMessage('Beginning time is required')
     .isTime().withMessage('Beginning time must be in HH:MM format'),
@@ -50,7 +59,7 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
     const individualDate = await IndividualDate.findOne({
       where: {
         date: req.body.date,
-        roomId: req.room.id
+        roomId: req.body.room_id
       }
     })
 
@@ -59,7 +68,7 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
     } else {
       const globalDate = await GlobalDate.findOne({ where: { date: req.body.date } })
       const dayOfWeek = new Date(req.body.date).getDay()
-      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: dayOfWeek } })
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } })
       if (globalDate) {
         settings = globalDate
       } else if (globalWeekday) {
@@ -89,7 +98,7 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
 
     const existingBookings = await Booking.findAll({
       where: {
-        roomId: req.room.id,
+        roomId: req.body.room_id,
         date: req.body.date,
         enabled: true
       }
@@ -114,7 +123,7 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
       timeBegin: req.body.time_begin,
       timeEnd: req.body.time_end,
       userId: req.tokenUser.id,
-      roomId: req.room.id
+      roomId: req.body.room_id
     })
 
     if (!booking) throw new Error('Booking not created')
@@ -122,7 +131,7 @@ router.post('/rooms/:roomId', tokenExtractor, roomFinder, isTokenUser,
 })
 
 // Get all bookings for all rooms
-router.get('/rooms', tokenExtractor,
+router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
     const bookings = await Booking.findAll()
     if (bookings.length === 0) throw new Error('Bookings for all rooms not found')
@@ -130,79 +139,85 @@ router.get('/rooms', tokenExtractor,
   }
 )
 
-// Get all bookings for desired room
-router.get('/rooms/:roomId/', tokenExtractor,
+// Get desired booking
+router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
+  async (req, res) => res.status(200).json(req.booking)
+)
+
+// Delete desired booking by user or admin
+router.delete('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
   async (req, res) => {
-    const booking = await Booking.findByPk(req.params.id)
-    if (!booking) throw new Error('Booking not found for room')
-    res.status(200).json(booking)
-})
-
-router.delete('/:id', //tokenExtractor,
-  async (req, res) => {
-    const booking = await Booking.findByPk(req.params.id)
-
-    if (!booking) {
-      throw new Error('Booking not found')
-    }
-
-    await booking.destroy()
+    await req.booking.destroy()
     res.status(204).end()
     console.log('Booking deleted')
   }
 )
 
-router.put('/:id', //tokenExtractor,
+// Change desired booking by user or admin
+router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
   async (req, res) => {
-    const user = await User.findByPk(req.decodedToken.id)
-    const token = req.headers.authorization.substring(7)
+    const { id } = req.params
+    const currentBooking = req.booking
+    const actualDate = req.body.date ? req.body.date : currentBooking.date
+    
+    if (req.body.enabled !== undefined) {
+      if (typeof req.body.enabled !== 'boolean') throw new Error('Allowed True or False for enabled status')
+    }
+    
+    if (req.body.date) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(req.body.date)) throw new Error('Date must be in YYYY-MM-DD format')
+      const today = new Date().toISOString().slice(0, 10)
+      if (req.body.date < today) throw new Error('Date must be today or a future date')
+    }
 
-    const currentBooking = await Booking.findByPk(req.params.id)
+    // Get room settings for desired date
+    let settings = null
+
+    const individualDate = await IndividualDate.findOne({
+      where: {
+        date: actualDate,
+        roomId: currentBooking.roomId
+      }
+    })
+
+    if (individualDate) {
+      settings = individualDate
+    } else {
+      const globalDate = await GlobalDate.findOne({ where: { date: actualDate } })
+      const dayOfWeek = new Date(actualDate).getDay()
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } })
+      if (globalDate) {
+        settings = globalDate
+      } else if (globalWeekday) {
+        settings = globalWeekday
+      } else {
+        throw new Error('No global weekdays settings found')
+      }
+    }
+    
+    const { timeBegin, timeEnd, availability } = settings
+
+    if (availability !== true) throw new Error('Room not available on this date')
+
+    // Find all bookings for room and date except current booking
     const existingBookings = await Booking.findAll({
       where: {
         id: {
-          [Op.ne]: req.params.id // exclude currentBooking
+          [Op.ne]: id // exclude currentBooking
         },
-        roomId: room.id,
-        date: currentBooking.date,
+        roomId: currentBooking.roomId,
+        date: actualDate,
         enabled: true
       }
     })
-
-    const room = await Room.findOne({
-      where: {
-        id: currentBooking.room_id,
-        enabled: true
-      }
-    })
-      
-    if (!room) {
-      throw new Error('Room not found')
-    }
 
     const validationChain = []
 
-    if (req.body.enabled !== undefined) {
-      validationChain.push(
-        body('enabled').isBoolean().withMessage('Allowed True or False for enabled status')
-      )
-    }
-    
+    // User wants to change date only, but save time begin and time end
     if (req.body.date && !req.body.time_begin && !req.body.time_end) { 
-      validationChain.push(
-        body('date')
-          .isDate()
-          .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Date must be in YYYY-MM-DD format')
-          .custom((value) => {
-            const today = new Date().toISOString().slice(0, 10)
-            return value >= today
-          }).withMessage('Date must be today or a future date')
-      )
-
       for (const existingBooking of existingBookings) {
         const existingBegins = existingBooking.timeBegin
         const existingEnds = existingBooking.timeEnd
-  
         if (
           (currentBooking.timeBegin >= existingBegins && currentBooking.timeBegin < existingEnds) ||
           (currentBooking.timeEnd > existingBegins && currentBooking.timeEnd <= existingEnds) ||
@@ -211,27 +226,20 @@ router.put('/:id', //tokenExtractor,
           throw new Error('Time slot is already booked')
         }
       }
-    } else {
-      validationChain.push(
-        body('date')
-          .isDate()
-          .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('Date must be in YYYY-MM-DD format')
-          .custom((value) => {
-            const today = new Date().toISOString().slice(0, 10)
-            return value >= today
-          }).withMessage('Date must be today or a future date')
-      )
     }
 
+    const seconds = ':00'
+
+    // User wants to change only time begin
     if (req.body.time_begin && !req.body.time_end) {
-      const bookingBegins = req.body.time_begin + ':00'
+      const bookingBegins = req.body.time_begin + seconds
       validationChain.push(
         body('time_begin')
           .isTime().withMessage('Beginning time must be in HH:MM format')
           .custom(() => {
             if (
-              bookingBegins >= room.timeEnd ||
-              bookingBegins < room.timeBegin
+              bookingBegins >= timeEnd ||
+              bookingBegins < timeBegin
             ) throw new Error('Booking beginning time is outside the room\'s available hours')
             if (bookingBegins >= currentBooking.timeEnd) {
               throw new Error('Booking beginning time (request) must be before booking end time (database)')
@@ -251,15 +259,16 @@ router.put('/:id', //tokenExtractor,
       }
     }
 
+    // User wants to change only time end
     if (!req.body.time_begin && req.body.time_end) { 
-      const bookingEnds = req.body.time_end + ':00'
+      const bookingEnds = req.body.time_end + seconds
       validationChain.push(
         body('time_end')
           .isTime().withMessage('Ending time must be in HH:MM format')
           .custom(() => {
             if (
-              bookingEnds > room.timeEnd ||
-              bookingEnds <= room.timeBegin
+              bookingEnds > timeEnd ||
+              bookingEnds <= timeBegin
             ) throw new Error('Booking ending time is outside the room\'s available hours')
             if (bookingEnds <= currentBooking.timeBegin) {
               throw new Error('Booking ending time (request) must be after booking beginning time (database)')
@@ -279,6 +288,7 @@ router.put('/:id', //tokenExtractor,
       }     
     }
 
+    // User wants to change time begin and time end
     if (req.body.time_begin && req.body.time_end) {
       validationChain.push(
         body('time_begin')
@@ -294,14 +304,14 @@ router.put('/:id', //tokenExtractor,
           })
       )
 
-      const bookingBegins = req.body.time_begin + ':00'
-      const bookingEnds = req.body.time_end + ':00'
+      const bookingBegins = req.body.time_begin + seconds
+      const bookingEnds = req.body.time_end + seconds
   
       if (
-        bookingBegins < room.timeBegin ||
-        bookingBegins >= room.timeEnd ||
-        bookingEnds > room.timeEnd ||
-        bookingEnds <= room.timeBegin
+        bookingBegins < timeBegin ||
+        bookingBegins >= timeEnd ||
+        bookingEnds > timeEnd ||
+        bookingEnds <= timeBegin
       ) {
         throw new Error('Booking time is outside the room\'s available hours')
       }
@@ -329,6 +339,11 @@ router.put('/:id', //tokenExtractor,
       throw validationError
     }
 
+    if (req.body.date) {
+      currentBooking.date = req.body.date
+      console.log('Date updated')
+    }
+
     if (req.body.name) {
       currentBooking.name = req.body.name
       console.log('Name updated')
@@ -350,7 +365,7 @@ router.put('/:id', //tokenExtractor,
     }
 
     await currentBooking.save()
-    return res.status(201).json(currentBooking)
+    return res.status(200).json(currentBooking)
   }
 )
 

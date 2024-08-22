@@ -18,8 +18,8 @@ POST http://localhost:4000/api/rooms/1/settings/dates
 Content-Type: application/json
 
 {
-    "date": "2024-08-22",
-    "name": "Ramdom holiday 2",
+    "date": "2024-09-22",
+    "name": "Ramdom holiday",
     "availability": true,
     "time_begin": "10:00",
     "time_end": "11:00"
