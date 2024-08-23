@@ -1,5 +1,6 @@
-const { User, Notification, Session, Room, GlobalWeekday, GlobalDate, IndividualDate } = require('../../models')
+const { User, Notification, Session, Room, GlobalWeekday, GlobalDate, IndividualDate, Booking } = require('../../models')
 const { passwordHash } = require('../../util/middleware')
+const { dayCreator } = require('../Jest/dayCreator')
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('../../util/config')
 
@@ -143,52 +144,85 @@ const initialGlobalWeekdays = [
   },
 ]
 
-const initialGlobalDates = [
-  {
-    id: 10,
-    date: '2024-04-20',
-    name: 'Easter',
-    availability: false,
-    timeBegin: null,
-    timeEnd: null,
-    dayOfWeek: 6 
-  },
-  {
-    id: 20,
-    date: '2024-04-21',
-    name: 'Easter Monday',
-    availability: false,
-    timeBegin: null,
-    timeEnd: null,
-    dayOfWeek: 0 
-  },
-]
+async function initializeVariables() {
+  const { tomorrow, dTomorrow, second, dSecond } = await dayCreator()
 
-const initialIndividualDates = [
-  {
-    id: 10,
-    date: '2024-04-19',
-    availability: true,
-    name: 'Good Friday',
-    timeBegin: '08:00:00',
-    timeEnd: '12:00:00',
-    dayOfWeek: 5,
-    roomId: 10 
-  },
-  {
-    id: 20,
-    date: '2024-05-01',
-    availability: false,
-    name: 'May Day',
-    timeBegin: null,
-    timeEnd: null,
-    dayOfWeek: 3,
-    roomId: 10 
-  },
-]
+  const initialGlobalDates = [
+    {
+      id: 10,
+      date: tomorrow,
+      name: 'Global Holiday',
+      availability: false,
+      timeBegin: null,
+      timeEnd: null,
+      dayOfWeek: dTomorrow
+    },
+    {
+      id: 20,
+      date: second,
+      name: 'Global Holiday 2',
+      availability: false,
+      timeBegin: null,
+      timeEnd: null,
+      dayOfWeek: dSecond
+    },
+  ]
+
+  const initialIndividualDates = [
+    {
+      id: 10,
+      date: tomorrow,
+      availability: true,
+      name: 'Individual work day',
+      timeBegin: '10:00:00',
+      timeEnd: '14:00:00',
+      dayOfWeek: dTomorrow,
+      roomId: 10 
+    },
+    {
+      id: 20,
+      date: tomorrow,
+      availability: true,
+      name: 'Second work day',
+      timeBegin: '09:00:00',
+      timeEnd: '15:00:00',
+      dayOfWeek: dTomorrow,
+      roomId: 20 
+    }
+  ]
+
+  const initialBookings = [
+    {
+      id: 10,
+      name: 'New booking by User 1',
+      date: tomorrow,
+      timeBegin: '10:00:00',
+      timeEnd: '11:00:00',
+      roomId: 10,
+      userId: 20
+    },
+    {
+      id: 20,
+      name: 'New booking by User 2',
+      date: tomorrow,
+      timeBegin: '11:00:00',
+      timeEnd: '12:00:00',
+      roomId: 10,
+      userId: 30
+    }
+  ]
+
+  return {
+    initialGlobalDates,
+    initialIndividualDates,
+    initialBookings
+  }
+}
 
 const seedDatabase = async () => {
   try {
+    const { initialGlobalDates, initialIndividualDates, initialBookings } = await initializeVariables()
+
     await User.sync({ force: true })
     const usersWithHashedPasswords = await Promise.all(initialUsers.map(async (user) => {
       const hashedPassword = await passwordHash(user.password)
@@ -211,6 +245,9 @@ const seedDatabase = async () => {
     await IndividualDate.sync({ force: true })
     await IndividualDate.bulkCreate(initialIndividualDates)
 
+    await Booking.sync({ force: true })
+    await Booking.bulkCreate(initialBookings)
+
     await Session.sync({ force: true })
     const sessions = await Promise.all(initialUsers.map(async (user) => {
       const token = jwt.sign({ id: user.id, username: user.username }, SECRET)
@@ -232,6 +269,7 @@ const clearDatabase = async () => {
     await GlobalWeekday.drop({ cascade: true })
     await GlobalDate.drop({ cascade: true })
     await IndividualDate.drop({ cascade: true })
+    await Booking.drop({ cascade: true })
     await User.drop({ cascade: true })
     await Session.drop({ cascade: true })
     console.log('Test database cleared!')
@@ -247,7 +285,5 @@ module.exports = {
   initialUsers,
   initialNotifications,
   initialRooms,
-  initialGlobalWeekdays,
-  initialGlobalDates,
-  initialIndividualDates
+  initialGlobalWeekdays
 }

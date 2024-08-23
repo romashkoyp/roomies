@@ -126,7 +126,6 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
       roomId: req.body.room_id
     })
 
-    if (!booking) throw new Error('Booking not created')
     res.status(201).json(booking)
 })
 
@@ -134,7 +133,7 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
 router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
     const bookings = await Booking.findAll()
-    if (bookings.length === 0) throw new Error('Bookings for all rooms not found')
+    if (!bookings.length) throw new Error('Bookings for all rooms not found')
     res.status(200).json(bookings)
   }
 )

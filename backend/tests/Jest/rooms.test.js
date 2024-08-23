@@ -1,19 +1,38 @@
 const request = require('supertest')
 const { app, start } = require('../../index')
 const { seedDatabase, clearDatabase, initialRooms } = require('./seed_db')
-const { User } = require('../../models')
+const { User, Room } = require('../../models')
 const jwt = require('jsonwebtoken')
 const { SECRET, PORT } = require('../../util/config')
+const { dayCreator } = require('../Jest/dayCreator')
 
 describe('Rooms API', () => {
   let server
   let adminToken
   let user1Token
   let disabledAdminToken
+
+  let tomorrow
+  let dTomorrow
+
+  let second
+  let dSecond
+
+  let third
+  let dThird
   
   beforeAll(async () => {
     await start()
     server = app.listen(PORT)
+
+    const dayData = await dayCreator()
+
+    tomorrow = dayData.tomorrow
+    dTomorrow = dayData.dTomorrow
+    second = dayData.dSecond
+    dSecond = dayData.dSecond
+    third = dayData.third
+    dThird = dayData.dThird
   })
   
   afterAll(async () => {
@@ -70,34 +89,54 @@ describe('Rooms API', () => {
     })
   })
 
-  describe('GET /api/rooms/:id', () => {
-    it('admin can get a specific room', async () => {
+  describe('GET /api/rooms/:date', () => {
+    it('admin can get all rooms for desired date', async () => {
       const res = await request(app)
-        .get('/api/rooms/10')
+        .get(`/api/rooms/${third}`)
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(200)
-      expect(res.body.name).toBe('Air')
+      expect(res.body.length).toBe(initialRooms.length)
+    })
+  })
+
+  describe('GET /api/rooms/:id/:date', () => {
+    it('admin can get a specific room for desired date', async () => {
+      const res = await request(app)
+        .get(`/api/rooms/20/${tomorrow}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+      if (dTomorrow === 6 || dTomorrow === 0) {
+        expect(res.status).toBe(404)
+        expect(res.body.error).toBe('Room not available on this date')
+      } else {
+        expect(res.status).toBe(200)
+        expect(res.body.name).toBe('Forest')
+      }
     })
 
-    it('user can get a specific room', async () => {
+    it('user can get a specific room for desired date', async () => {
       const res = await request(app)
-        .get('/api/rooms/10')
+        .get(`/api/rooms/20/${tomorrow}`)
         .set('Authorization', `Bearer ${user1Token}`)
-      expect(res.status).toBe(200)
-      expect(res.body.name).toBe('Air')
+      if (dTomorrow === 6 || dTomorrow === 0) {
+        expect(res.status).toBe(404)
+        expect(res.body.error).toBe('Room not available on this date')
+      } else {
+        expect(res.status).toBe(200)
+        expect(res.body.name).toBe('Forest')
+      }
     })
 
-    it('disabled admin cannot get a specific room', async () => {
+    it('disabled admin cannot get a specific room for desired date', async () => {
       const res = await request(app)
-        .get('/api/rooms/10')
+        .get(`/api/rooms/20/${tomorrow}`)
         .set('Authorization', `Bearer ${disabledAdminToken}`)
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Account disabled')
     })
 
-    it('nonregistered user cannot get a specific room', async () => {
+    it('nonregistered user cannot get a specific room for desired date', async () => {
       const res = await request(app)
-        .get('/api/rooms/10')
+        .get(`/api/rooms/20/${tomorrow}`)
       expect(res.status).toBe(404)
       expect(res.body.error).toBe('Token missing')
     })
@@ -260,10 +299,17 @@ describe('Rooms API', () => {
 
   describe('DELETE /api/rooms/:id', () => {
     it('admin can delete a room', async () => {
+
+      const initialRoomCount = await Room.count()
+      expect(initialRoomCount).toBe(2)
+
       const res = await request(app)
         .delete('/api/rooms/10')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(204)
+
+      const updatedRoomCount = await Room.count()
+      expect(updatedRoomCount).toBe(1)
     })
 
     it('user cannot delete a room', async () => {
@@ -300,6 +346,42 @@ describe('Rooms API', () => {
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res2.status).toBe(404)
       expect(res2.body.error).toBe('Session not found')
+    })
+  })
+
+  describe('DELETE /api/rooms', () => {
+    it('admin can delete all rooms', async () => {
+
+      const initialRoomCount = await Room.count()
+      expect(initialRoomCount).toBe(2)
+
+      const res = await request(app)
+        .delete('/api/rooms')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(204)
+
+      const updatedRoomCount = await Room.count()
+      expect(updatedRoomCount).toBe(0)
+    })
+  })
+
+  describe('GET /api/rooms/:id/dates', () => {
+    it('admin can get individual dates for desired room', async () => {
+      const res = await request(app)
+        .get('/api/rooms/10/dates')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(200)
+      expect(res.body.length).toBe(1)
+    })
+  })
+
+  describe('GET /api/rooms/dates', () => {
+    it('admin can get all individual dates for all rooms', async () => {
+      const res = await request(app)
+        .get('/api/rooms/dates')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(200)
+      expect(res.body.length).toBe(2)
     })
   })
 })

@@ -29,7 +29,7 @@ router.get('/', tokenExtractor, isTokenUser, isSession,
       attributes: { exclude: ['userId'] }
     })
       
-    if (rooms.length === 0) throw new Error('Rooms not found')
+    if (!rooms.length) throw new Error('Rooms not found')
     res.status(200).json(rooms)     
     }
 )
@@ -65,59 +65,17 @@ router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
     res.status(201).json(room)
 })
 
-// Get desired room for desired date
-router.get('/:id/:date', roomFinder, dateValidation,//tokenExtractor, roomFinder, isTokenUser, isSession, dateFinder,
-  async (req, res) => {
-    const { id, date } = req.params
-    const room = await Room.findOne({
-      where: { id },
-      include: [
-        {
-          model: Booking,
-          where: { date, enabled: true },
-          required: false,
-          attributes: { exclude: ['roomId'] }
-        },
-        {
-          model: IndividualDate,
-          where: { date },
-          required: false,
-          attributes: { exclude: ['roomId'] }
-        }
-      ]
-    })
-
-    if (room.individualDates.length === 1) {
-      room.settings = room.individualDates
-    } else if (room.individualDates.length === 0) {
-      const globalDate = await GlobalDate.findOne({ where: { date } });
-      const dayOfWeek = new Date(date).getDay();
-      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } });
-
-      if (globalDate) {
-        room.settings = globalDate
-      } else if (globalWeekday) {
-        room.settings = globalWeekday
-      } else {
-        throw new Error('No settings found')
-      }
-    }
-
-    const response = {
-      id: room.id,
-      name: room.name,
-      capacity: room.capacity,
-      size: room.size,
-      imagePath: room.imagePath,
-      bookings: room.bookings,
-      settings: room.settings
-    }
-
-    res.status(200).json(response)
-})
+// Delete all rooms
+router.delete('/', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {
+    await Room.destroy({ where: {} }) // find all rooms and delete them 1 by 1
+    console.log('All rooms deleted')
+    res.status(204).end()
+  }
+)
 
 // Change room characteristics
-router.put('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
     const validationChain = []
 
@@ -178,7 +136,7 @@ router.put('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
 })
 
 // Delete desired room
-router.delete('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+router.delete('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
     await req.room.destroy()
     console.log('Room deleted')
@@ -186,40 +144,101 @@ router.delete('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSessio
   }
 )
 
-// Delete all rooms
-router.delete('/:id', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+// --- Routes for Individual Dates related to Rooms ---
+
+// Get all dates for all rooms
+router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
-    await req.room.destroy({ truncate: true, cascade: false })
+    const dates = await IndividualDate.findAll({
+      order: [['date', 'ASC']]
+    })
+
+    if (!dates.length) throw new Error('No dates available for rooms')
+    res.status(200).json(dates)
   }
 )
 
+// Delete all dates for all rooms
+router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {    
+    await IndividualDate.destroy({ truncate: true, cascade: false })
+    res.status(204).end()
+    console.log('All individual dates deleted for all rooms')
+  }
+)
+
+// Get all rooms for desired date
+router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
+  async (req, res) => {
+    const { date } = req.params
+    const rooms = await Room.findAll({
+      include: [
+        {
+          model: Booking,
+          where: { date, enabled: true },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        },
+        {
+          model: IndividualDate,
+          where: { date },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        }
+      ]
+    })
+
+    const response = []
+
+    for (const room of rooms) {
+      let settings
+
+      if (room.individualDates.length === 1) {
+        settings = room.individualDates
+      } else if (!room.individualDates.length) {
+        const globalDate = await GlobalDate.findOne({ where: { date } });
+        const dayOfWeek = new Date(date).getDay();
+        const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } });
+  
+        if (globalDate) {
+          room.settings = globalDate
+        } else if (globalWeekday) {
+          room.settings = globalWeekday
+        } else {
+          throw new Error('No settings found')
+        }
+      }
+
+      response.push({
+        id: room.id,
+        name: room.name,
+        capacity: room.capacity,
+        size: room.size,
+        imagePath: room.imagePath,
+        date,
+        bookings: room.bookings,
+        settings: room.settings
+      })
+    }
+
+    res.status(200).json(response)
+})
+
 // Get all dates for desired room
-router.get('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async(req, res) => {
     const dates = await IndividualDate.findAll({
       where: { roomId: req.params.id },
       order: [['date', 'ASC']]
     })
 
-    if (dates.length === 0) throw new Error('No dates available for current room')
-    res.status(200).json(dates)
-  }
-)
-
-// Get all dates for all rooms
-router.get('/settings/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
-  async(req, res) => {
-    const dates = await IndividualDate.findAll({
-      order: [['date', 'ASC']]
-    })
-
-    if (dates.length === 0) throw new Error('No dates available for rooms')
+    if (!dates.length) throw new Error('No dates available for current room')
     res.status(200).json(dates)
   }
 )
 
 // Add new date for desired room
-router.post('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+router.post('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const validationChain = []
 
@@ -298,7 +317,7 @@ router.post('/:id/settings/dates', roomFinder,//tokenExtractor, roomFinder, isTo
 )
 
 // Delete all dates for desired room
-router.delete('/:id/settings/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
+router.delete('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await IndividualDate.destroy({ where: { roomId: req.params.id }, cascade: false })
     res.status(204).end()
@@ -307,7 +326,7 @@ router.delete('/:id/settings/dates', tokenExtractor, roomFinder, isTokenUser, is
 )
 
 // Delete desired date for desired room
-router.delete('/:id/settings/dates/:date', roomFinder, dateValidation, dateFinder, tokenExtractor, isTokenUser, isAdmin, isSession,
+router.delete('/:id/dates/:date', roomFinder, dateValidation, dateFinder, tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await IndividualDate.destroy({ where: { roomId: req.params.id, date: req.params.date }, cascade: false })
     res.status(204).end()
@@ -315,13 +334,58 @@ router.delete('/:id/settings/dates/:date', roomFinder, dateValidation, dateFinde
   }
 )
 
-// Delete all dates for all rooms
-router.delete('/settings/dates/', tokenExtractor, isTokenUser, isAdmin, isSession,
-  async(req, res) => {    
-    await IndividualDate.destroy({ truncate: true, cascade: false })
-    res.status(204).end()
-    console.log('All individual dates deleted for all rooms')
-  }
-)
+// Get desired room for desired date
+router.get('/:id/:date', tokenExtractor, isTokenUser, isSession, roomFinder, dateValidation,
+  async (req, res) => {
+    const { id, date } = req.params
+    const room = await Room.findOne({
+      where: { id },
+      include: [
+        {
+          model: Booking,
+          where: { date, enabled: true },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        },
+        {
+          model: IndividualDate,
+          where: { date },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        }
+      ]
+    })
+
+    if (room.individualDates.length === 1) {
+      room.settings = room.individualDates
+    } else if (!room.individualDates.length) {
+      const globalDate = await GlobalDate.findOne({ where: { date } });
+      const dayOfWeek = new Date(date).getDay();
+      const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } });
+
+      if (globalDate) {
+        room.settings = globalDate
+      } else if (globalWeekday) {
+        room.settings = globalWeekday
+      } else {
+        throw new Error('No settings found')
+      }
+    }
+
+    if (room.settings.availability !== true) throw new Error('Room not available on this date')
+
+    const response = {
+      id: room.id,
+      name: room.name,
+      capacity: room.capacity,
+      size: room.size,
+      imagePath: room.imagePath,
+      date,
+      bookings: room.bookings,
+      settings: room.settings
+    }
+
+    res.status(200).json(response)
+})
 
 module.exports = router
