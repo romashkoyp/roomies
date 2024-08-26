@@ -21,7 +21,7 @@ const dateFinder = async (req, res, next) => {
   next()
 }
 
-// Get all rooms
+// Get all rooms (tested)
 router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
     const rooms = await Room.findAll({
@@ -34,7 +34,7 @@ router.get('/', tokenExtractor, isTokenUser, isSession,
     }
 )
 
-// Create new room
+// Create new room (tested)
 router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   body('name')
     .notEmpty().withMessage('Name is required'),
@@ -65,7 +65,7 @@ router.post('/', tokenExtractor, isTokenUser, isAdmin, isSession,
     res.status(201).json(room)
 })
 
-// Delete all rooms
+// Delete all rooms (tested)
 router.delete('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await Room.destroy({ where: {} }) // find all rooms and delete them 1 by 1
@@ -74,7 +74,28 @@ router.delete('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Change room characteristics
+// Get all dates for all rooms (tested)
+router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {
+    const dates = await IndividualDate.findAll({
+      order: [['date', 'ASC']]
+    })
+
+    if (!dates.length) throw new Error('No dates available for rooms')
+    res.status(200).json(dates)
+  }
+)
+
+// Delete all dates for all rooms (tested)
+router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {    
+    await IndividualDate.destroy({ truncate: true, cascade: false })
+    res.status(204).end()
+    console.log('All individual dates deleted for all rooms')
+  }
+)
+
+// Change room characteristics (tested)
 router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
     const validationChain = []
@@ -135,7 +156,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
     return res.status(201).json(req.room)
 })
 
-// Delete desired room
+// Delete desired room (tested)
 router.delete('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
     await req.room.destroy()
@@ -144,30 +165,20 @@ router.delete('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinde
   }
 )
 
-// --- Routes for Individual Dates related to Rooms ---
-
-// Get all dates for all rooms
-router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
+// Get all dates for desired room (tested)
+router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async(req, res) => {
     const dates = await IndividualDate.findAll({
+      where: { roomId: req.params.id },
       order: [['date', 'ASC']]
     })
 
-    if (!dates.length) throw new Error('No dates available for rooms')
+    if (!dates.length) throw new Error('No dates available for current room')
     res.status(200).json(dates)
   }
 )
 
-// Delete all dates for all rooms
-router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
-  async(req, res) => {    
-    await IndividualDate.destroy({ truncate: true, cascade: false })
-    res.status(204).end()
-    console.log('All individual dates deleted for all rooms')
-  }
-)
-
-// Get all rooms for desired date
+// Get all rooms for desired date (tested)
 router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
   async (req, res) => {
     const { date } = req.params
@@ -224,20 +235,7 @@ router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
     res.status(200).json(response)
 })
 
-// Get all dates for desired room
-router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
-  async(req, res) => {
-    const dates = await IndividualDate.findAll({
-      where: { roomId: req.params.id },
-      order: [['date', 'ASC']]
-    })
-
-    if (!dates.length) throw new Error('No dates available for current room')
-    res.status(200).json(dates)
-  }
-)
-
-// Add new date for desired room
+// Add new date for desired room (tested)
 router.post('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const validationChain = []
@@ -299,7 +297,7 @@ router.post('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSe
     }
 
     const existingDay = await IndividualDate.findOne({ where: { roomId: req.params.id, date: req.body.date } })
-    if (existingDay.length !== 0) throw new Error('Settings for the room on current date already exist. Delete previous settings.')
+    if (existingDay) throw new Error('Settings for the room on current date already exist. Delete previous settings.')
 
     const dayOfWeekNumber = new Date(req.body.date).getDay()
 
@@ -316,7 +314,7 @@ router.post('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSe
   }
 )
 
-// Delete all dates for desired room
+// Delete all dates for desired room (tested)
 router.delete('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await IndividualDate.destroy({ where: { roomId: req.params.id }, cascade: false })
@@ -325,16 +323,7 @@ router.delete('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, is
   }
 )
 
-// Delete desired date for desired room
-router.delete('/:id/dates/:date', roomFinder, dateValidation, dateFinder, tokenExtractor, isTokenUser, isAdmin, isSession,
-  async(req, res) => {
-    await IndividualDate.destroy({ where: { roomId: req.params.id, date: req.params.date }, cascade: false })
-    res.status(204).end()
-    console.log('All individual dates deleted from room settings')
-  }
-)
-
-// Get desired room for desired date
+// Get desired room for desired date (tested)
 router.get('/:id/:date', tokenExtractor, isTokenUser, isSession, roomFinder, dateValidation,
   async (req, res) => {
     const { id, date } = req.params
@@ -387,5 +376,14 @@ router.get('/:id/:date', tokenExtractor, isTokenUser, isSession, roomFinder, dat
 
     res.status(200).json(response)
 })
+
+// Delete desired date for desired room (tested)
+router.delete('/:id/:date', roomFinder, dateValidation, dateFinder, tokenExtractor, isTokenUser, isAdmin, isSession,
+  async(req, res) => {
+    await IndividualDate.destroy({ where: { roomId: req.params.id, date: req.params.date }, cascade: false })
+    res.status(204).end()
+    console.log('All individual dates deleted from room settings')
+  }
+)
 
 module.exports = router

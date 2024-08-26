@@ -74,7 +74,7 @@ describe('Signup API', () => {
           username: 'user1@example.com',
           password: 'dfbfgbfgbfdgb'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Invalid username or password')
     })
 
@@ -85,7 +85,7 @@ describe('Signup API', () => {
           username: 'disabledadmin@admin.com',
           password: 'pdr,Ch8$',
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
   })

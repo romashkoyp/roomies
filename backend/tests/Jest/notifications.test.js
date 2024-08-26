@@ -72,7 +72,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by user'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -83,7 +83,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by disabled admin'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
 
@@ -102,7 +102,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by disabled admin'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Token missing')
     })
 
@@ -119,7 +119,7 @@ describe('Notifications API', () => {
           content: 'test content by admin'
         })
       console.log(res2.body)
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })
@@ -152,7 +152,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by user'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -163,7 +163,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content by disabled admin'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
     
@@ -173,7 +173,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content'
         })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Token missing')
     })
 
@@ -189,7 +189,7 @@ describe('Notifications API', () => {
         .send({
           content: 'test content'
         })
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })
@@ -206,7 +206,7 @@ describe('Notifications API', () => {
       const res = await request(app)
         .delete('/api/notifications/10')
         .set('Authorization', `Bearer ${user1Token}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -214,14 +214,14 @@ describe('Notifications API', () => {
       const res = await request(app)
         .delete('/api/notifications/10')
         .set('Authorization', `Bearer ${disabledAdminToken}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
 
     it('nonregistered user cannot delete notification', async () => {
       const res = await request(app)
         .delete('/api/notifications/10')
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Token missing')
     })
 
@@ -234,7 +234,7 @@ describe('Notifications API', () => {
       const res2 = await request(app)
         .delete('/api/notifications/10')
         .set('Authorization', `Bearer ${adminToken}`)
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })

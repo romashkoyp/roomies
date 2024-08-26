@@ -45,7 +45,7 @@ describe('Signout API', () => {
       const res = await request(app)
         .delete('/api/signout')
         .set('Authorization', `Bearer ${disabledAdminToken}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
   })

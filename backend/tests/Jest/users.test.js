@@ -58,7 +58,7 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users')
         .set('Authorization', `Bearer ${user1Token}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -66,14 +66,14 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users')
         .set('Authorization', `Bearer ${user3Token}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
 
     it('returns 401 if no token provided', async () => {
       const res = await request(app)
         .get('/api/users')
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Token missing')
     })
   })
@@ -101,7 +101,7 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users/30')
         .set('Authorization', `Bearer ${user1Token}`)
-        expect(res.status).toBe(404)
+        expect(res.status).toBe(400)
         expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -109,7 +109,7 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users/40')
         .set('Authorization', `Bearer ${user3Token}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
 
@@ -117,7 +117,7 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users/999999')
         .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('User not found in database')
     })
 
@@ -130,7 +130,7 @@ describe('Users API', () => {
       const res2 = await request(app)
         .get('/api/users/60')
         .set('Authorization', `Bearer ${user4Token}`)
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })
@@ -171,7 +171,7 @@ describe('Users API', () => {
         .put('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({ admin: true, enabled: false })
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -223,7 +223,7 @@ describe('Users API', () => {
           name: 'updated name by user',
           username: 'new@username.com'
         })
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })
@@ -248,7 +248,7 @@ describe('Users API', () => {
       const res = await request(app)
         .delete('/api/users/20')
         .set('Authorization', `Bearer ${user2Token}`)
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })
 
@@ -261,7 +261,7 @@ describe('Users API', () => {
       const res2 = await request(app)
         .delete('/api/users/20')
         .set('Authorization', `Bearer ${user1Token}`)
-      expect(res2.status).toBe(404)
+      expect(res2.status).toBe(400)
       expect(res2.body.error).toBe('Session not found')
     })
   })
