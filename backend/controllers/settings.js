@@ -36,14 +36,14 @@ const dateFinder = async (req, res, next) => {
   next()
 }
 
-// Get all weekdays for all rooms (tested)
+// Get all weekdays for all rooms 
 router.get('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async(req, res) => {
     res.json(req.weekdays)
   }
 )
 
-// Change for all weekdays global availability, time end, time begin (tested)
+// Change for all weekdays global availability, time end, time begin 
 router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async(req, res) => {
     const validationChain = []
@@ -117,7 +117,7 @@ router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekday
   }
 )
 
-// Reset to default for all weekdays global availability, time end, time begin (tested)
+// Reset to default for all weekdays global availability, time end, time begin 
 router.delete('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async (req, res) => {
     await GlobalWeekday.destroy({ truncate: true, cascade: false })
@@ -127,14 +127,14 @@ router.delete('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, week
   }
 )
 
-// Get one weekday for all rooms (tested)
+// Get one weekday for all rooms 
 router.get('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     res.json(req.dayOfWeek)
   }
 )
 
-// Change for one weekday global availability, time end, time begin (tested)
+// Change for one weekday global availability, time end, time begin 
 router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     const validationChain = []
@@ -198,7 +198,7 @@ router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSessi
   }
 )
 
-// Reset to default desired weekday global availability, time end, time begin (tested)
+// Reset to default desired weekday global availability, time end, time begin 
 router.delete('/weekdays/:dayOfWeek',tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     await req.dayOfWeek.destroy()
@@ -208,7 +208,7 @@ router.delete('/weekdays/:dayOfWeek',tokenExtractor, isTokenUser, isAdmin, isSes
   }
 )
 
-// Get all global dates for all rooms (tested)
+// Get all global dates for all rooms 
 router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const dates = await GlobalDate.findAll({
@@ -220,7 +220,7 @@ router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Create new global date (tested)
+// Create new global date 
 router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const validationChain = []
@@ -294,7 +294,7 @@ router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Delete all global dates (tested)
+// Delete all global dates 
 router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await GlobalDate.destroy({ truncate: true, cascade: false })
@@ -303,14 +303,14 @@ router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Get one date (tested)
+// Get one date 
 router.get('/dates/:date', tokenExtractor, isTokenUser, isAdmin, isSession, dateFinder,
   async(req, res) => {
     res.json(req.date)
   }
 )
 
-// Delete one date (tested)
+// Delete one date 
 router.delete('/dates/:date', tokenExtractor, isTokenUser, isAdmin, isSession, dateFinder,
   async(req, res) => {
     await req.date.destroy()

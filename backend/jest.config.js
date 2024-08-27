@@ -10,5 +10,6 @@ module.exports = {
   //testMatch: ['**/tests/Jest/**/signout.test.js'],
   //testMatch: ['**/tests/Jest/**/rooms.test.js'],
   //testMatch: ['**/tests/Jest/**/settings.test.js'],
+  //testMatch: ['**/tests/Jest/**/bookings.test.js'],
   testPathIgnorePatterns: ['/node_modules/']
 }

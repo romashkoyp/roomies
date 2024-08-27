@@ -205,8 +205,8 @@ async function initializeVariables() {
       id: 20,
       name: 'New booking by User 2',
       date: tomorrow,
-      timeBegin: '11:00:00',
-      timeEnd: '12:00:00',
+      timeBegin: '12:00:00',
+      timeEnd: '13:00:00',
       roomId: 10,
       userId: 30
     }

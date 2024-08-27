@@ -16,7 +16,16 @@ const isUsersBookingOrAdmin = async (req, res, next) => {
   next()
 }
 
-// Create new booking for desired room on desired date
+// Get all bookings for all rooms 
+router.get('/', tokenExtractor, isTokenUser, isSession,
+  async (req, res) => {
+    const bookings = await Booking.findAll()
+    if (!bookings.length) throw new Error('Bookings for all rooms not found')
+    res.status(200).json(bookings)
+  }
+)
+
+// Create new booking for desired room on desired date 
 router.post('/', tokenExtractor, isTokenUser, isSession,
   body('name')
     .notEmpty().withMessage('Name is required'),
@@ -129,27 +138,9 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
     res.status(201).json(booking)
 })
 
-// Get all bookings for all rooms
-router.get('/', tokenExtractor, isTokenUser, isSession,
-  async (req, res) => {
-    const bookings = await Booking.findAll()
-    if (!bookings.length) throw new Error('Bookings for all rooms not found')
-    res.status(200).json(bookings)
-  }
-)
-
-// Get desired booking
+// Get desired booking 
 router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
   async (req, res) => res.status(200).json(req.booking)
-)
-
-// Delete desired booking by user or admin
-router.delete('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
-  async (req, res) => {
-    await req.booking.destroy()
-    res.status(204).end()
-    console.log('Booking deleted')
-  }
 )
 
 // Change desired booking by user or admin
@@ -365,6 +356,15 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
 
     await currentBooking.save()
     return res.status(200).json(currentBooking)
+  }
+)
+
+// Delete desired booking by user or admin
+router.delete('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
+  async (req, res) => {
+    await req.booking.destroy()
+    res.status(204).end()
+    console.log('Booking deleted')
   }
 )
 
