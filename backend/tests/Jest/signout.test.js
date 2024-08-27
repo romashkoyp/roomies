@@ -9,12 +9,12 @@ describe('Signout API', () => {
   let server
   let adminToken
   let disabledAdminToken
-  
+
   beforeAll(async () => {
     await start()
     server = app.listen(PORT)
   })
-  
+
   afterAll(async () => {
     await server.close()
   })

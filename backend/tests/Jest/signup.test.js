@@ -4,7 +4,7 @@ const { seedDatabase, clearDatabase } = require('./seed_db')
 const { PORT } = require('../../util/config')
 
 describe('Signup API', () => {
-  
+
   let server
 
   beforeAll(async () => {
@@ -15,7 +15,7 @@ describe('Signup API', () => {
   afterAll(async () => {
     await server.close()
   })
-  
+
   beforeEach(async () => {
     await seedDatabase()
   })

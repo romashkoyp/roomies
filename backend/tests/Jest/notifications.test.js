@@ -10,12 +10,12 @@ describe('Notifications API', () => {
   let adminToken
   let user1Token
   let disabledAdminToken
-  
+
   beforeAll(async () => {
     await start()
     server = app.listen(PORT)
   })
-  
+
   afterAll(async () => {
     await server.close()
   })
@@ -111,7 +111,7 @@ describe('Notifications API', () => {
         .delete('/api/signout')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res1.status).toBe(204)
-      
+
       const res2 = await request(app)
         .post('/api/notifications')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -166,7 +166,7 @@ describe('Notifications API', () => {
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Account disabled')
     })
-    
+
     it('nonregistered user cannot change notification', async () => {
       const res = await request(app)
         .put('/api/notifications/10')
@@ -182,7 +182,7 @@ describe('Notifications API', () => {
         .delete('/api/signout')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res1.status).toBe(204)
-      
+
       const res2 = await request(app)
         .put('/api/notifications/10')
         .set('Authorization', `Bearer ${adminToken}`)

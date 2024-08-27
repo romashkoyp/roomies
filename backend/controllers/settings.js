@@ -23,7 +23,7 @@ const weekdaysCorrector = async (req, res, next) => {
 const weekdayFinder = async (req, res, next) => {
   const dayPattern = /^[0-6]$/
   if (!dayPattern.test(req.params.dayOfWeek)) throw new Error('Invalid day of week format. Required number 0-6')
-  req.dayOfWeek = await GlobalWeekday.findOne({where: { dayOfWeek: req.params.dayOfWeek } })
+  req.dayOfWeek = await GlobalWeekday.findOne({ where: { dayOfWeek: req.params.dayOfWeek } })
   if (!req.dayOfWeek) throw new Error('Day of week not found')
   next()
 }
@@ -31,19 +31,19 @@ const weekdayFinder = async (req, res, next) => {
 const dateFinder = async (req, res, next) => {
   const datePattern = /^\d{4}-\d{2}-\d{2}$/
   if (!datePattern.test(req.params.date)) throw new Error('Invalid date format. Use YYYY-MM-DD')
-  req.date = await GlobalDate.findOne({where: {date: req.params.date } })
+  req.date = await GlobalDate.findOne({ where: { date: req.params.date } })
   if (!req.date) throw new Error('Date not found')
   next()
 }
 
-// Get all weekdays for all rooms 
+// Get all weekdays for all rooms
 router.get('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async(req, res) => {
     res.json(req.weekdays)
   }
 )
 
-// Change for all weekdays global availability, time end, time begin 
+// Change for all weekdays global availability, time end, time begin
 router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async(req, res) => {
     const validationChain = []
@@ -66,7 +66,7 @@ router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekday
         body('time_end')
           .isTime().withMessage('Ending time must be in HH:MM format'),
         body('time_begin')
-          .custom((value, {req}) => {
+          .custom((value, { req }) => {
             if (value >= req.body.time_end) {
               throw new Error('Time begin (request) must be before time end (request)')
             }
@@ -74,7 +74,7 @@ router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekday
           })
       )
     }
-    
+
 
     await Promise.all(validationChain.map(validation => validation.run(req)))
     const errors = validationResult(req)
@@ -117,7 +117,7 @@ router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekday
   }
 )
 
-// Reset to default for all weekdays global availability, time end, time begin 
+// Reset to default for all weekdays global availability, time end, time begin
 router.delete('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector,
   async (req, res) => {
     await GlobalWeekday.destroy({ truncate: true, cascade: false })
@@ -127,14 +127,14 @@ router.delete('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, week
   }
 )
 
-// Get one weekday for all rooms 
+// Get one weekday for all rooms
 router.get('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     res.json(req.dayOfWeek)
   }
 )
 
-// Change for one weekday global availability, time end, time begin 
+// Change for one weekday global availability, time end, time begin
 router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     const validationChain = []
@@ -157,7 +157,7 @@ router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSessi
         body('time_end')
           .isTime().withMessage('Ending time must be in HH:MM format'),
         body('time_begin')
-          .custom((value, {req}) => {
+          .custom((value, { req }) => {
             if (value >= req.body.time_end) {
               throw new Error('Time begin (request) must be before time end (request)')
             }
@@ -165,7 +165,7 @@ router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSessi
           })
       )
     }
-    
+
     await Promise.all(validationChain.map(validation => validation.run(req)))
     const errors = validationResult(req)
 
@@ -191,14 +191,14 @@ router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSessi
     req.dayOfWeek.availability = req.body.availability
     req.dayOfWeek.timeBegin = req.body.time_begin
     req.dayOfWeek.timeEnd = req.body.time_end
-        
+
     await req.dayOfWeek.save()
     console.log('Global availability, time begin and time end for weekday updated')
     return res.status(201).json(req.dayOfWeek)
   }
 )
 
-// Reset to default desired weekday global availability, time end, time begin 
+// Reset to default desired weekday global availability, time end, time begin
 router.delete('/weekdays/:dayOfWeek',tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
     await req.dayOfWeek.destroy()
@@ -208,7 +208,7 @@ router.delete('/weekdays/:dayOfWeek',tokenExtractor, isTokenUser, isAdmin, isSes
   }
 )
 
-// Get all global dates for all rooms 
+// Get all global dates for all rooms
 router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const dates = await GlobalDate.findAll({
@@ -220,7 +220,7 @@ router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Create new global date 
+// Create new global date
 router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const validationChain = []
@@ -251,7 +251,7 @@ router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
         body('time_end')
           .isTime().withMessage('Ending time must be in HH:MM format'),
         body('time_begin')
-          .custom((value, {req}) => {
+          .custom((value, { req }) => {
             if (value >= req.body.time_end) {
               throw new Error('Time begin (request) must be before time end (request)')
             }
@@ -268,7 +268,7 @@ router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
       validationError.errors = errors.array()
       throw validationError
     }
-    
+
     if (!req.body.name) throw new Error('Name required')
     if (!req.body.date) throw new Error('Date required')
     if (req.body.availability === undefined) throw new Error('Availability is required')
@@ -294,7 +294,7 @@ router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Delete all global dates 
+// Delete all global dates
 router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     await GlobalDate.destroy({ truncate: true, cascade: false })
@@ -303,14 +303,14 @@ router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
-// Get one date 
+// Get one date
 router.get('/dates/:date', tokenExtractor, isTokenUser, isAdmin, isSession, dateFinder,
   async(req, res) => {
     res.json(req.date)
   }
 )
 
-// Delete one date 
+// Delete one date
 router.delete('/dates/:date', tokenExtractor, isTokenUser, isAdmin, isSession, dateFinder,
   async(req, res) => {
     await req.date.destroy()

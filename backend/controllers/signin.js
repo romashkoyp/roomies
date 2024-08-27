@@ -14,7 +14,7 @@ router.post('/',
   body('password')
     .notEmpty().withMessage('Password is required')
     .isLength({ min: 1 }).withMessage('Please enter your password'),
-  
+
   async (req, res) => {
     const errors = validationResult(req)
 
@@ -23,13 +23,13 @@ router.post('/',
       validationError.errors = errors.array()
       throw validationError
     }
-    
+
     const body = req.body
 
     const user = await User.findOne({
       where: { username: body.username }
-      })
-      
+    })
+
     const passwordCorrect = user === null
       ? false
       : await bcrypt.compare(body.password, user.passwordHash)
@@ -61,11 +61,11 @@ router.post('/',
     res
       .status(200)
       .send({
-          token, 
-          id: user.id,
-          username: user.username,
-          name: user.name
+        token,
+        id: user.id,
+        username: user.username,
+        name: user.name
       })
-})
+  })
 
 module.exports = router

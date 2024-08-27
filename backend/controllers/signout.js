@@ -6,6 +6,6 @@ router.delete('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
     await Session.destroy({ where: { user_id: req.tokenUser.id } })
     res.status(204).end()
-})
+  })
 
 module.exports = router

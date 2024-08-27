@@ -13,14 +13,13 @@ describe('Rooms API', () => {
   let disabledAdminToken
 
   let tomorrow
-  let dTomorrow
 
   let second
   let dSecond
 
   let third
   let dThird
-  
+
   beforeAll(async () => {
     await start()
     server = app.listen(PORT)
@@ -28,13 +27,12 @@ describe('Rooms API', () => {
     const dayData = await dayCreator()
 
     tomorrow = dayData.tomorrow
-    dTomorrow = dayData.dTomorrow
     second = dayData.second
     dSecond = dayData.dSecond
     third = dayData.third
     dThird = dayData.dThird
   })
-  
+
   afterAll(async () => {
     await server.close()
   })
@@ -64,7 +62,7 @@ describe('Rooms API', () => {
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(initialRooms.length)
     })
-    
+
     it('user can get all rooms', async () => {
       const res = await request(app)
         .get('/api/rooms')
@@ -153,7 +151,7 @@ describe('Rooms API', () => {
         .delete('/api/signout')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res1.status).toBe(204)
-      
+
       const res2 = await request(app)
         .post('/api/rooms')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -276,7 +274,7 @@ describe('Rooms API', () => {
         .delete('/api/signout')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res1.status).toBe(204)
-      
+
       const res2 = await request(app)
         .put('/api/rooms/10')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -334,7 +332,7 @@ describe('Rooms API', () => {
         .delete('/api/signout')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res1.status).toBe(204)
-      
+
       const res2 = await request(app)
         .delete('/api/rooms/10')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -393,7 +391,7 @@ describe('Rooms API', () => {
       expect(res.body.dayOfWeek).toBe(dSecond)
       expect(res.body.roomId).toBe(20)
     })
-    
+
     it('admin cannot create new date for room without name', async () => {
       const res = await request(app)
         .post('/api/rooms/20/dates')

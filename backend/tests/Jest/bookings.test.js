@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const request = require('supertest')
 const { app, start } = require('../../index')
 const { seedDatabase, clearDatabase } = require('./seed_db')
@@ -14,6 +15,9 @@ describe('Bookings API', () => {
 
   let tomorrow
   let dTomorrow
+
+  let second
+  let dSecond
 
   let third
   let dThird
@@ -56,33 +60,33 @@ describe('Bookings API', () => {
   describe('GET     /', () => {
     it('admin can get all bookings for all rooms', async () => {
       const res = await request(app)
-      .get('/api/bookings')
-      .set('Authorization', `Bearer ${adminToken}`)
-    expect(res.status).toBe(200)
-    expect(res.body.length).toBe(2)
+        .get('/api/bookings')
+        .set('Authorization', `Bearer ${adminToken}`)
+      expect(res.status).toBe(200)
+      expect(res.body.length).toBe(2)
     })
 
     it('user can get all bookings for all rooms', async () => {
       const res = await request(app)
-      .get('/api/bookings')
-      .set('Authorization', `Bearer ${user1Token}`)
-    expect(res.status).toBe(200)
-    expect(res.body.length).toBe(2)
+        .get('/api/bookings')
+        .set('Authorization', `Bearer ${user1Token}`)
+      expect(res.status).toBe(200)
+      expect(res.body.length).toBe(2)
     })
   })
 
   describe('POST    /', () => {
     it('admin can make a booking for desired room on desired date', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Booking by admin',
-        date: third,
-        time_begin: '10:00',
-        time_end: '11:00',
-        room_id: 20
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          name: 'Booking by admin',
+          date: third,
+          time_begin: '10:00',
+          time_end: '11:00',
+          room_id: 20
+        })
 
       if (dThird === 6 || dThird === 0) {
         expect(res.status).toBe(400)
@@ -101,15 +105,15 @@ describe('Bookings API', () => {
 
     it('user can make a booking for desired room on desired date', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Booking by User 1',
-        date: third,
-        time_begin: '10:00',
-        time_end: '11:00',
-        room_id: 20
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          name: 'Booking by User 1',
+          date: third,
+          time_begin: '10:00',
+          time_end: '11:00',
+          room_id: 20
+        })
 
       if (dThird === 6 || dThird === 0) {
         expect(res.status).toBe(400)
@@ -128,15 +132,15 @@ describe('Bookings API', () => {
 
     it('user can make a booking for desired room on individual date', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: tomorrow,
-        time_begin: '11:00',
-        time_end: '12:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: tomorrow,
+          time_begin: '11:00',
+          time_end: '12:00',
+          room_id: 10
+        })
       expect(res.status).toBe(201)
       expect(res.body.name).toBe('Booking by User 4')
       expect(res.body.date).toBe(tomorrow)
@@ -149,177 +153,177 @@ describe('Bookings API', () => {
 
     it('user cannot make a booking for desired room because it is not available', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: second,
-        time_begin: '11:00',
-        time_end: '12:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: second,
+          time_begin: '11:00',
+          time_end: '12:00',
+          room_id: 10
+        })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Room not available on this date')
     })
 
     it('user cannot make a booking for desired room because time is out of room\'s schedule', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: tomorrow,
-        time_begin: '09:00',
-        time_end: '10:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: tomorrow,
+          time_begin: '09:00',
+          time_end: '10:00',
+          room_id: 10
+        })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Booking time is outside the room\'s available hours')
     })
 
     it('user cannot make a booking for desired room because it overlapping with others bookings (1)', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: tomorrow,
-        time_begin: '10:00',
-        time_end: '12:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: tomorrow,
+          time_begin: '10:00',
+          time_end: '12:00',
+          room_id: 10
+        })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Time slot is already booked')
     })
 
     it('user cannot make a booking for desired room because it overlapping with others bookings (2)', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: tomorrow,
-        time_begin: '11:00',
-        time_end: '13:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: tomorrow,
+          time_begin: '11:00',
+          time_end: '13:00',
+          room_id: 10
+        })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Time slot is already booked')
     })
 
     it('user cannot make a booking for desired room because it overlapping with others bookings (3)', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: 'Booking by User 4',
-        date: tomorrow,
-        time_begin: '10:00',
-        time_end: '13:00',
-        room_id: 10
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: 'Booking by User 4',
+          date: tomorrow,
+          time_begin: '10:00',
+          time_end: '13:00',
+          room_id: 10
+        })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Time slot is already booked')
     })
 
     it('user cannot make a booking for desired room without requested data', async () => {
       const res = await request(app)
-      .post('/api/bookings')
-      .set('Authorization', `Bearer ${user4Token}`)
-      .send({
-        name: null,
-        date: null,
-        time_begin: null,
-        time_end: null,
-        room_id: null
-      })
+        .post('/api/bookings')
+        .set('Authorization', `Bearer ${user4Token}`)
+        .send({
+          name: null,
+          date: null,
+          time_begin: null,
+          time_end: null,
+          room_id: null
+        })
       expect(res.status).toBe(400)
       expect(res.body.errors).toEqual([
-          {
-            type: 'field',
-            value: null,
-            msg: 'Name is required',
-            path: 'name',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Date is required',
-            path: 'date',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Invalid value',
-            path: 'date',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Date must be in YYYY-MM-DD format',
-            path: 'date',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Date must be today or a future date',
-            path: 'date',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Room ID is required',
-            path: 'room_id',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Room ID must be an integer',
-            path: 'room_id',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Beginning time is required',
-            path: 'time_begin',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Beginning time must be in HH:MM format',
-            path: 'time_begin',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Ending time is required',
-            path: 'time_end',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Ending time must be in HH:MM format',
-            path: 'time_end',
-            location: 'body'
-          },
-          {
-            type: 'field',
-            value: null,
-            msg: 'Time begin (request) must be before time end (request)',
-            path: 'time_begin',
-            location: 'body'
-          }
-        ]
+        {
+          type: 'field',
+          value: null,
+          msg: 'Name is required',
+          path: 'name',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Date is required',
+          path: 'date',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Invalid value',
+          path: 'date',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Date must be in YYYY-MM-DD format',
+          path: 'date',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Date must be today or a future date',
+          path: 'date',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Room ID is required',
+          path: 'room_id',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Room ID must be an integer',
+          path: 'room_id',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Beginning time is required',
+          path: 'time_begin',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Beginning time must be in HH:MM format',
+          path: 'time_begin',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Ending time is required',
+          path: 'time_end',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Ending time must be in HH:MM format',
+          path: 'time_end',
+          location: 'body'
+        },
+        {
+          type: 'field',
+          value: null,
+          msg: 'Time begin (request) must be before time end (request)',
+          path: 'time_begin',
+          location: 'body'
+        }
+      ]
       )
     })
   })
@@ -468,8 +472,8 @@ describe('Bookings API', () => {
         .send({
           name: 'new name'
         })
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Not enough rights')
+      expect(res.status).toBe(400)
+      expect(res.body.error).toBe('Not enough rights')
     })
 
     it('user cannot change own booking\'s date when room is not available', async () => {
@@ -479,8 +483,8 @@ describe('Bookings API', () => {
         .send({
           date: second
         })
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Room not available on this date')
+      expect(res.status).toBe(400)
+      expect(res.body.error).toBe('Room not available on this date')
     })
 
     it('user cannot change own booking\'s time when beginning time is out of room\'s schedule', async () => {
@@ -490,16 +494,16 @@ describe('Bookings API', () => {
         .send({
           time_begin: '09:00'
         })
-        expect(res.status).toBe(400)
-        expect(res.body.errors).toEqual([
-          {
-            type: 'field',
-            value: '09:00',
-            msg: "Booking beginning time is outside the room's available hours",
-            path: 'time_begin',
-            location: 'body'
-          }
-        ])
+      expect(res.status).toBe(400)
+      expect(res.body.errors).toEqual([
+        {
+          type: 'field',
+          value: '09:00',
+          msg: 'Booking beginning time is outside the room\'s available hours',
+          path: 'time_begin',
+          location: 'body'
+        }
+      ])
     })
 
     it('user cannot change own booking\'s time when ending time is out of room\'s schedule', async () => {
@@ -510,8 +514,8 @@ describe('Bookings API', () => {
           time_begin: '14:00',
           time_end: '15:00'
         })
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Booking time is outside the room\'s available hours')
+      expect(res.status).toBe(400)
+      expect(res.body.error).toBe('Booking time is outside the room\'s available hours')
     })
 
     it('user cannot change own booking\'s time when overlapping with others bookings', async () => {
@@ -522,8 +526,8 @@ describe('Bookings API', () => {
           time_begin: '11:00',
           time_end: '13:00'
         })
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Time slot is already booked')
+      expect(res.status).toBe(400)
+      expect(res.body.error).toBe('Time slot is already booked')
     })
   })
 
@@ -571,4 +575,4 @@ describe('Bookings API', () => {
       expect(updatedBookingCount).toBe(2)
     })
   })
-}) 
+})

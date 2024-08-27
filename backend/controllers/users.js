@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator')
 const { tokenExtractor, isParamUser, isTokenUser, isAdminOrParamTokenUser, isSession, isAdmin } = require('../util/middleware')
 
 const excludePasswordHash = (user) => {
+  // eslint-disable-next-line no-unused-vars
   const { passwordHash, ...userWithoutPassword } = user.toJSON()
   return userWithoutPassword
 }
@@ -11,14 +12,14 @@ const excludePasswordHash = (user) => {
 router.get('/:id', tokenExtractor, isTokenUser, isParamUser, isSession, isAdminOrParamTokenUser,
   async (req, res) => {
     res.status(200).json(excludePasswordHash(req.paramUser))
-})
+  })
 
 router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   async (req, res) => {
     const users = await User.findAll({
       attributes: { exclude: ['passwordHash'] },
       include: [
-        { 
+        {
           model: Notification,
           attributes: { exclude: ['userId'] }
         },
@@ -32,7 +33,7 @@ router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
     if (!users.length) throw new Error ('No users found')
 
     res.status(200).json(users)
-})
+  })
 
 router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
   async (req, res) => {
@@ -44,7 +45,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminO
       )
     }
 
-    if (req.body.admin !== undefined) { 
+    if (req.body.admin !== undefined) {
       validationChain.push(
         body('admin').isBoolean().withMessage('Allowed True or False for admin status')
       )
@@ -66,7 +67,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminO
     }
 
     if (!req.body) throw new Error('No update data provided')
-    
+
     if (req.body.username) {
       req.paramUser.username = req.body.username
       console.log('Username updated')
@@ -97,13 +98,13 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminO
 
     await req.paramUser.save()
     return res.status(201).json(excludePasswordHash(req.paramUser))
-})
+  })
 
 router.delete('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
   async (req, res) => {
     await User.destroy({ where: { id: req.params.id }, cascade: false })
     res.status(204).end()
     console.log('User deleted')
-})
+  })
 
 module.exports = router

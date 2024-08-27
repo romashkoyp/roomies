@@ -25,7 +25,7 @@ const errorHandler = (error, req, res, next) => {
     const errorMessage = error.errors.map(err => err.message).join(', ')
     return res.status(400).json({ error: errorMessage })
   }
-  
+
   next(error)
 }
 

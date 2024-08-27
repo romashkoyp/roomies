@@ -25,8 +25,6 @@ describe('Settings API', () => {
 
     tomorrow = dayData.tomorrow
     dTomorrow = dayData.dTomorrow
-    second = dayData.second
-    dSecond = dayData.dSecond
     third = dayData.third
     dThird = dayData.dThird
   })
@@ -116,7 +114,7 @@ describe('Settings API', () => {
 
   describe('DELETE  /weekdays', () => {
     it('admin can restore global settings for weekdays', async () => {
-      
+
       const initialWeekdayCount = await GlobalWeekday.count()
       expect(initialWeekdayCount).toBe(7)
 
@@ -149,7 +147,7 @@ describe('Settings API', () => {
       expect(res.body.timeBegin).toBe('08:00:00')
       expect(res.body.timeEnd).toBe('16:00:00')
     })
-  
+
     it('user cannot get settings for a specific weekday', async () => {
       const res = await request(app)
         .get('/api/settings/weekdays/1')
@@ -175,7 +173,7 @@ describe('Settings API', () => {
       expect(res.body.timeBegin).toBe('09:00')
       expect(res.body.timeEnd).toBe('17:00')
     })
-  
+
     it('user cannot update settings for a specific weekday', async () => {
       const res = await request(app)
         .put('/api/settings/weekdays/1')
@@ -200,7 +198,7 @@ describe('Settings API', () => {
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Availability is required')
     })
-  
+
     it('admin cannot update settings with invalid time_begin format', async () => {
       const res = await request(app)
         .put('/api/settings/weekdays/1')
@@ -213,7 +211,7 @@ describe('Settings API', () => {
       expect(res.status).toBe(400)
       expect(res.body.errors[0].msg).toBe('Begin time must be in HH:MM format')
     })
-  
+
     it('admin cannot update settings with invalid time_end format', async () => {
       const res = await request(app)
         .put('/api/settings/weekdays/1')
@@ -226,7 +224,7 @@ describe('Settings API', () => {
       expect(res.status).toBe(400)
       expect(res.body.errors[0].msg).toBe('Ending time must be in HH:MM format')
     })
-  
+
     it('admin cannot update settings with time_begin after time_end', async () => {
       const res = await request(app)
         .put('/api/settings/weekdays/1')
@@ -243,7 +241,7 @@ describe('Settings API', () => {
 
   describe('DELETE  /weekdays/:dayOfWeek', () => {
     it('admin can restore global settings for desired weekday', async () => {
-      
+
       const initialWeekdayCount = await GlobalWeekday.count()
       expect(initialWeekdayCount).toBe(7)
 
@@ -255,7 +253,7 @@ describe('Settings API', () => {
       const updatedWeekdayCount = await GlobalWeekday.count()
       expect(updatedWeekdayCount).toBe(7)
 
-      const restoredWeekday = await GlobalWeekday.findOne({where: {dayOfWeek: 1, availability: true, timeBegin: '08:00:00', timeEnd: '16:00:00'} })
+      const restoredWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: 1, availability: true, timeBegin: '08:00:00', timeEnd: '16:00:00' } })
       expect(restoredWeekday)
     })
 
@@ -399,7 +397,7 @@ describe('Settings API', () => {
 
   describe('DELETE  /dates', () => {
     it('admin can delete global dates', async () => {
-      
+
       const initialDayCount = await GlobalDate.count()
       expect(initialDayCount).toBe(2)
 
@@ -433,7 +431,7 @@ describe('Settings API', () => {
       expect(res.body.timeBegin).toBe(null)
       expect(res.body.timeEnd).toBe(null)
     })
-  
+
     it('user cannot get day', async () => {
       const res = await request(app)
         .get(`/api/settings/dates/${tomorrow}`)
@@ -445,7 +443,7 @@ describe('Settings API', () => {
 
   describe('DELETE  /dates/:date', () => {
     it('admin can delete global date', async () => {
-      
+
       const initialDateCount = await GlobalDate.count()
       expect(initialDateCount).toBe(2)
 

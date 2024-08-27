@@ -21,7 +21,7 @@ describe('Users API', () => {
   afterAll(async () => {
     await server.close()
   })
-  
+
   beforeEach(async () => {
     await seedDatabase()
 
@@ -44,7 +44,7 @@ describe('Users API', () => {
   afterEach(async () => {
     await clearDatabase()
   })
-  
+
   describe('GET /api/users', () => {
     it('admin can get all users', async () => {
       const res = await request(app)
@@ -101,8 +101,8 @@ describe('Users API', () => {
       const res = await request(app)
         .get('/api/users/30')
         .set('Authorization', `Bearer ${user1Token}`)
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Not enough rights')
+      expect(res.status).toBe(400)
+      expect(res.body.error).toBe('Not enough rights')
     })
 
     it('disabled user cannot get his own data', async () => {
@@ -145,7 +145,7 @@ describe('Users API', () => {
           username: 'new@username.com',
           admin: true,
           enabled: false
-         })
+        })
       expect(res.status).toBe(201)
       expect(res.body.name).toBe('updated name by admin')
       expect(res.body.username).toBe('new@username.com')

@@ -46,10 +46,10 @@ router.post('/',
         id: user.id,
         username: user.username,
         name: user.name
-      })  
+      })
     } else {
       throw new Error('User not created')
     }
-})
+  })
 
 module.exports = router

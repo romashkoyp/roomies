@@ -36,7 +36,7 @@ IndividualDate.init({
       max: 6,
       isIn: {
         args: [[0, 1, 2, 3, 4, 5, 6]],
-        msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+        msg: 'Invalid day of the week. Please enter a number between 0 and 6'
       }
     }
   },

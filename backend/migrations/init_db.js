@@ -119,7 +119,7 @@ module.exports = {
           max: 6,
           isIn: {
             args: [[0, 1, 2, 3, 4, 5, 6]],
-            msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+            msg: 'Invalid day of the week. Please enter a number between 0 and 6'
           }
         }
       },
@@ -181,7 +181,7 @@ module.exports = {
           max: 6,
           isIn: {
             args: [[0, 1, 2, 3, 4, 5, 6]],
-            msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+            msg: 'Invalid day of the week. Please enter a number between 0 and 6'
           }
         }
       },
@@ -232,7 +232,7 @@ module.exports = {
           max: 6,
           isIn: {
             args: [[0, 1, 2, 3, 4, 5, 6]],
-            msg: 'Invalid day of the week. Please enter a number between 0 and 6' 
+            msg: 'Invalid day of the week. Please enter a number between 0 and 6'
           }
         }
       },
@@ -342,13 +342,13 @@ module.exports = {
 
     await queryInterface.removeConstraint('sessions', 'sessions_user_id_fkey')
     await queryInterface.dropTable('sessions')
-    
+
     await queryInterface.removeConstraint('bookings', 'bookings_user_id_fkey')
     await queryInterface.removeConstraint('bookings', 'bookings_room_id_fkey')
     await queryInterface.dropTable('bookings')
 
     await queryInterface.removeConstraint('individual_dates', 'individual_dates_room_id_fkey')
-    await queryInterface.dropTable('individual_dates')  
+    await queryInterface.dropTable('individual_dates')
 
     await queryInterface.removeConstraint('rooms', 'rooms_user_id_fkey')
     await queryInterface.dropTable('rooms')

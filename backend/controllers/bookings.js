@@ -16,7 +16,7 @@ const isUsersBookingOrAdmin = async (req, res, next) => {
   next()
 }
 
-// Get all bookings for all rooms 
+// Get all bookings for all rooms
 router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
     const bookings = await Booking.findAll()
@@ -25,7 +25,7 @@ router.get('/', tokenExtractor, isTokenUser, isSession,
   }
 )
 
-// Create new booking for desired room on desired date 
+// Create new booking for desired room on desired date
 router.post('/', tokenExtractor, isTokenUser, isSession,
   body('name')
     .notEmpty().withMessage('Name is required'),
@@ -47,7 +47,7 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
     .notEmpty().withMessage('Ending time is required')
     .isTime().withMessage('Ending time must be in HH:MM format'),
   body('time_begin')
-    .custom((value, {req}) => {
+    .custom((value, { req }) => {
       if (value >= req.body.time_end) {
         throw new Error('Time begin (request) must be before time end (request)')
       }
@@ -56,7 +56,7 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
 
   async (req, res) => {
     const errors = validationResult(req)
-    
+
     if (!errors.isEmpty()) {
       const validationError = new Error('Validation failed')
       validationError.errors = errors.array()
@@ -86,7 +86,7 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
         throw new Error('No global weekdays settings found')
       }
     }
-    
+
     const { timeBegin, timeEnd, availability } = settings
 
     if (availability !== true) throw new Error('Room not available on this date')
@@ -136,9 +136,9 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
     })
 
     res.status(201).json(booking)
-})
+  })
 
-// Get desired booking 
+// Get desired booking
 router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
   async (req, res) => res.status(200).json(req.booking)
 )
@@ -149,11 +149,11 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
     const { id } = req.params
     const currentBooking = req.booking
     const actualDate = req.body.date ? req.body.date : currentBooking.date
-    
+
     if (req.body.enabled !== undefined) {
       if (typeof req.body.enabled !== 'boolean') throw new Error('Allowed True or False for enabled status')
     }
-    
+
     if (req.body.date) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(req.body.date)) throw new Error('Date must be in YYYY-MM-DD format')
       const today = new Date().toISOString().slice(0, 10)
@@ -184,7 +184,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
         throw new Error('No global weekdays settings found')
       }
     }
-    
+
     const { timeBegin, timeEnd, availability } = settings
 
     if (availability !== true) throw new Error('Room not available on this date')
@@ -204,7 +204,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
     const validationChain = []
 
     // User wants to change date only, but save time begin and time end
-    if (req.body.date && !req.body.time_begin && !req.body.time_end) { 
+    if (req.body.date && !req.body.time_begin && !req.body.time_end) {
       for (const existingBooking of existingBookings) {
         const existingBegins = existingBooking.timeBegin
         const existingEnds = existingBooking.timeEnd
@@ -244,13 +244,13 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
           (currentBooking.timeEnd > existingBooking.timeBegin && currentBooking.timeEnd <= existingBooking.timeEnd) ||
           (bookingBegins <= existingBooking.timeBegin && currentBooking.timeEnd >= existingBooking.timeEnd)
         ) {
-            throw new Error('Time slot is already booked')
+          throw new Error('Time slot is already booked')
         }
       }
     }
 
     // User wants to change only time end
-    if (!req.body.time_begin && req.body.time_end) { 
+    if (!req.body.time_begin && req.body.time_end) {
       const bookingEnds = req.body.time_end + seconds
       validationChain.push(
         body('time_end')
@@ -273,9 +273,9 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
           (bookingEnds > existingBooking.timeBegin && bookingEnds <= existingBooking.timeEnd) ||
           (currentBooking.timeBegin <= existingBooking.timeBegin && bookingEnds >= existingBooking.timeEnd)
         ) {
-            throw new Error('Time slot is already booked')
+          throw new Error('Time slot is already booked')
         }
-      }     
+      }
     }
 
     // User wants to change time begin and time end
@@ -286,7 +286,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
         body('time_end')
           .isTime().withMessage('Ending time must be in HH:MM format'),
         body('time_begin')
-          .custom((value, {req}) => {
+          .custom((value, { req }) => {
             if (value >= req.body.time_end) {
               throw new Error('Time begin (request) must be before time end (request)')
             }
@@ -296,7 +296,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
 
       const bookingBegins = req.body.time_begin + seconds
       const bookingEnds = req.body.time_end + seconds
-  
+
       if (
         bookingBegins < timeBegin ||
         bookingBegins >= timeEnd ||
@@ -305,11 +305,11 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
       ) {
         throw new Error('Booking time is outside the room\'s available hours')
       }
-  
+
       for (const existingBooking of existingBookings) {
         const existingBegins = existingBooking.timeBegin
         const existingEnds = existingBooking.timeEnd
-  
+
         if (
           (bookingBegins >= existingBegins && bookingBegins < existingEnds) ||
           (bookingEnds > existingBegins && bookingEnds <= existingEnds) ||

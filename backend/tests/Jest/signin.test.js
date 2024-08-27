@@ -18,7 +18,7 @@ describe('Signup API', () => {
   beforeEach(async () => {
     await seedDatabase()
   })
-  
+
   afterEach(async () => {
     await clearDatabase()
   })

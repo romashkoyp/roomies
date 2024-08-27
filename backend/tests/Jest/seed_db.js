@@ -5,39 +5,39 @@ const jwt = require('jsonwebtoken')
 const { SECRET } = require('../../util/config')
 
 const initialUsers = [
-  { 
+  {
     id: 10,
-    username: 'testadmin@admin.com', 
-    name: 'TestAdmin', 
+    username: 'testadmin@admin.com',
+    name: 'TestAdmin',
     password: 'pd8$r,Ch',
     admin: true,
     enabled: true
   },
-  { 
+  {
     id: 20,
-    username: 'user1@example.com', 
-    name: 'User 1', 
+    username: 'user1@example.com',
+    name: 'User 1',
     password: 'pdCh8,$r',
     admin: false,
     enabled: true
   },
   {
     id: 30,
-    username: 'user2@example.com', 
-    name: 'User 2', 
+    username: 'user2@example.com',
+    name: 'User 2',
     password: 'pdC8,$rh',
     admin: false,
     enabled: true
   },
   {
     id: 40,
-    username: 'user3@example.com', 
-    name: 'User 3', 
+    username: 'user3@example.com',
+    name: 'User 3',
     password: 'pd,C8$rh',
     admin: false,
     enabled: false
   },
-  { 
+  {
     id: 50,
     username: 'disabledadmin@admin.com',
     name: 'DisabledAdmin',
@@ -177,7 +177,7 @@ async function initializeVariables() {
       timeBegin: '10:00:00',
       timeEnd: '14:00:00',
       dayOfWeek: dTomorrow,
-      roomId: 10 
+      roomId: 10
     },
     {
       id: 20,
@@ -187,7 +187,7 @@ async function initializeVariables() {
       timeBegin: '09:00:00',
       timeEnd: '15:00:00',
       dayOfWeek: dTomorrow,
-      roomId: 20 
+      roomId: 20
     }
   ]
 
@@ -229,7 +229,7 @@ const seedDatabase = async () => {
       return { ...user, passwordHash: hashedPassword, password: undefined }
     }))
     await User.bulkCreate(usersWithHashedPasswords)
-    
+
     await Notification.sync({ force: true }) //order make sense!!!!!!!!
     await Notification.bulkCreate(initialNotifications)
 
