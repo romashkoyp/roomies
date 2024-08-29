@@ -1,6 +1,7 @@
 const express = require('express')
 require('express-async-errors')
 const app = express()
+const cors = require('cors')
 
 const { PORT, TEST } = require('./util/config')
 const { connectToDatabase } = require('./util/db')
@@ -18,6 +19,7 @@ const settingRouter = require('./controllers/settings')
 
 const { errorHandler } = require('./util/middleware')
 
+app.use(cors())
 app.use(express.json())
 app.use(express.static('public'))
 

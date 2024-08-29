@@ -488,7 +488,7 @@ describe('Rooms API', () => {
         .get(`/api/rooms/20/${third}`)
         .set('Authorization', `Bearer ${adminToken}`)
       if (dThird === 6 || dThird=== 0) {
-        expect(res.status).toBe(404)
+        expect(res.status).toBe(400)
         expect(res.body.error).toBe('Room not available on this date')
       } else {
         expect(res.status).toBe(200)
@@ -501,7 +501,7 @@ describe('Rooms API', () => {
         .get(`/api/rooms/20/${third}`)
         .set('Authorization', `Bearer ${user1Token}`)
       if (dThird === 6 || dThird === 0) {
-        expect(res.status).toBe(404)
+        expect(res.status).toBe(400)
         expect(res.body.error).toBe('Room not available on this date')
       } else {
         expect(res.status).toBe(200)

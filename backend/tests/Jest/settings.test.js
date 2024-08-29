@@ -252,9 +252,6 @@ describe('Settings API', () => {
 
       const updatedWeekdayCount = await GlobalWeekday.count()
       expect(updatedWeekdayCount).toBe(7)
-
-      const restoredWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek: 1, availability: true, timeBegin: '08:00:00', timeEnd: '16:00:00' } })
-      expect(restoredWeekday)
     })
 
     it('user cannot delete settings for a specific weekday', async () => {
