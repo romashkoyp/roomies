@@ -1,5 +1,6 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:4000/api/signin'
+import BASE_URL from './config'
+const url = BASE_URL + '/signin'
 
 let token = null
 
@@ -10,7 +11,7 @@ const setToken = (newToken) => {
 
 const signin = async (credentials) => {
   try {
-    const res = await axios.post(baseUrl, credentials)
+    const res = await axios.post(url, credentials)
     setToken(res.data.token)
   return res.data
   } catch (error) {

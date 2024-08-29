@@ -1,55 +1,39 @@
-import { useState } from 'react'
-import styled from 'styled-components'
+import Input from './styles/Input'
+import { PrimaryButton } from './styles/Buttons'
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`
-
-const Input = styled.input`
-  margin-bottom: 10px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-`
-
-const Button = styled.button`
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-`
-
-const SigninForm = ({ username, password, handleUsernameChange, handlePasswordChange, handleSubmit }) => {
+const SigninForm = ({
+  username,
+  password,
+  handleUsernameChange,
+  handlePasswordChange,
+  handleSubmit
+}) => {
   return (
-    <FormContainer>
     <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
+      <div>
+        Username
         <Input
           type="email"
+          placeholder="email"
           id="username"
           value={username}
-          onChange={(e) => handleUsernameChange(e.target.value)}
+          onChange={({ target }) => handleUsernameChange(target.value)}
+          autoComplete="current-username"
         />
-
-        <label htmlFor="password">Password:</label>
+      </div>
+      <div>
+        Password
         <Input
           type="password"
+          placeholder="Password"
           id="password"
           value={password}
-          onChange={(e) => handlePasswordChange(e.target.value)}
+          onChange={({ target }) => handlePasswordChange(target.value)}
+          autoComplete="current-password"
         />
-
-        <Button type="submit">Sign In</Button>
+      </div>
+      <PrimaryButton type="submit">Sign In</PrimaryButton>
     </form>
-    </FormContainer>
   )
 }
 

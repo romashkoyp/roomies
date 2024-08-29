@@ -7,13 +7,14 @@ import {
   selectUsername,
   setPassword,
   selectPassword,
-  setUser
+  setUser,
+  selectUser
 } from './reducers/userReducer'
 
 const App = () => {
   const username = useSelector(selectUsername)
   const password = useSelector(selectPassword)
-  const user = useSelector(setUser)
+  const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -27,28 +28,23 @@ const App = () => {
 
   const handleSignin = async (event) => {
     event.preventDefault()
+    try {
       const user = await signinService.signin({
         username, password,
       })
-
-    if (user) {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
-
       signinService.setToken(user.token)
-
       dispatch(setUser(user))
       dispatch(setUsername(''))
       dispatch(setPassword(''))
-    } else {
-      console.error('Signin failed')
+    } catch (error) {
+      console.log('Failed to signin', error)
     }
   }
 
-  console.log(user)
-
-  if (!user) {
+  if (user === null) {
     return (
       <div>
         <h2>Sign in to application</h2>
@@ -62,12 +58,12 @@ const App = () => {
       </div>
     )
   } else {
-  return (
-    <div>
-      <h2>Roomies app</h2>
-        <p>Welcome, {user.name}!</p>
-    </div>
-  )
+    return (
+      <div>
+        <h2>Roomies app</h2>
+          <p>Welcome, {user.name}!</p>
+      </div>
+    )
   }
 }
 
