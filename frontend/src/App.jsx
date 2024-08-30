@@ -41,17 +41,18 @@ const App = () => {
 
   const handleSignin = async (event) => {
     event.preventDefault()
-    const user = await signinService.signin({ username, password })
+    const result = await signinService.signin({ username, password })
 
-    if (user && user.token) {
-    window.localStorage.setItem('loggedUser', JSON.stringify(user))
-    signinService.setToken(user.token)
-    dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
-    dispatch(setUser(user))
-    dispatch(setUsername(''))
-    dispatch(setPassword(''))
+    if (result.success) {
+      const user = result.data
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      signinService.setToken(user.token)
+      dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
+      dispatch(setUser(user))
+      dispatch(setUsername(''))
+      dispatch(setPassword(''))
     } else {
-      dispatch(setNotification('Sign in failed', 'error', 5))
+      dispatch(setNotification(result.error, 'error', 5))
       window.localStorage.removeItem('loggedUser')
     }
   }

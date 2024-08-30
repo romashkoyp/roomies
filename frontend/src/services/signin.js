@@ -13,10 +13,21 @@ const signin = async (credentials) => {
   try {
     const res = await axios.post(url, credentials)
     setToken(res.data.token)
-  return res.data
+    return { success: true, data: res.data }
   } catch (error) {
     console.error('Signin error:', error)
-    return null
+    let errorMessage = 'Sign in failed'
+    if (error.response?.data?.errors && Array.isArray(error.response.data.errors) && error.response.data.errors.length > 0) {
+      errorMessage = error.response.data.errors[0].msg
+    } else if (error.response?.data?.error) {
+      errorMessage = error.response.data.error
+    } else if (error.message) {
+      errorMessage = error.message
+    }
+    return { 
+      success: false, 
+      error: errorMessage
+    }
   }
 }
 
