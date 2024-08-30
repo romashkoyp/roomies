@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from './services/signin'
 import SigninForm from './components/signinForm'
+import SignupForm from './components/SignUpForm'
 import signoutService from './services/signout'
 import {
   setUsername,
@@ -74,7 +75,8 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <h2>Sign in to application</h2>
+        <Notification />
+        {/* <h2>Sign in to application</h2>
         <Notification />
         <SigninForm
           username={username}
@@ -82,7 +84,8 @@ const App = () => {
           handleUsernameChange={(newUsername) => dispatch(setUsername(newUsername))}
           handlePasswordChange={(newPassword) => dispatch(setPassword(newPassword))}
           handleSubmit={handleSignin}
-        />
+        /> */}
+        <SignupForm />
       </div>
     )
   } else {
