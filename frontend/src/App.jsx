@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from './services/signin'
 import SigninForm from './components/signinForm'
+import signoutService from './services/signout'
 import {
   setUsername,
   selectUsername,
@@ -10,6 +11,7 @@ import {
   setUser,
   selectUser
 } from './reducers/userReducer'
+import { SecondaryButton } from './components/styles/Buttons'
 
 const App = () => {
   const username = useSelector(selectUsername)
@@ -44,6 +46,17 @@ const App = () => {
     }
   }
 
+  const handleSignout = async (event) => {
+    event.preventDefault()
+    try {
+      await signoutService.signout()
+      window.localStorage.removeItem('loggedUser')
+      dispatch(setUser(null))
+    } catch (error) {
+      console.log('Failed to signout', error)
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -62,6 +75,10 @@ const App = () => {
       <div>
         <h2>Roomies app</h2>
           <p>Welcome, {user.name}!</p>
+          <SecondaryButton
+            type="button"
+            onClick={handleSignout}
+          >Sign Out</SecondaryButton>
       </div>
     )
   }
