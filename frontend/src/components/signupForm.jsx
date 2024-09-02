@@ -4,9 +4,11 @@ import { PrimaryButton } from './styles/Buttons'
 import signupService from '../services/signup'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const SignupForm = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: 'yaroslav',
     username: 'yaroslav@gmail.com',
@@ -40,57 +42,61 @@ const SignupForm = () => {
         password: '',
         confirmPassword: ''
       })
+      navigate('/signin')
     } else {
       dispatch(setNotification(result.error, 'error', 5))
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        Name
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        Username (as your email)
-        <Input
-          type="email"
-          placeholder="Email"
-          name="username"
-          id="email"
-          value={formData.username}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        Password
-        <Input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-      </div>
-      <div>
-        Confirm password
-        <Input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-      </div>
-      <PrimaryButton type="submit">Sign Up</PrimaryButton>
-    </form>
+    <>
+      <h2>Sign Up</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          Name
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          Username
+          <Input
+            type="email"
+            placeholder="Email"
+            name="username"
+            id="email"
+            value={formData.username}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          Password
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          Confirm password
+          <Input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
+        <PrimaryButton type="submit">Sign Up</PrimaryButton>
+      </form>
+    </>
   )
 }
 

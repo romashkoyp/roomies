@@ -2,6 +2,7 @@ import Input from './styles/Input'
 import { PrimaryButton } from './styles/Buttons'
 import signinService from '../services/signin'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   setUsername,
   selectUsername,
@@ -15,6 +16,7 @@ const SigninForm = () => {
   const username = useSelector(selectUsername)
   const password = useSelector(selectPassword)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleSignin = async (event) => {
     event.preventDefault()
@@ -24,10 +26,11 @@ const SigninForm = () => {
       const user = result.data
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       signinService.setToken(user.token)
-      dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
       dispatch(setUser(user))
+      dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
       dispatch(setUsername(''))
       dispatch(setPassword(''))
+      navigate('/')
     } else {
       dispatch(setNotification(result.error, 'error', 5))
       window.localStorage.removeItem('loggedUser')
@@ -46,7 +49,7 @@ const SigninForm = () => {
 
   return (
     <>
-    <h2>Sign in to Roomies App</h2>
+      <h2>Sign In</h2>
       <form onSubmit={handleSignin}>
         <div>
           Username

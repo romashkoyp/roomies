@@ -1,19 +1,15 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import signinService from './services/signin'
+import { useDispatch } from 'react-redux'
 import SigninForm from './components/signinForm'
 import SignupForm from './components/SignUpForm'
-import signoutService from './services/signout'
-import {
-  setUser,
-  selectUser
-} from './reducers/userReducer'
-import { SecondaryButton } from './components/styles/Buttons'
+import MainPage from './components/mainPage'
+import Menu from './components/Menu'
 import Notification from './components/Notification'
-import { setNotification } from './reducers/notificationReducer'
+import { setUser } from './reducers/userReducer'
+import signinService from './services/signin'
 
 const App = () => {
-  const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -22,8 +18,8 @@ const App = () => {
       try {
       const user = JSON.parse(loggedUserJSON)
         if (user && user.token) {
-      dispatch(setUser(user))
-      signinService.setToken(user.token)
+          dispatch(setUser(user))
+          signinService.setToken(user.token)
         } else {
           window.localStorage.removeItem('loggedUser')
         }
@@ -34,41 +30,19 @@ const App = () => {
     }
   }, [dispatch])
 
-  const handleSignout = async (event) => {
-    event.preventDefault()
-    try {
-      await signoutService.signout()
-      window.localStorage.removeItem('loggedUser')
-      dispatch(setUser(null))
-      signinService.setToken(null)
-      dispatch(setNotification('You have successfully signed out', 'success', 5))
-    } catch (exception) {
-      console.error('Signout error:', exception)
-      dispatch(setNotification('Sign out failed', 'error', 5))
-    }
-  }
-
-  if (user === null) {
-    return (
-      <div>
+  return (
+    <div>
+      <Router>
+        <Menu />
         <Notification />
-        <SigninForm />
-        {/* <SignupForm /> */}
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <h2>Roomies app</h2>
-          <Notification />
-          <p>Welcome, {user.name}!</p>
-          <SecondaryButton
-            type="button"
-            onClick={handleSignout}
-          >Sign Out</SecondaryButton>
-      </div>
-    )
-  }
+        <Routes>
+          <Route path="/" element={<MainPage />}/>
+          <Route path="/signin" element={<SigninForm />}/>
+          <Route path="/signup" element={<SignupForm />}/>
+        </Routes>
+      </Router>
+    </div>
+  )
 }
 
 export default App
