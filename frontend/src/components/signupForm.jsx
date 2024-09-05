@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Input from './styles/Input'
+import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import signupService from '../services/signup'
 import { setNotification } from '../reducers/notificationReducer'
@@ -49,7 +50,7 @@ const SignupForm = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -96,7 +97,7 @@ const SignupForm = () => {
         </div>
         <PrimaryButton type="submit">Sign Up</PrimaryButton>
       </form>
-    </>
+    </Wrapper>
   )
 }
 

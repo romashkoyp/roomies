@@ -1,4 +1,5 @@
 import Input from './styles/Input'
+import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import signinService from '../services/signin'
 import { useDispatch, useSelector } from 'react-redux'
@@ -48,7 +49,7 @@ const SigninForm = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       <h2>Sign In</h2>
       <form onSubmit={handleSignin}>
         <div>
@@ -75,7 +76,7 @@ const SigninForm = () => {
         </div>
         <PrimaryButton type="submit">Sign In</PrimaryButton>
       </form> 
-    </>
+    </Wrapper>
   )
 }
 

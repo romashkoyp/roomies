@@ -17,6 +17,17 @@ const GlobalStyles = createGlobalStyle`
   p {
     line-height: 1.5;
   }
-`;
+
+  a {
+    color: grey; /* Set the default link color */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Add smooth color transition */
+
+    &:hover {
+      color: black; /* Change color on hover */
+      text-decoration: underline; /* Add underline on hover */
+    }
+  }
+`
 
 export default GlobalStyles

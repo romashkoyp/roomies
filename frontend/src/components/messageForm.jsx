@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Input from './styles/Input'
+import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
@@ -36,25 +37,29 @@ const MessageForm = () => {
     }
   }
 
-  return (
-    <>
-      <h2>Add message</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          Message
-          <Input
-            type="text"
-            id="message"
-            name="message"
-            placeholder="message"
-            value={content}
-            onChange={handleChange}
-          />
-        </div>
-        <PrimaryButton type="submit">Submit</PrimaryButton>
-      </form>
-    </>
-  )
+  if (user === undefined) return null
+  
+  if (user?.admin && user.enabled) {
+    return (
+      <Wrapper>
+        <h3>Add message</h3>
+        <form onSubmit={handleSubmit}>
+          <div>
+            Message
+            <Input
+              type="text"
+              id="message"
+              name="message"
+              placeholder="message"
+              value={content}
+              onChange={handleChange}
+            />
+          </div>
+          <PrimaryButton type="submit">Submit</PrimaryButton>
+        </form>
+      </Wrapper>
+    )
+  }
 }
 
 export default MessageForm

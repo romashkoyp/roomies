@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Input = styled.input`
   width: 300px;
@@ -15,6 +15,6 @@ const Input = styled.input`
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
-`;
+`
 
 export default Input

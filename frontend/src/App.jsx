@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import SigninForm from './components/signinForm'
 import SignupForm from './components/signupForm'
-import MessageForm from './components/messageForm'
-import Message from './components/Message'
+import Messages from './components/Messages'
 import MainPage from './components/mainPage'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
@@ -54,13 +53,12 @@ const App = () => {
     <div>
       <Router>
         <Menu />
-        <Message messages={messages}/>
-        <MessageForm />
         <Notification />
         <Routes>
-          <Route path="/" element={<MainPage />}/>
+          <Route path="/" element={<MainPage messages={messages}/>}/>
           <Route path="/signin" element={<SigninForm />}/>
           <Route path="/signup" element={<SignupForm />}/>
+          <Route path="/messages" element={<Messages messages={messages}/>}/>
         </Routes>
       </Router>
     </div>

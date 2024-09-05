@@ -1,25 +1,40 @@
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../reducers/userReducer'
+import Wrapper from './styles/Wrapper'
+import MessageWrapper from './styles/MessageWrapper'
 
 const Message = ({ messages }) => {
   // console.log('Messages received in Message component:', messages)
+  const user = useSelector(selectUser)
+
+  if (!user) return null
 
   if (Array.isArray(messages) && messages.length > 0) {
+    const firstThreeMessages = messages.slice(0, 3)
+
     return (
-      <div>
-        <h2>Current messages</h2>
-        <ol>
-          {messages.map((m, index) => (
-            <li key={index}>{m.content}</li>
-          ))}
-        </ol>
-      </div>
+      <Wrapper>
+        <h3>Last messages</h3>
+          {firstThreeMessages.map((m, index) => {
+            const truncatedContent = m.content.length > 50 
+              ? m.content.substring(0, 50) + '...'
+              : m.content
+            return (
+              <Link to="/messages" key={index}>
+                <MessageWrapper >{truncatedContent}</MessageWrapper>
+              </Link>
+            )
+          })}
+      </Wrapper>
     )
   } else {
     return (
-      <div>
-        <h2>Current messages</h2>
+      <Wrapper>
+        <h3>Last messages</h3>
         <p>No messages yet.</p>
-      </div>
+      </Wrapper>
     )
   }
 }

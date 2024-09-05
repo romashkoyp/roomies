@@ -64,7 +64,9 @@ router.post('/',
         token,
         id: user.id,
         username: user.username,
-        name: user.name
+        name: user.name,
+        admin: user.admin,
+        enabled: user.enabled
       })
   })
 
