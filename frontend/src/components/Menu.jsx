@@ -2,10 +2,7 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from '../services/signin'
 import { setNotification } from '../reducers/notificationReducer'
-import {
-  setUser,
-  selectUser
-} from '../reducers/userReducer'
+import { setUser, selectUser } from '../reducers/userReducer'
 
 const Menu = () => {
   const padding = { paddingRight: 15 }

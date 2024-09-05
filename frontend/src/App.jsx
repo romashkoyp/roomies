@@ -1,16 +1,21 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SigninForm from './components/signinForm'
-import SignupForm from './components/SignUpForm'
+import SignupForm from './components/signupForm'
+import MessageForm from './components/messageForm'
+import Message from './components/Message'
 import MainPage from './components/mainPage'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { setUser } from './reducers/userReducer'
+import { setMessages, selectMessages } from './reducers/messageReducer'
 import signinService from './services/signin'
+import messageService from './services/message'
 
 const App = () => {
   const dispatch = useDispatch()
+  const messages = useSelector(selectMessages)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -30,10 +35,27 @@ const App = () => {
     }
   }, [dispatch])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await messageService.getAllMessages()
+      if (result.success) {
+        // console.log('API Response:', result)
+        dispatch(setMessages(result.data))
+      } else {
+        console.error('Error fetching messages:', result.error)
+      }
+    }
+    fetchData()
+  }, [dispatch])
+
+  // console.log('Messages in App:', messages)
+
   return (
     <div>
       <Router>
         <Menu />
+        <Message messages={messages}/>
+        <MessageForm />
         <Notification />
         <Routes>
           <Route path="/" element={<MainPage />}/>
