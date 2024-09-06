@@ -25,7 +25,7 @@ const GlobalStyles = createGlobalStyle`
 
     &:hover {
       color: black; /* Change color on hover */
-      text-decoration: underline; /* Add underline on hover */
+      //text-decoration: underline; /* Add underline on hover */
     }
   }
 `

@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import SigninForm from './components/signinForm'
 import SignupForm from './components/signupForm'
 import Messages from './components/Messages'
-import MainPage from './components/mainPage'
+import MainPage from './components/MainPage'
+import MessageSingle from './components/MessageSingle'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { setUser } from './reducers/userReducer'
@@ -58,7 +59,8 @@ const App = () => {
           <Route path="/" element={<MainPage messages={messages}/>}/>
           <Route path="/signin" element={<SigninForm />}/>
           <Route path="/signup" element={<SignupForm />}/>
-          <Route path="/messages" element={<Messages messages={messages}/>}/>
+          <Route path="/notifications" element={<Messages messages={messages}/>}/>
+          <Route path="/notifications/:id" element={<MessageSingle messages={messages}/>}/>
         </Routes>
       </Router>
     </div>

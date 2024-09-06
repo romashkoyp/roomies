@@ -10,13 +10,13 @@ const buttonStyles = css`
   border: 2px solid transparent;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  margin: 0.3rem;
-  height: 48px; // Set the height of the button
-  width: 160px; // Set the width of the button
+  transition: background-color 0.3s ease, color 0.3s ease; border-color 0.3s ease;
+  margin: 1rem 1.5rem 0.3rem 0;
+  height: 35px; // Set the height of the button
+  width: 120px; // Set the width of the button
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+    //box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
   }
 
   &:disabled {
@@ -36,11 +36,11 @@ const PrimaryButton = styled.button`
 const SecondaryButton = styled.button`
   ${buttonStyles}
   background-color: transparent;
-  color: #007bff;
-  border-color: #007bff;
+  color: #ff5c5c;
+  border-color: #ff5c5c;
 
   &:hover {
-    background-color: #007bff;
+    background-color: #ff5c5c;
     color: #fff;
   }
 `

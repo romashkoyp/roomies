@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { selectUser } from '../reducers/userReducer'
 import Wrapper from './styles/Wrapper'
 import MessageWrapper from './styles/MessageWrapper'
+import LinkHeader from './styles/LinkHeader'
 
 const Message = ({ messages }) => {
   // console.log('Messages received in Message component:', messages)
@@ -16,14 +17,14 @@ const Message = ({ messages }) => {
 
     return (
       <Wrapper>
-        <h3>Last messages</h3>
-          {firstThreeMessages.map((m, index) => {
+        <LinkHeader><Link to="/notifications"><h3>Messages</h3></Link></LinkHeader>
+          {firstThreeMessages.map((m) => {
             const truncatedContent = m.content.length > 50 
               ? m.content.substring(0, 50) + '...'
               : m.content
             return (
-              <Link to="/messages" key={index}>
-                <MessageWrapper >{truncatedContent}</MessageWrapper>
+              <Link to={`/notifications/${m.id}`} key={m.id}>
+                <MessageWrapper>{truncatedContent}</MessageWrapper>
               </Link>
             )
           })}
@@ -32,7 +33,7 @@ const Message = ({ messages }) => {
   } else {
     return (
       <Wrapper>
-        <h3>Last messages</h3>
+        <LinkHeader><Link to="/notifications"><h3>Messages</h3></Link></LinkHeader>
         <p>No messages yet.</p>
       </Wrapper>
     )

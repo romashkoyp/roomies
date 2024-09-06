@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import { setNotification } from '../reducers/notificationReducer'
@@ -9,10 +10,10 @@ import messageService from '../services/message'
 import { setMessages } from '../reducers/messageReducer'
 import ResizableTextarea from './ResizableTextarea'
 
-const MessageForm = () => {
+const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
-  const [content, setContent] = useState('Message 1')
+  const [content, setContent] = useState(message.content)
 
   const handleChange = (event) => {
     setContent(event.target.value)
@@ -20,17 +21,17 @@ const MessageForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const result = await messageService.postMessage({ content, user })
-
+    const result = await messageService.updateMessage(id, content, user)
     if (result.success) {
-      dispatch(setNotification('Message created', 'success', 5))
+      dispatch(setNotification('Message updated', 'success', 5))
       setContent('')
       const messageResult = await messageService.getAllMessages()
       if (messageResult.success) {
         dispatch(setMessages(messageResult.data))
+        onUpdateSuccess()
       } else {
         console.error('Error fetching updated messages:', messageResult.error)
-        dispatch(setNotification('Failed to update message list', 'error', 5))
+        dispatch(setNotification('Failed to update message', 'error', 5))
       }
     } else {
       dispatch(setNotification(result.error, 'error', 5))
@@ -42,7 +43,7 @@ const MessageForm = () => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Add new message</h3>
+        <h3>Edit current message</h3>
         <form onSubmit={handleSubmit}>
           <div>
             <ResizableTextarea
@@ -53,11 +54,17 @@ const MessageForm = () => {
               onChange={handleChange}
             />
           </div>
-          <PrimaryButton type="submit">Submit</PrimaryButton>
+          <PrimaryButton type="submit">Save</PrimaryButton>
         </form>
       </Wrapper>
     )
   }
 }
 
-export default MessageForm
+MessageUpdateForm.propTypes = {
+  message: PropTypes.shape({ content: PropTypes.string.isRequired }),
+  id: PropTypes.number.isRequired,
+  onUpdateSuccess: PropTypes.func.isRequired
+}
+
+export default MessageUpdateForm

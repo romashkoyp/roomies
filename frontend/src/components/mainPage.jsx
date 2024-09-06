@@ -21,7 +21,7 @@ const MainPage = ({ messages }) => {
       <Wrapper>
         <h1>Roomies App</h1>
         <h2>Booking system for business</h2>
-    </Wrapper>
+      </Wrapper>
     )
   }
 }
