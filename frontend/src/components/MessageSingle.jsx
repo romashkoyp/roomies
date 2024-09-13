@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import PropTypes from 'prop-types'
 import { useParams, useNavigate} from 'react-router-dom'
 import { selectUser } from '../reducers/userReducer'
 import MessageUpdateForm from './MessageUpdateForm'
@@ -9,14 +8,15 @@ import MessageWrapper from './styles/MessageWrapper'
 import { PrimaryButton, SecondaryButton } from './styles/Buttons'
 import messageService from '../services/message'
 import { setNotification } from '../reducers/notificationReducer'
-import { fetchMessages, deleteMessage } from '../reducers/messageReducer'
+import { fetchMessages, deleteMessage, selectMessages } from '../reducers/messageReducer'
 
-const SingleMessage = ({ messages }) => {
+const SingleMessage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectUser)
   const { id } = useParams()
   const messageId = Number(id)
+  const messages = useSelector(selectMessages)
   const message = messages.find(msg => msg.id === messageId)
   const [isEditMode, setIsEditMode] = useState(false)
 
@@ -83,14 +83,6 @@ const SingleMessage = ({ messages }) => {
       </Wrapper>
     )
   }
-}
-
-SingleMessage.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      content: PropTypes.string.isRequired
-    })
-  ).isRequired
 }
 
 export default SingleMessage

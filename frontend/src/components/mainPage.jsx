@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
 import { selectUser } from '../reducers/userReducer'
 import Wrapper from './styles/Wrapper'
 import Message from './Message'
+import { selectMessages } from '../reducers/messageReducer'
 
-const MainPage = ({ messages }) => {
+const MainPage = () => {
   const user = useSelector(selectUser)
+  const messages = useSelector(selectMessages)
 
   if (user) {
     return (
@@ -24,14 +25,6 @@ const MainPage = ({ messages }) => {
       </Wrapper>
     )
   }
-}
-
-MainPage.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      content: PropTypes.string.isRequired
-    })
-  ).isRequired
 }
 
 export default MainPage

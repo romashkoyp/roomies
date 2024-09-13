@@ -1,27 +1,12 @@
 import { useSelector } from 'react-redux'
-import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { selectUser } from '../../reducers/userReducer'
+import { selectUser, selectUsers } from '../../reducers/userReducer'
 import Wrapper from '../styles/Wrapper'
-import userService from '../../services/user'
 
 const Users = () => {
   const user = useSelector(selectUser)
-  const [users, setUsers] = useState([])
+  const users = useSelector(selectUsers)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await userService.getAllUsers()
-      console.log(result.data)
-      if (result.success) {
-        setUsers(result.data)
-      } else {
-        console.error('Error fetching users:', result.error)
-      }
-    }
-    if (user) fetchData()
-  }, [user])
 
   if (!user) return null
 

@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../reducers/userReducer'
+import { selectMessages } from '../reducers/messageReducer'
 import Wrapper from './styles/Wrapper'
 import MessageWrapper from './styles/MessageWrapper'
 import LinkHeader from './styles/LinkHeader'
 
-const Message = ({ messages }) => {
-  // console.log('Messages received in Message component:', messages)
+const Message = () => {
   const user = useSelector(selectUser)
+  const messages = useSelector(selectMessages)
 
   if (!user) return null
 
@@ -38,14 +38,6 @@ const Message = ({ messages }) => {
       </Wrapper>
     )
   }
-}
-
-Message.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      content: PropTypes.string.isRequired
-    })
-  ).isRequired
 }
 
 export default Message
