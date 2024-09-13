@@ -1,21 +1,16 @@
 import Input from './styles/Input'
+import { useState } from 'react'
 import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import signinService from '../services/signin'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import {
-  setUsername,
-  selectUsername,
-  setPassword,
-  selectPassword,
-  setUser
-} from '../reducers/userReducer'
+import { setUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const SigninForm = () => {
-  const username = useSelector(selectUsername)
-  const password = useSelector(selectPassword)
+  const [username, setUsername] = useState('admin@admin.com')
+  const [password, setPassword] = useState('gfghlur4754675')
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -29,8 +24,8 @@ const SigninForm = () => {
       signinService.setToken(user.token)
       dispatch(setUser(user))
       dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
-      dispatch(setUsername(''))
-      dispatch(setPassword(''))
+      setUsername('')
+      setPassword('')
       navigate('/')
     } else {
       dispatch(setNotification(result.error, 'error', 5))
