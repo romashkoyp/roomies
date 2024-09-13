@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useParams, useNavigate} from 'react-router-dom'
 import { selectUser } from '../reducers/userReducer'
@@ -8,9 +8,8 @@ import Wrapper from './styles/Wrapper'
 import MessageWrapper from './styles/MessageWrapper'
 import { PrimaryButton, SecondaryButton } from './styles/Buttons'
 import messageService from '../services/message'
-import { useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
-import { setMessages } from '../reducers/messageReducer'
+import { fetchMessages, deleteMessage } from '../reducers/messageReducer'
 
 const SingleMessage = ({ messages }) => {
   const dispatch = useDispatch()
@@ -35,14 +34,15 @@ const SingleMessage = ({ messages }) => {
     event.preventDefault()
     const result = await messageService.deleteMessage(id, user)
     if (result.success) {
-      dispatch(setNotification('Message deleted', 'success', 5))
-      const messageResult = await messageService.getAllMessages()
-      if (messageResult.success) {
-        dispatch(setMessages(messageResult.data))
+      dispatch(deleteMessage(id))
+      dispatch(fetchMessages())
+      if (messages.length > 1) {
+        dispatch(setNotification('Message deleted', 'success', 5))
         navigate('/notifications')
-      } else {
-        console.error('Error fetching updated messages:', messageResult.error)
-        dispatch(setNotification('Failed to delete message', 'error', 5))
+      } else if (messages.length === 1 || messages.length === 0) {
+        navigate('/notifications')
+        window.location.reload() // I don't know how to solve a problem with the last message visibility after deletion without reloading page
+        dispatch(setNotification('Message deleted', 'success', 5))
       }
     } else {
       dispatch(setNotification(result.error, 'error', 5))
