@@ -1,25 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import userService from '../services/user'
+
+export const fetchUsers = createAsyncThunk(
+  'users/fetchAll',
+  async (_, { rejectWithValue }) => {
+    const result = await userService.getAllUsers()
+    if (result.success) {
+      return result.data
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
 
 const initialState = {
-  // username: '',
-  // password: '',
-  user: null
+  user: null,
+  users: []
 }
 
 const userSlice = createSlice({
-    name: 'user',
+    name: 'users',
     initialState,
     reducers: {
-    // setUsername(state, action) { state.username = action.payload },
-    // setPassword(state, action) { state.password = action.payload },
-    setUser(state, action) { state.user = action.payload }
+      setUser(state, action) {
+        state.user = action.payload
+      },
+    },
+    extraReducers: (builder) => {
+      builder.addCase(fetchUsers.fulfilled, (state, action) => {
+        state.users = action.payload
+      })
     }
 })
 
 export const { setUser } = userSlice.actions
-// export const { setUsername, setPassword, setUser } = userSlice.actions
-// export const selectUsername = (state) => state.user.username
-// export const selectPassword = (state) => state.user.password
-export const selectUser = (state) => state.user.user
-
+export const selectUser = (state) => state.users.user
+export const selectUsers = (state) => state.users.users
 export default userSlice.reducer
