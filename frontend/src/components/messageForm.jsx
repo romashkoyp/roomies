@@ -6,7 +6,7 @@ import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { selectUser } from '../reducers/userReducer'
 import messageService from '../services/message'
-import { setMessages } from '../reducers/messageReducer'
+import { fetchMessages, addMessage } from '../reducers/messageReducer'
 import ResizableTextarea from './ResizableTextarea'
 
 const MessageForm = () => {
@@ -23,15 +23,10 @@ const MessageForm = () => {
     const result = await messageService.postMessage({ content, user })
 
     if (result.success) {
+      dispatch(addMessage(result.data))
+      dispatch(fetchMessages())
       dispatch(setNotification('Message created', 'success', 5))
       setContent('')
-      const messageResult = await messageService.getAllMessages()
-      if (messageResult.success) {
-        dispatch(setMessages(messageResult.data))
-      } else {
-        console.error('Error fetching updated messages:', messageResult.error)
-        dispatch(setNotification('Failed to update message list', 'error', 5))
-      }
     } else {
       dispatch(setNotification(result.error, 'error', 5))
     }
