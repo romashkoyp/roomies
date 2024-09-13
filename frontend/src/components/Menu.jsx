@@ -24,6 +24,14 @@ const Menu = () => {
   return (
     <div>
       <Link style={padding} to="/">Roomies App</Link>
+      {user?.admin
+        ? 
+          <>
+            <Link style={padding} to="/notifications">Messages</Link>
+            <Link style={padding} to="/users">Users</Link>
+          </>
+        : null 
+      }
       {user 
         ? <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
         : <Link style={padding} to="/signin">Sign In</Link> 
