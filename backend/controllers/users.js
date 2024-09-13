@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const { User, Notification, Room } = require('../models')
+const { sequelize } = require('../util/db')
+const { User, Notification, Room, Booking, Session } = require('../models')
 const { body, validationResult } = require('express-validator')
 const { tokenExtractor, isParamUser, isTokenUser, isAdminOrParamTokenUser, isSession, isAdmin } = require('../util/middleware')
 
@@ -12,7 +13,8 @@ const excludePasswordHash = (user) => {
 router.get('/:id', tokenExtractor, isTokenUser, isParamUser, isSession, isAdminOrParamTokenUser,
   async (req, res) => {
     res.status(200).json(excludePasswordHash(req.paramUser))
-  })
+  }
+)
 
 router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   async (req, res) => {
@@ -33,7 +35,8 @@ router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
     if (!users.length) throw new Error ('No users found')
 
     res.status(200).json(users)
-  })
+  }
+)
 
 router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
   async (req, res) => {
@@ -98,13 +101,31 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminO
 
     await req.paramUser.save()
     return res.status(201).json(excludePasswordHash(req.paramUser))
-  })
+  }
+)
 
 router.delete('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminOrParamTokenUser,
   async (req, res) => {
-    await User.destroy({ where: { id: req.params.id }, cascade: false })
-    res.status(204).end()
-    console.log('User deleted')
-  })
+    const t = await sequelize.transaction()
+    try {
+      if (req.paramUser.admin === false) {
+        await Notification.destroy({ where: { userId: req.params.id }, transaction: t })
+        await Room.destroy({ where: { userId: req.params.id }, transaction: t })
+        await Booking.destroy({ where: { userId: req.params.id }, transaction: t })
+        await Session.destroy({ where: { userId: req.params.id }, transaction: t })
+        await User.destroy({ where: { id: req.params.id }, transaction: t })
+        console.log('User and related records deleted')
+      } else if (req.paramUser.admin === true) {
+        await User.destroy({ where: { id: req.params.id }, cascade: false })
+        console.log('Admin user deleted')
+      }
+
+      await t.commit()
+      res.status(204).end()
+    } catch (error) {
+      await t.rollback()
+      console.error('Error deleting user:', error)}
+  }
+)
 
 module.exports = router
