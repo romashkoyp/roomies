@@ -5,7 +5,7 @@ import messageReducer from './messageReducer'
 
 const store = configureStore({
     reducer: {
-      user: userReducer,
+      users: userReducer,
       notification: notificationReducer,
       messages: messageReducer
     }
