@@ -6,15 +6,17 @@ import SignupForm from './components/signupForm'
 import Messages from './components/Messages'
 import MainPage from './components/MainPage'
 import MessageSingle from './components/MessageSingle'
+import AllUsersView from './components/Users/AllUsersView'
+import UserSingle from './components/Users/UserSingle'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
-import { setUser } from './reducers/userReducer'
-import { setMessages, selectMessages } from './reducers/messageReducer'
+import { setUser, selectUser } from './reducers/userReducer'
+import { selectMessages, fetchMessages } from './reducers/messageReducer'
 import signinService from './services/signin'
-import messageService from './services/message'
 
 const App = () => {
   const dispatch = useDispatch()
+  const user = useSelector(selectUser)
   const messages = useSelector(selectMessages)
 
   useEffect(() => {
@@ -36,19 +38,8 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await messageService.getAllMessages()
-      if (result.success) {
-        // console.log('API Response:', result)
-        dispatch(setMessages(result.data))
-      } else {
-        console.error('Error fetching messages:', result.error)
-      }
-    }
-    fetchData()
-  }, [dispatch])
-
-  // console.log('Messages in App:', messages)
+    if (user) dispatch(fetchMessages())
+  }, [dispatch, user])
 
   return (
     <div>
@@ -61,6 +52,8 @@ const App = () => {
           <Route path="/signup" element={<SignupForm />}/>
           <Route path="/notifications" element={<Messages messages={messages}/>}/>
           <Route path="/notifications/:id" element={<MessageSingle messages={messages}/>}/>
+          <Route path="/users" element={<AllUsersView />}/>
+          <Route path="/users/:id" element={<UserSingle />}/>
         </Routes>
       </Router>
     </div>
