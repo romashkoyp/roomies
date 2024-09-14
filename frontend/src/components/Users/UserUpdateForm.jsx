@@ -4,13 +4,14 @@ import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
-import { selectUser } from '../../reducers/userReducer'
+import { selectUser, updateUser, fetchUsers, fetchUser, selectCurrentUser } from '../../reducers/userReducer'
 import userService from '../../services/user'
 import Input from '../styles/Input'
 
 const UserUpdateForm = ({ id, onUpdateSuccess }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
+  const currentUser = useSelector(selectCurrentUser)
   const [formData, setFormData] = useState({
     username: '',
     name: '',
@@ -20,17 +21,13 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
   const [originalData, setOriginalData] = useState({})
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const result = await userService.getOneUser(id, user)
-      if (result.success) {
-        setFormData(result.data)
-        setOriginalData(result.data)
-      } else {
-        dispatch(setNotification('Failed to fetch user data', 'error', 5))
-      }
+    if (!currentUser) {
+      dispatch(fetchUser(id))
+    } else {
+      setFormData(currentUser)
+      setOriginalData(currentUser)
     }
-    fetchUserData()
-  }, [id, user, dispatch])
+  }, [currentUser, dispatch, id])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -49,13 +46,17 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
       }
     })
 
-    if (Object.keys(updatedFields).length === 0) {
-      dispatch(setNotification('No changes to update', 'success', 5))
-      return
-    }
+    const result = await userService.updateUser(
+      id,
+      updatedFields.username,
+      updatedFields.name,
+      updatedFields.admin,
+      updatedFields.enabled)
 
-    const result = await userService.updateUser(id, updatedFields.username, updatedFields.name, updatedFields.admin, updatedFields.enabled, user)
     if (result.success) {
+      dispatch(updateUser(result.data))
+      dispatch(fetchUser(id))
+      dispatch(fetchUsers())
       dispatch(setNotification('User updated', 'success', 5))
       onUpdateSuccess()
     } else {

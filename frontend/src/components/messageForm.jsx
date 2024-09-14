@@ -20,7 +20,7 @@ const MessageForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const result = await messageService.postMessage({ content, user })
+    const result = await messageService.postMessage({ content })
 
     if (result.success) {
       dispatch(addMessage(result.data))

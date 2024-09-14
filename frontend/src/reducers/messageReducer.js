@@ -30,7 +30,7 @@ const messagesSlice = createSlice({
       }
     },
     deleteMessage(state, action) {
-      return [...state.filter(message => message.id !== action.payload)] 
+      return [...state.filter(message => message.id !== action.payload)]
     },
   },
   extraReducers: (builder) => {

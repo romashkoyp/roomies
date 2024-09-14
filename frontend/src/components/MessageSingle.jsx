@@ -32,7 +32,7 @@ const SingleMessage = () => {
 
   const handleDeleteMessage = async (event) => {
     event.preventDefault()
-    const result = await messageService.deleteMessage(id, user)
+    const result = await messageService.deleteMessage(id)
     if (result.success) {
       dispatch(deleteMessage(id))
       dispatch(fetchMessages())

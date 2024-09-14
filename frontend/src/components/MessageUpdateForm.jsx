@@ -21,7 +21,7 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const result = await messageService.updateMessage(id, content, user)
+    const result = await messageService.updateMessage(id, content)
     if (result.success) {
       dispatch(updateMessage(id))
       dispatch(fetchMessages())

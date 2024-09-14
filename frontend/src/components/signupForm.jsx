@@ -6,6 +6,7 @@ import signupService from '../services/signup'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { addUser } from '../reducers/userReducer'
 
 const SignupForm = () => {
   const dispatch = useDispatch()
@@ -31,6 +32,8 @@ const SignupForm = () => {
     const result = await signupService.signup({ name, username, password, confirmPassword })
 
     if (result.success) {
+      dispatch(addUser(result.data))
+      // dispatch(fetchUsers())
       dispatch(setNotification(
         'You are successfully signed up. Use your email and password to sign in to Roomies App.',
         'success',

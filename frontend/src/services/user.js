@@ -23,9 +23,9 @@ const getAllUsers = async () => {
   }
 }
 
-const getOneUser = async (id, user) => {
+const getOneUser = async (id) => {
   try {
-    const res = await axios.get(`${url}/${id}`, user)
+    const res = await axios.get(`${url}/${id}`)
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)
@@ -44,9 +44,9 @@ const getOneUser = async (id, user) => {
   }
 }
 
-const updateUser = async (id, username, name, admin, enabled, user) => {
+const updateUser = async (id, username, name, admin, enabled) => {
   try {
-    const res = await axios.put(`${url}/${id}`, { username, name, admin, enabled }, user)
+    const res = await axios.put(`${url}/${id}`, {username, name, admin, enabled })
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)
@@ -65,9 +65,9 @@ const updateUser = async (id, username, name, admin, enabled, user) => {
   }
 }
 
-const deleteUser = async (id, user) => {
+const deleteUser = async (id) => {
   try {
-    const res = await axios.delete(`${url}/${id}`, user)
+    const res = await axios.delete(`${url}/${id}`)
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)

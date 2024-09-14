@@ -23,9 +23,9 @@ const getAllMessages = async () => {
   }
 }
 
-const postMessage = async (user) => {
+const postMessage = async (content) => {
   try {
-    const res = await axios.post(url, user)
+    const res = await axios.post(url, content)
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)
@@ -44,9 +44,9 @@ const postMessage = async (user) => {
   }
 }
 
-const updateMessage = async (id, content, user) => {
+const updateMessage = async (id, content) => {
   try {
-    const res = await axios.put(`${url}/${id}`, { content }, user)
+    const res = await axios.put(`${url}/${id}`, { content })
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)
@@ -65,9 +65,9 @@ const updateMessage = async (id, content, user) => {
   }
 }
 
-const deleteMessage = async (id, user) => {
+const deleteMessage = async (id) => {
   try {
-    const res = await axios.delete(`${url}/${id}`, user)
+    const res = await axios.delete(`${url}/${id}`)
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)

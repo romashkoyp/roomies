@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useNavigate} from 'react-router-dom'
-import { selectUser } from '../../reducers/userReducer'
+import { useParams, useNavigate } from 'react-router-dom'
+import { deleteUser, selectUser, fetchUsers, selectCurrentUser, setCurrentUser } from '../../reducers/userReducer'
 import UserUpdateForm from './UserUpdateForm'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
@@ -12,24 +12,10 @@ const SingleUser = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectUser)
-  const [currentUser, setUser] = useState([])
+  const currentUser = useSelector(selectCurrentUser)
   const { id } = useParams()
   const currentUserId = Number(id)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [updateTrigger, setUpdateTrigger] = useState(0)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await userService.getOneUser(id, user)
-      console.log(result.data)
-      if (result.success) {
-        setUser(result.data)
-      } else {
-        console.error('Error fetching users:', result.error)
-      }
-    }
-    fetchData()
-  }, [id, user, updateTrigger])
 
   if (!user) return null
 
@@ -39,25 +25,25 @@ const SingleUser = () => {
 
   const handleUpdateSuccess = () => {
     setIsEditMode(false)
-    setUpdateTrigger(prev => prev + 1)
   }
 
   const handleDeleteUser = async (event) => {
     event.preventDefault()
-    const result = await userService.deleteUser(id, user)
+        
+    const result = await userService.deleteUser(id)
+
     if (result.success) {
+      dispatch(deleteUser(id))
+      dispatch(setCurrentUser(null))
+      dispatch(fetchUsers())
       dispatch(setNotification('User deleted', 'success', 5))
-      const userResult = await userService.getOneUser(id, user)
-      if (userResult.success === false) {
-        navigate('/users')
-      } else {
-        dispatch(setNotification('Failed to delete user', 'error', 5))
-      }
+      navigate('/users')
     } else {
+      dispatch(fetchUsers())
       dispatch(setNotification(result.error, 'error', 5))
     }
   }
-
+  
   if (currentUser) {
     return (
       <>
