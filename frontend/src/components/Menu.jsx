@@ -33,7 +33,11 @@ const Menu = () => {
         : null 
       }
       {user 
-        ? <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
+        ? 
+          <>
+            <Link style={padding} to="/rooms">Rooms</Link>
+            <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
+          </>
         : <Link style={padding} to="/signin">Sign In</Link> 
       }
       {user 

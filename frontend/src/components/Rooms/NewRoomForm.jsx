@@ -1,0 +1,108 @@
+import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import Input from '../styles/Input'
+import Wrapper from '../styles/Wrapper'
+import { PrimaryButton } from '../styles/Buttons'
+import { setNotification } from '../../reducers/notificationReducer'
+import { selectUser } from '../../reducers/userReducer'
+import roomService from '../../services/room'
+import { fetchRooms, addRoom } from '../../reducers/roomReducer'
+
+const RoomForm = () => {
+  const dispatch = useDispatch()
+  const user = useSelector(selectUser)
+  const [formData, setFormData] = useState({
+    name: 'air',
+    capacity: 12,
+    size: 25,
+    image_path: 'https://media.istockphoto.com/id/1323139676/fi/valokuva/tyhj%C3%A4n-kokoushuoneen-ulkon%C3%A4kym%C3%A4-p%C3%B6yt%C3%A4-ja-toimistotuoleilla.jpg?s=2048x2048&w=is&k=20&c=a5KSG8aAxjem7T8EWyLbpCadh-bgKcxqwYB1uOlRzJY='
+  })
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const { name, capacity, size, image_path } = formData
+    const result = await roomService.addRoom({ name, capacity, size, image_path })
+
+    if (result.success) {
+      dispatch(addRoom(result.data))
+      dispatch(fetchRooms())
+      dispatch(setNotification('Room created', 'success', 5))
+      setFormData({
+        name: '',
+        capacity: '',
+        size: '',
+        image_path: ''
+      })
+    } else {
+      dispatch(setNotification(result.error, 'error', 5))
+    }
+  }
+
+  if (user === undefined) return null
+  
+  if (user?.admin && user.enabled) {
+    return (
+      <Wrapper>
+        <h3>Add new room</h3>
+        <form onSubmit={handleSubmit}>
+          <div>
+            Name
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            Capacity
+            <Input
+              type="number"
+              min="1"
+              placeholder="50"
+              name="capacity"
+              id="capacity"
+              value={formData.capacity}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            Size
+            <Input
+              type="number"
+              min="1"
+              id="size"
+              name="size"
+              placeholder="100"
+              value={formData.size}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            Image Path
+            <Input
+              type="string"
+              id="url"
+              name="url"
+              value={formData.image_path}
+              onChange={handleChange}
+            />
+          </div>
+          <PrimaryButton type="submit">Submit</PrimaryButton>
+        </form>
+      </Wrapper>
+    )
+  }
+}
+
+export default RoomForm

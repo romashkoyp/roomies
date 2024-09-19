@@ -37,6 +37,7 @@ const GlobalStyles = createGlobalStyle`
   table {
     margin: auto;
     width: 90%;
+    overflow-x:auto;
   }
 
   th, td {
@@ -50,6 +51,10 @@ const GlobalStyles = createGlobalStyle`
         transition: color 0.3s ease;
       }
     }
+  }
+
+  img {
+    width: 60%;
   }
 
 `
