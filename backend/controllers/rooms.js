@@ -95,6 +95,18 @@ router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
+// Get desired room
+router.get('/:id', tokenExtractor, isTokenUser, isSession,
+  async (req, res) => {
+    const room = await Room.findOne({
+      attributes: { exclude: ['userId'] }
+    })
+
+    if (!room) throw new Error('Room not found')
+    res.status(200).json(room)
+  }
+)
+
 // Change room characteristics
 router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
