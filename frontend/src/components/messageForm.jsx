@@ -8,11 +8,17 @@ import { selectUser } from '../reducers/userReducer'
 import messageService from '../services/message'
 import { fetchMessages, addMessage } from '../reducers/messageReducer'
 import ResizableTextarea from './ResizableTextarea'
+import LinkHeader from './styles/LinkHeader'
 
 const MessageForm = () => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
+  const [isVisible, setIsVisible] = useState(false)
   const [content, setContent] = useState('Message 1')
+
+  const handleClick = () => {
+    setIsVisible(!isVisible)
+  }
 
   const handleChange = (event) => {
     setContent(event.target.value)
@@ -27,6 +33,7 @@ const MessageForm = () => {
       dispatch(fetchMessages())
       dispatch(setNotification('Message created', 'success', 5))
       setContent('')
+      setIsVisible(false)
     } else {
       dispatch(setNotification(result.error, 'error', 5))
     }
@@ -37,19 +44,21 @@ const MessageForm = () => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Add new message</h3>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <ResizableTextarea
-              type="text"
-              id="message"
-              name="message"
-              value={content}
-              onChange={handleChange}
-            />
-          </div>
-          <PrimaryButton type="submit">Submit</PrimaryButton>
-        </form>
+        <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
+        {isVisible ?
+          <form onSubmit={handleSubmit}>
+            <div>
+              <ResizableTextarea
+                type="text"
+                id="message"
+                name="message"
+                value={content}
+                onChange={handleChange}
+              />
+            </div>
+            <PrimaryButton type="submit">Submit</PrimaryButton>
+          </form>
+          : null}
       </Wrapper>
     )
   }

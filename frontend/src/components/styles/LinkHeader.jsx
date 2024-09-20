@@ -7,8 +7,8 @@ const LinkHeader = styled.div`
     transition: color 0.3s ease; /* Add smooth color transition */
 
     &:hover {
-      color: black; /* Change color on hover */
       text-decoration: underline; /* Add underline on hover */
+      cursor: pointer;
   }
 `
 
