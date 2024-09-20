@@ -24,28 +24,35 @@ const Menu = () => {
   }
 
   return (
-    <div>
-      <Link style={padding} to="/">Roomies App</Link>
-      {user?.admin
-        ? 
-          <>
-            <Link style={padding} to="/notifications">Messages</Link>
-            <Link style={padding} to="/users">Users</Link>
-          </>
-        : null 
-      }
-      {user 
-        ? 
-          <>
-            <Link style={padding} to="/rooms">Rooms</Link>
-            <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
-          </>
-        : <Link style={padding} to="/signin">Sign In</Link> 
-      }
-      {user 
-        ? user.name
-        : <Link style={padding} to="/signup">Sign Up</Link>
-      }
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '50px' }}>
+      <div>
+        <Link style={padding} to="/">Roomies App</Link>
+        {user?.admin
+          ? 
+            <>
+              <Link style={padding} to="/notifications">Messages</Link>
+              <Link style={padding} to="/users">Users</Link>
+            </>
+          : null 
+        }
+        {user ? <Link style={padding} to="/rooms">Rooms</Link> : null }
+      </div>
+      <div>
+        {user 
+          ? 
+            <>
+              <Link style={padding}>{user.name}</Link>
+              <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
+            </>
+          : null }
+        {!user
+          ?
+            <>
+              <Link style={padding} to="/signin">Sign In</Link>
+              <Link style={padding} to="/signup">Sign Up</Link>
+            </>
+          : null}
+      </div>
     </div>
   )
 }
