@@ -114,7 +114,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
 
     if (req.body.capacity) {
       validationChain.push(
-        body('capacity').isInt({ gt: 1 }).withMessage('Capacity must be an integer')
+        body('capacity').isInt({ gt: 1 }).withMessage('Capacity must be an integer greater than 1')
       )
     }
 

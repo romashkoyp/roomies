@@ -65,9 +65,9 @@ const addRoom = async (credentials) => {
   }
 }
 
-const updateRoom = async (id, name, capacity, size, imagePath) => {
+const updateRoom = async (id, name, capacity, size, image_path) => {
   try {
-    const res = await axios.put(`${url}/${id}`, { name, capacity, size, imagePath })
+    const res = await axios.put(`${url}/${id}`, { name, capacity, size, image_path })
     return { success: true, data: res.data }
   } catch (error) {
     console.error('Message error:', error)

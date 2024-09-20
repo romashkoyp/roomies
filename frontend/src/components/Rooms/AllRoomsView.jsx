@@ -27,8 +27,8 @@ const Users = () => {
               <tr>
                 <th>Room ID</th>
                 <th>Name</th>
-                <th>Capacity</th>
-                <th>Size</th>
+                <th>Capacity, people</th>
+                <th>Size, m<sup>2</sup></th>
               </tr>
             </thead>
             <tbody>

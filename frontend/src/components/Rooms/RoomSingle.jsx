@@ -73,11 +73,11 @@ const SingleRoom = () => {
               </tr>
               <tr>
                 <th>Capacity</th>
-                <td>{currentRoom.capacity}</td>
+                <td>{currentRoom.capacity} people</td>
               </tr>
               <tr>
                 <th>Size</th>
-                <td>{currentRoom.size}</td>
+                <td>{currentRoom.size} m<sup>2</sup></td>
               </tr>
               <tr>
                 <th>Image Path</th>

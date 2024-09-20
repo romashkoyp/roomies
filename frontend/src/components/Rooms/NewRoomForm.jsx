@@ -54,7 +54,7 @@ const RoomForm = () => {
         <h3>Add new room</h3>
         <form onSubmit={handleSubmit}>
           <div>
-            Name
+            Name:
             <Input
               type="text"
               id="name"
@@ -65,7 +65,7 @@ const RoomForm = () => {
             />
           </div>
           <div>
-            Capacity
+            Capacity, people:
             <Input
               type="number"
               min="1"
@@ -77,7 +77,7 @@ const RoomForm = () => {
             />
           </div>
           <div>
-            Size
+            Size, m<sup>2</sup>:
             <Input
               type="number"
               min="1"
@@ -89,11 +89,11 @@ const RoomForm = () => {
             />
           </div>
           <div>
-            Image Path
+            Image Path, url:
             <Input
-              type="string"
+              type="url"
               id="url"
-              name="url"
+              name="image_path"
               value={formData.image_path}
               onChange={handleChange}
             />

@@ -13,12 +13,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const currentRoom = useSelector(selectCurrentRoom)
-  const [formData, setFormData] = useState({
-    name: '',
-    capacity: '',
-    size: '',
-    imagePath: ''
-  })
+  const [formData, setFormData] = useState({})
   const [originalData, setOriginalData] = useState({})
 
   useEffect(() => {
@@ -31,10 +26,10 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
   }, [currentRoom, dispatch, id])
 
   const handleChange = (event) => {
-    const { name, value, type } = event.target
+    const { name, value } = event.target
     setFormData(prevData => ({
       ...prevData,
-      [name]: type, value
+      [name]: value
     }))
   }
 
@@ -84,18 +79,19 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
             />
           </div>
           <div>
-            Capacity:
+            Capacity, people:
             <Input
               type="number"
+              min="2"
               id="capacity"
               name="capacity"
-              placeholder="20"
+              placeholder="50"
               value={formData.capacity}
               onChange={handleChange}
             />
           </div>
           <div>
-            Size:
+            Size, m<sup>2</sup>:
             <Input
               type="number"
               id="size"
@@ -106,11 +102,11 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
             />
           </div>
           <div>
-            Image Path:
+            Image Path, url:
             <Input
-              type="text"
-              id="image path"
-              name="mage path"
+              type="url"
+              id="url"
+              name="imagePath"
               value={formData.imagePath}
               onChange={handleChange}
             />
