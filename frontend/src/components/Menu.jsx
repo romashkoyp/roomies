@@ -10,15 +10,17 @@ const Menu = () => {
   const dispatch = useDispatch()
 
   const handleSignout = async () => {
-    try {
-      window.localStorage.removeItem('loggedUser')
-      dispatch(setUser(null))
-      signinService.setToken(null)
-      dispatch(setNotification('You have successfully signed out', 'success', 5))
-    } catch (exception) {
-      console.error('Signout error:', exception)
-      dispatch(setNotification('Sign out failed', 'error', 5))
-    }
+    if (confirm("Are you sure?")) {
+      try {
+        window.localStorage.removeItem('loggedUser')
+        dispatch(setUser(null))
+        signinService.setToken(null)
+        dispatch(setNotification('You have successfully signed out', 'success', 5))
+      } catch (exception) {
+        console.error('Signout error:', exception)
+        dispatch(setNotification('Sign out failed', 'error', 5))
+      }
+    } else return null
   }
 
   return (

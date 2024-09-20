@@ -29,19 +29,19 @@ const SingleUser = () => {
 
   const handleDeleteUser = async (event) => {
     event.preventDefault()
-        
-    const result = await userService.deleteUser(id)
-
-    if (result.success) {
-      dispatch(deleteUser(id))
-      dispatch(setCurrentUser(null))
-      dispatch(fetchUsers())
-      dispatch(setNotification('User deleted', 'success', 5))
-      navigate('/users')
-    } else {
-      dispatch(fetchUsers())
-      dispatch(setNotification(result.error, 'error', 5))
-    }
+    if (confirm("Are you sure?")) { 
+      const result = await userService.deleteUser(id)
+      if (result.success) {
+        dispatch(deleteUser(id))
+        dispatch(setCurrentUser(null))
+        dispatch(fetchUsers())
+        dispatch(setNotification('User deleted', 'success', 5))
+        navigate('/users')
+      } else {
+        dispatch(fetchUsers())
+        dispatch(setNotification(result.error, 'error', 5))
+      }
+    } else return null
   }
   
   if (currentUser) {

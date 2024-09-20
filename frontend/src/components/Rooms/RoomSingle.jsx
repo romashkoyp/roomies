@@ -31,26 +31,26 @@ const SingleRoom = () => {
 
   const handleDeleteRoom = async (event) => {
     event.preventDefault()
-        
-    const result = await roomService.deleteRoom(id)
-
-    if (result.success) {
-      dispatch(deleteRoom(id))
-      dispatch(setCurrentRoom(null))
-      dispatch(fetchRooms())
-      if (rooms.length > 1) {
-        dispatch(setNotification('Room deleted', 'success', 5))
-        navigate('/rooms')
-      } else if (rooms.length === 1 || rooms.length === 0)
-        {
-          navigate('/rooms')
-          window.location.reload()
+    if (confirm("Are you sure?")) {    
+      const result = await roomService.deleteRoom(id)
+      if (result.success) {
+        dispatch(deleteRoom(id))
+        dispatch(setCurrentRoom(null))
+        dispatch(fetchRooms())
+        if (rooms.length > 1) {
           dispatch(setNotification('Room deleted', 'success', 5))
-        }
-    } else {
-      dispatch(fetchRooms())
-      dispatch(setNotification(result.error, 'error', 5))
-    }
+          navigate('/rooms')
+        } else if (rooms.length === 1 || rooms.length === 0)
+          {
+            navigate('/rooms')
+            window.location.reload()
+            dispatch(setNotification('Room deleted', 'success', 5))
+          }
+      } else {
+        dispatch(fetchRooms())
+        dispatch(setNotification(result.error, 'error', 5))
+      }
+    } else return null
   }
   
   if (currentRoom) {

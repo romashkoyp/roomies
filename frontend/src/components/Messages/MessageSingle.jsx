@@ -32,21 +32,23 @@ const SingleMessage = () => {
 
   const handleDeleteMessage = async (event) => {
     event.preventDefault()
-    const result = await messageService.deleteMessage(id)
-    if (result.success) {
-      dispatch(deleteMessage(id))
-      dispatch(fetchMessages())
-      if (messages.length > 1) {
-        dispatch(setNotification('Message deleted', 'success', 5))
-        navigate('/notifications')
-      } else if (messages.length === 1 || messages.length === 0) {
-        navigate('/notifications')
-        window.location.reload() // I don't know how to solve a problem with the last message visibility after deletion without reloading page
-        dispatch(setNotification('Message deleted', 'success', 5))
+    if (confirm("Are you sure?")) {
+      const result = await messageService.deleteMessage(id)
+      if (result.success) {
+        dispatch(deleteMessage(id))
+        dispatch(fetchMessages())
+        if (messages.length > 1) {
+          dispatch(setNotification('Message deleted', 'success', 5))
+          navigate('/notifications')
+        } else if (messages.length === 1 || messages.length === 0) {
+          navigate('/notifications')
+          window.location.reload() // I don't know how to solve a problem with the last message visibility after deletion without reloading page
+          dispatch(setNotification('Message deleted', 'success', 5))
+        }
+      } else {
+        dispatch(setNotification(result.error, 'error', 5))
       }
-    } else {
-      dispatch(setNotification(result.error, 'error', 5))
-    }
+    } else return null
   }
 
   if (message) {
