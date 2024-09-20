@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import Wrapper from './styles/Wrapper'
-import { PrimaryButton } from './styles/Buttons'
-import { setNotification } from '../reducers/notificationReducer'
+import Wrapper from '../styles/Wrapper'
+import { PrimaryButton } from '../styles/Buttons'
+import { setNotification } from '../../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
-import { selectUser } from '../reducers/userReducer'
-import messageService from '../services/message'
-import { fetchMessages, addMessage } from '../reducers/messageReducer'
-import ResizableTextarea from './ResizableTextarea'
-import LinkHeader from './styles/LinkHeader'
+import { selectUser } from '../../reducers/userReducer'
+import messageService from '../../services/message'
+import { fetchMessages, addMessage } from '../../reducers/messageReducer'
+import ResizableTextarea from '../ResizableTextarea'
+import LinkHeader from '../styles/LinkHeader'
 
 const MessageForm = () => {
   const dispatch = useDispatch()

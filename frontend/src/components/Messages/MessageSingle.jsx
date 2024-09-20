@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate} from 'react-router-dom'
-import { selectUser } from '../reducers/userReducer'
+import { selectUser } from '../../reducers/userReducer'
 import MessageUpdateForm from './MessageUpdateForm'
-import Wrapper from './styles/Wrapper'
-import MessageWrapper from './styles/MessageWrapper'
-import { PrimaryButton, SecondaryButton } from './styles/Buttons'
-import messageService from '../services/message'
-import { setNotification } from '../reducers/notificationReducer'
-import { fetchMessages, deleteMessage, selectMessages } from '../reducers/messageReducer'
+import Wrapper from '../styles/Wrapper'
+import MessageWrapper from '../styles/MessageWrapper'
+import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
+import messageService from '../../services/message'
+import { setNotification } from '../../reducers/notificationReducer'
+import { fetchMessages, deleteMessage, selectMessages } from '../../reducers/messageReducer'
 
 const SingleMessage = () => {
   const dispatch = useDispatch()

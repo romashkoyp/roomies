@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { selectUser } from '../reducers/userReducer'
 import Wrapper from './styles/Wrapper'
-import Message from './Message'
+import Message from './Messages/Message'
 import { selectMessages } from '../reducers/messageReducer'
 
 const MainPage = () => {

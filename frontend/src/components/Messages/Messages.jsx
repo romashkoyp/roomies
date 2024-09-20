@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { selectUser } from '../reducers/userReducer'
+import { selectUser } from '../../reducers/userReducer'
 import MessageForm from './MessageForm'
-import Wrapper from './styles/Wrapper'
-import MessageWrapper from './styles/MessageWrapper'
-import { selectMessages } from '../reducers/messageReducer'
+import Wrapper from '../styles/Wrapper'
+import MessageWrapper from '../styles/MessageWrapper'
+import { selectMessages } from '../../reducers/messageReducer'
 
 const Messages = () => {
   const user = useSelector(selectUser)
