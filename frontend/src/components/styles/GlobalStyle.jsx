@@ -36,12 +36,13 @@ const GlobalStyles = createGlobalStyle`
 
   table {
     margin: auto;
-    width: 90%;
+    width: 100%;
     overflow-x:auto;
   }
 
   th, td {
     padding: 5px;
+    text-align: left;
   }
 
   tbody {
@@ -54,9 +55,44 @@ const GlobalStyles = createGlobalStyle`
   }
 
   img {
-    width: 60%;
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
   }
 
+  label {
+    width: 160px;
+    font-size: 16px;
+  }
+
+  input {
+    flex-grow: 1;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+  }
+  
+  input[type="checkbox"] {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
 `
 
 export default GlobalStyles

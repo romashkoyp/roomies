@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Input from '../styles/Input'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
@@ -60,10 +59,10 @@ const RoomForm = () => {
       <Wrapper>
         <LinkHeader onClick={handleClick}><h3>Add new room</h3></LinkHeader>
         {isVisible ?
-          <form onSubmit={handleSubmit}>
-            <div>
-              Name:
-              <Input
+          <form onSubmit={handleSubmit}>   
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
                 type="text"
                 id="name"
                 name="name"
@@ -72,9 +71,10 @@ const RoomForm = () => {
                 onChange={handleChange}
               />
             </div>
-            <div>
-              Capacity, people:
-              <Input
+            
+            <div className="form-group">
+              <label htmlFor="capacity">Capacity, people</label>
+              <input
                 type="number"
                 min="1"
                 placeholder="50"
@@ -84,9 +84,10 @@ const RoomForm = () => {
                 onChange={handleChange}
               />
             </div>
-            <div>
-              Size, m<sup>2</sup>:
-              <Input
+            
+            <div className="form-group">
+              <label htmlFor="size">Size, m<sup>2</sup></label>
+              <input
                 type="number"
                 min="1"
                 id="size"
@@ -96,9 +97,10 @@ const RoomForm = () => {
                 onChange={handleChange}
               />
             </div>
-            <div>
-              Image Path, url:
-              <Input
+            
+            <div className="form-group">
+              <label htmlFor="url">Image Path, url</label>
+              <input
                 type="url"
                 id="url"
                 name="image_path"
@@ -106,6 +108,7 @@ const RoomForm = () => {
                 onChange={handleChange}
               />
             </div>
+            
             <PrimaryButton type="submit">Submit</PrimaryButton>
           </form>
           : null}

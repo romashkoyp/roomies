@@ -6,7 +6,6 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import roomService from '../../services/room'
-import Input from '../styles/Input'
 import { selectCurrentRoom, fetchRoom, updateRoom, fetchRooms } from '../../reducers/roomReducer'
 
 const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
@@ -67,9 +66,9 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
       <Wrapper>
         <h3>Edit current room</h3>
         <form onSubmit={handleSubmit}>
-          <div>
-            Name:
-            <Input
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
               type="text"
               placeholder="name"
               name="name"
@@ -78,9 +77,10 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Capacity, people:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="capacity">Capacity, people</label>
+            <input
               type="number"
               min="2"
               id="capacity"
@@ -90,9 +90,10 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Size, m<sup>2</sup>:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="size">Size, m<sup>2</sup></label>
+            <input
               type="number"
               id="size"
               name="size"
@@ -101,9 +102,10 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Image Path, url:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="url">Image Path, url</label>
+            <input
               type="url"
               id="url"
               name="imagePath"
@@ -111,6 +113,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
+          
           <PrimaryButton type="submit">Save</PrimaryButton>
         </form>
       </Wrapper>

@@ -6,7 +6,6 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser, updateUser, fetchUsers, fetchUser, selectCurrentUser } from '../../reducers/userReducer'
 import userService from '../../services/user'
-import Input from '../styles/Input'
 
 const UserUpdateForm = ({ id, onUpdateSuccess }) => {
   const dispatch = useDispatch()
@@ -71,9 +70,9 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
       <Wrapper>
         <h3>Edit current user</h3>
         <form onSubmit={handleSubmit}>
-          <div>
-            Username:
-            <Input
+          <div className="form-group">
+            <label htmlFor="email">Username</label>
+            <input
               type="email"
               placeholder="Email"
               name="username"
@@ -82,9 +81,10 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Name:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
               type="text"
               id="name"
               name="name"
@@ -93,9 +93,10 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Admin Status:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="admin">Admin Status</label>
+            <input
               type="checkbox"
               id="admin"
               name="admin"
@@ -103,9 +104,10 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
-          <div>
-            Active Status:
-            <Input
+          
+          <div className="form-group">
+            <label htmlFor="enabled">Active Status</label>
+            <input
               type="checkbox"
               id="enabled"
               name="enabled"
@@ -113,6 +115,7 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
               onChange={handleChange}
             />
           </div>
+          
           <PrimaryButton type="submit">Save</PrimaryButton>
         </form>
       </Wrapper>

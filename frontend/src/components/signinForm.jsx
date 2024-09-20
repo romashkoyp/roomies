@@ -1,4 +1,3 @@
-import Input from './styles/Input'
 import { useState } from 'react'
 import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
@@ -45,32 +44,36 @@ const SigninForm = () => {
 
   return (
     <Wrapper>
-      <h2>Sign In</h2>
       <form onSubmit={handleSignin}>
-        <div>
-          Username
-          <Input
+        <h2>Sign In</h2>
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             id="username"
+            name="username"
             value={username}
             onChange={handleUsernameChange}
             autoComplete="current-username"
           />
         </div>
-        <div>
-          Password
-          <Input
+        
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
             type="password"
             placeholder="Password"
             id="password"
+            name="password"
             value={password}
             onChange={handlePasswordChange}
             autoComplete="current-password"
           />
         </div>
+        
         <PrimaryButton type="submit">Sign In</PrimaryButton>
-      </form> 
+      </form>
     </Wrapper>
   )
 }

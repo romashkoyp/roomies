@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Input from './styles/Input'
 import Wrapper from './styles/Wrapper'
 import { PrimaryButton } from './styles/Buttons'
 import signupService from '../services/signup'
@@ -54,11 +53,12 @@ const SignupForm = () => {
 
   return (
     <Wrapper>
-      <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          Name
-          <Input
+        <h2>Sign Up</h2>
+        
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
             type="text"
             id="name"
             name="name"
@@ -67,9 +67,10 @@ const SignupForm = () => {
             onChange={handleChange}
           />
         </div>
-        <div>
-          Username
-          <Input
+        
+        <div className="form-group">
+          <label htmlFor="email">Username</label>
+          <input
             type="email"
             placeholder="Email"
             name="username"
@@ -78,9 +79,10 @@ const SignupForm = () => {
             onChange={handleChange}
           />
         </div>
-        <div>
-          Password
-          <Input
+        
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
             type="password"
             id="password"
             name="password"
@@ -88,9 +90,10 @@ const SignupForm = () => {
             onChange={handleChange}
           />
         </div>
-        <div>
-          Confirm password
-          <Input
+    
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
