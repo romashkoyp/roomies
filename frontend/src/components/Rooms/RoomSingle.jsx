@@ -57,7 +57,7 @@ const SingleRoom = () => {
     return (
       <>
         <Wrapper>
-          <h3>Current room</h3>
+          <h3>Current room is {currentRoom.name}</h3>
           <a href={currentRoom.imagePath}>
             <img src={currentRoom.imagePath} alt="picture of room" ></img>
           </a>
@@ -81,7 +81,11 @@ const SingleRoom = () => {
               </tr>
               <tr>
                 <th>Image Path</th>
-                <td><Link to={currentRoom.imagePath} target='_blank'>Link</Link></td>
+                <td><Link to={currentRoom.imagePath} target='_blank'>Link to image</Link></td>
+              </tr>
+              <tr>
+                <th>Individual Dates</th>
+                <td><Link to={`/rooms/${currentRoom.id}/dates`}>Link to dates availability</Link></td>
               </tr>
             </tbody>
           </table>

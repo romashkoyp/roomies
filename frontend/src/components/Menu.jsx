@@ -74,6 +74,7 @@ const Menu = () => {
             <>
               <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
               <NavLinkStyled to="/users">Users</NavLinkStyled>
+              <NavLinkStyled to="/rooms/dates">Dates</NavLinkStyled>
             </>
           )}
           {user && <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>}

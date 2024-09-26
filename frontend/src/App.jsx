@@ -18,6 +18,9 @@ import { selectUser, setUser, selectUsers, fetchUsers, fetchUser, selectCurrentU
 import { selectRooms, fetchRooms, fetchRoom, selectCurrentRoom } from './reducers/roomReducer'
 import { selectMessages, fetchMessages } from './reducers/messageReducer'
 import signinService from './services/signin'
+import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
+import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
+import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -33,13 +36,17 @@ const App = () => {
   const rooms = useSelector(selectRooms)
   // eslint-disable-next-line no-unused-vars
   const currentRoom = useSelector(selectCurrentRoom)
+  // eslint-disable-next-line no-unused-vars
+  const individualDates = useSelector(selectIndividualDates)
+  // eslint-disable-next-line no-unused-vars
+  const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
 
+  // Fetch logged in user data
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       try {
       const user = JSON.parse(loggedUserJSON)
-        console.log("user from storage:", user)
         if (user?.token) {
           dispatch(setUser(user))
           signinService.setToken(user.token)
@@ -53,6 +60,7 @@ const App = () => {
     }
   }, [dispatch])
 
+  // Fetch all messages and users
   useEffect(() => {
     if (user?.enabled) {
       dispatch(fetchMessages())
@@ -60,8 +68,9 @@ const App = () => {
         dispatch(fetchUsers())
       }
     }
-  }, [dispatch, user])
-
+  }, [dispatch, user])  
+  
+  // Fetch one user
   useEffect(() => {
     const path = location.pathname.split('/')
     const userIdIndex = path.indexOf('users') + 1
@@ -75,12 +84,14 @@ const App = () => {
     }
   }, [dispatch, user, location.pathname])
 
+  // Fetch all rooms
   useEffect(() => {
     if (user?.enabled) {
       dispatch(fetchRooms())
     }
   }, [dispatch, user])
 
+  // Fetch one room
   useEffect(() => {
     const path = location.pathname.split('/')
     const roomIdIndex = path.indexOf('rooms') + 1
@@ -90,6 +101,28 @@ const App = () => {
       const currentRoomId = Number(roomId)
       if (user?.enabled) {
         dispatch(fetchRoom(currentRoomId))
+      }
+    }
+  }, [dispatch, user, location.pathname])
+
+  // Fetch all individual dates for all rooms
+  useEffect(() => {
+    const path = location.pathname.split('/')
+    if (user?.enabled && path.length === 3 && path[1] === 'rooms' && path[2] === 'dates') {
+      dispatch(fetchAllIndividualDates())
+    }
+  }, [dispatch, user, location.pathname ])
+
+  // Fetch all individual dates for one room
+  useEffect(() => {
+    const path = location.pathname.split('/')
+    const roomIdIndex = path.indexOf('rooms') + 1
+    const roomId = path[roomIdIndex]
+
+    if (/^\d+$/.test(roomId)) {
+      const currentRoomId = Number(roomId)
+      if (user?.enabled && path.length === 4 && path[1] === 'rooms' && path[3] === 'dates') {
+        dispatch(fetchIndividualDatesForRoom(currentRoomId))
       }
     }
   }, [dispatch, user, location.pathname])
@@ -108,6 +141,8 @@ const App = () => {
         <Route path="/users/:id" element={<UserSingle />}/>
         <Route path="/rooms" element={<AllRoomsView />}/>
         <Route path="/rooms/:id" element={<RoomSingle />}/>
+        <Route path="/rooms/dates" element={<AllDatesView />}/>
+        <Route path="/rooms/:id/dates" element={<AllRoomDates/>}/>
       </Routes>
     </Container>
   )
