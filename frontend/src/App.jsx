@@ -39,7 +39,8 @@ const App = () => {
     if (loggedUserJSON) {
       try {
       const user = JSON.parse(loggedUserJSON)
-        if (user && user.token) {
+        console.log("user from storage:", user)
+        if (user?.token) {
           dispatch(setUser(user))
           signinService.setToken(user.token)
         } else {

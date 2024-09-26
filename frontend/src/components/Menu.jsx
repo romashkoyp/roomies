@@ -1,12 +1,55 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from '../services/signin'
 import { setNotification } from '../reducers/notificationReducer'
-import { setUser, selectUser } from '../reducers/userReducer'
+import { setUser } from '../reducers/userReducer'
+import styled from 'styled-components'
+
+const StyledNav = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`
+
+const NavList = styled.ul`
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+`
+
+const NavLinkStyled = styled(NavLink)`
+  text-decoration: none;
+  padding: 10px 15px;
+  color: #333;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #B1D4E0;
+  }
+
+  &.active {
+    background-color: #1B263B;
+    color: white;
+  }
+`
+
+const NavLinkStyledSignOut = styled(NavLink)`
+  text-decoration: none;
+  padding: 10px 15px;
+  color: #333;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #B1D4E0;
+  }
+`
 
 const Menu = () => {
-  const padding = { paddingRight: 15 }
-  const user = useSelector(selectUser)
+  const user = useSelector((state) => state.users.user)
   const dispatch = useDispatch()
 
   const handleSignout = async () => {
@@ -20,40 +63,35 @@ const Menu = () => {
         console.error('Signout error:', exception)
         dispatch(setNotification('Sign out failed', 'error', 5))
       }
-    } else return null
+    }
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '50px' }}>
-      <div>
-        <Link style={padding} to="/">Roomies App</Link>
-        {user?.admin
-          ? 
+    <StyledNav>
+      <NavList>
+        <NavLinkStyled to="/" end>Roomies App</NavLinkStyled>
+          {user?.admin && (
             <>
-              <Link style={padding} to="/notifications">Messages</Link>
-              <Link style={padding} to="/users">Users</Link>
+              <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
+              <NavLinkStyled to="/users">Users</NavLinkStyled>
             </>
-          : null 
-        }
-        {user ? <Link style={padding} to="/rooms">Rooms</Link> : null }
-      </div>
-      <div>
-        {user 
-          ? 
-            <>
-              <Link style={padding}>{user.name}</Link>
-              <Link style={padding} onClick={handleSignout} to="/">Sign Out</Link>
-            </>
-          : null }
-        {!user
-          ?
-            <>
-              <Link style={padding} to="/signin">Sign In</Link>
-              <Link style={padding} to="/signup">Sign Up</Link>
-            </>
-          : null}
-      </div>
-    </div>
+          )}
+          {user && <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>}
+      </NavList>
+      <NavList>
+        {user ? (
+          <>
+            <NavLinkStyled to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
+            <NavLinkStyledSignOut to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
+          </>
+        ) : (
+          <>
+            <NavLinkStyled to="/signin">Sign In</NavLinkStyled>
+            <NavLinkStyled to="/signup">Sign Up</NavLinkStyled>
+          </>
+        )}
+      </NavList>
+    </StyledNav>
   )
 }
 
