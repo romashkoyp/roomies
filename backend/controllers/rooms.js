@@ -78,7 +78,13 @@ router.delete('/', tokenExtractor, isTokenUser, isAdmin, isSession,
 router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
     const dates = await IndividualDate.findAll({
-      order: [['date', 'ASC']]
+      order: [['date', 'DESC']],
+      include: [
+        {
+          model: Room,
+          attributes: { exclude: ['userId'] }
+        }
+      ]
     })
 
     if (!dates.length) throw new Error('No dates available for rooms')
@@ -182,7 +188,7 @@ router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFi
   async(req, res) => {
     const dates = await IndividualDate.findAll({
       where: { roomId: req.params.id },
-      order: [['date', 'ASC']]
+      order: [['date', 'DESC']]
     })
 
     if (!dates.length) throw new Error('No dates available for current room')
