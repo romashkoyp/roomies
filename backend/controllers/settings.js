@@ -215,7 +215,7 @@ router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
       order: [['date', 'ASC']]
     })
 
-    if (!dates.length) throw new Error('No global dates available')
+    //if (!dates.length) throw new Error('No global dates available')
     res.json(dates)
   }
 )
