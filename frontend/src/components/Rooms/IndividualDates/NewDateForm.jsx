@@ -5,7 +5,7 @@ import { PrimaryButton } from '../../styles/Buttons'
 import { setNotification } from '../../../reducers/notificationReducer'
 import { selectUser } from '../../../reducers/userReducer'
 import individualDateService from '../../../services/individualDate'
-import { fetchIndividualDatesForRoom, addIndividualDate } from '../../../reducers/individualDateReducer'
+import { fetchIndividualDatesForRoom, fetchAllIndividualDates, addIndividualDate } from '../../../reducers/individualDateReducer'
 import { selectCurrentRoom } from '../../../reducers/roomReducer'
 import LinkHeader from '../../styles/LinkHeader'
 
@@ -44,6 +44,7 @@ const NewDateForm = () => {
       if (result.success) {
         dispatch(addIndividualDate(result.data))
         dispatch(fetchIndividualDatesForRoom(currentRoom.id))
+        dispatch(fetchAllIndividualDates())
         dispatch(setNotification('Date added successfully', 'success', 5))
         setFormData({
             name: 'Holiday',
@@ -63,7 +64,7 @@ const NewDateForm = () => {
 
   return (
     <Wrapper>
-      <LinkHeader onClick={handleClick}><h3>Add new date for room</h3></LinkHeader>
+      <LinkHeader onClick={handleClick}><h3>Add new date for {currentRoom.name} room</h3></LinkHeader>
       { isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>

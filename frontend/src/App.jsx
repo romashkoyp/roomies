@@ -12,6 +12,7 @@ import AllUsersView from './components/Users/AllUsersView'
 import UserSingle from './components/Users/UserSingle'
 import AllRoomsView from './components/Rooms/AllRoomsView'
 import RoomSingle from './components/Rooms/RoomSingle'
+import DateSingle from './components/Rooms/IndividualDates/DateSingle'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { selectUser, setUser, selectUsers, fetchUsers, fetchUser, selectCurrentUser } from './reducers/userReducer'
@@ -99,7 +100,7 @@ const App = () => {
 
     if (/^\d+$/.test(roomId)) {
       const currentRoomId = Number(roomId)
-      if (user?.enabled) {
+      if (user?.enabled && path[1] === 'rooms' && currentRoomId > 0) {
         dispatch(fetchRoom(currentRoomId))
       }
     }
@@ -108,8 +109,10 @@ const App = () => {
   // Fetch all individual dates for all rooms
   useEffect(() => {
     const path = location.pathname.split('/')
-    if (user?.enabled && path.length === 3 && path[1] === 'rooms' && path[2] === 'dates') {
-      dispatch(fetchAllIndividualDates())
+    if (user?.enabled) {
+      if (path.length === 3 && path[1] === 'rooms' && path[2] === 'dates') {
+        dispatch(fetchAllIndividualDates())
+      }
     }
   }, [dispatch, user, location.pathname ])
 
@@ -121,8 +124,10 @@ const App = () => {
 
     if (/^\d+$/.test(roomId)) {
       const currentRoomId = Number(roomId)
-      if (user?.enabled && path.length === 4 && path[1] === 'rooms' && path[3] === 'dates') {
-        dispatch(fetchIndividualDatesForRoom(currentRoomId))
+      if (user?.enabled) {
+        if (path.length === 5 && path[1] === 'rooms' && path[3] === 'dates') {
+          dispatch(fetchIndividualDatesForRoom(currentRoomId))
+        }
       }
     }
   }, [dispatch, user, location.pathname])
@@ -143,6 +148,7 @@ const App = () => {
         <Route path="/rooms/:id" element={<RoomSingle />}/>
         <Route path="/rooms/dates" element={<AllDatesView />}/>
         <Route path="/rooms/:id/dates" element={<AllRoomDates/>}/>
+        <Route path="/rooms/:id/dates/:date" element={<DateSingle/>}/>
       </Routes>
     </Container>
   )

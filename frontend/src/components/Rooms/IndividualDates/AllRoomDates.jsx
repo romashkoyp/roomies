@@ -18,14 +18,12 @@ const AllRoomDates = () => {
     navigate(`/rooms/${currentRoom.id}/dates/${date}`)
   }
 
-  console.log(individualDatesForRoom)
-
-  if ((Array.isArray(individualDatesForRoom))) {
+  if (individualDatesForRoom?.length > 0) {
     return (
       <>
         {user.admin && user.enabled ? <NewDateForm /> : null}
         <Wrapper>
-          <h3>Dates for {currentRoom.name}</h3>
+          <h3>Individual dates for {currentRoom.name} room</h3>
           <table>
             <thead>
               <tr>
@@ -56,11 +54,15 @@ const AllRoomDates = () => {
       </>
     )
   } else {
-      <Wrapper>
-        <h3>Dates for {currentRoom.name}</h3>
-        <p>No individual dates found for this room.</p>
-    </Wrapper>
-  }
+    return (
+      <>
+        {user.admin && user.enabled ? <NewDateForm /> : null}
+        <Wrapper>
+          <h3>Individual dates for {currentRoom.name} room</h3>
+          <p>No individual dates found for {currentRoom.name} room.</p>
+      </Wrapper>
+    </>
+  )}
 }
 
 export default AllRoomDates
