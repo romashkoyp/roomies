@@ -28,7 +28,7 @@ export const fetchIndividualDatesForRoom = createAsyncThunk(
   }
 )
 
-// // Fetch all rooms for a specific date
+// Fetch all rooms for a specific date
 // export const fetchRoomsForIndividualDate = createAsyncThunk(
 //   'individualDates/fetchRoomsForDate',
 //   async (date, { rejectWithValue }) => {
@@ -41,24 +41,24 @@ export const fetchIndividualDatesForRoom = createAsyncThunk(
 //   }
 // )
 
-// // Fetch a specific room for a specific date
-// export const fetchRoomForIndividualDate = createAsyncThunk(
-//   'individualDates/fetchRoomForDate',
-//   async ({ roomId, date }, { rejectWithValue }) => {
-//     const result = await individualDateService.getRoomForDate(roomId, date)
-//     if (result.success) {
-//       return result.data
-//     } else {
-//       return rejectWithValue(result.error)
-//     }
-//   }
-// )
+// Fetch a specific room for a specific date
+export const fetchRoomForIndividualDate = createAsyncThunk(
+  'individualDates/fetchRoomForDate',
+  async ({ id, date }, { rejectWithValue }) => {
+    const result = await individualDateService.getRoomForDate(id, date)
+    if (result.success) {
+      return result.data
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
 
 const initialState = {
   individualDates: [],
   individualDatesForRoom: [],
+  currentIndividualDate: [],
   roomsForIndividualDate: [],
-  currentIndividualDate: null
 }
 
 const individualDateSlice = createSlice({
@@ -70,36 +70,7 @@ const individualDateSlice = createSlice({
         ...state,
         individualDates: [...state.individualDates, action.payload],
       }
-    },
-    setCurrentIndividualDate(state, action) {
-      return {
-        ...state,
-        currentIndividualDate: action.payload,
-      }
-    },
-    updateIndividualDate(state, action) {
-      const index = state.individualDates.findIndex(
-        (date) => date.id === action.payload.id
-      )
-      if (index !== -1) {
-        state.individualDates[index] = action.payload
-      }
-      return state
-    },
-    deleteIndividualDate(state, action) {
-      return {
-        ...state,
-        individualDates: state.individualDates.filter(
-          (date) => date.id !== action.payload
-        ),
-      }
-    },
-    deleteAllIndividualDates(state) {
-      return {
-        ...state,
-        individualDates: [],
-      }
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -112,18 +83,14 @@ const individualDateSlice = createSlice({
       // .addCase(fetchRoomsForIndividualDate.fulfilled, (state, action) => {
       //   state.roomsForIndividualDate = action.payload
       // })
-      // .addCase(fetchRoomForIndividualDate.fulfilled, (state, action) => {
-      //   state.currentIndividualDate = action.payload
-      // })
+      .addCase(fetchRoomForIndividualDate.fulfilled, (state, action) => {
+        state.currentIndividualDate = action.payload
+      })
   },
 })
 
 export const {
   addIndividualDate,
-  setCurrentIndividualDate,
-  updateIndividualDate,
-  deleteIndividualDate,
-  deleteAllIndividualDates,
 } = individualDateSlice.actions
 
 export const selectIndividualDates = (state) => state.individualDates.individualDates
