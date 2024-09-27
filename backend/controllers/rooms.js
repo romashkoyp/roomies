@@ -30,7 +30,7 @@ router.get('/', tokenExtractor, isTokenUser, isSession,
       attributes: { exclude: ['userId'] }
     })
 
-    if (!rooms.length) throw new Error('Rooms not found')
+    //if (!rooms.length) throw new Error('Rooms not found')
     res.status(200).json(rooms)
   }
 )
@@ -89,7 +89,7 @@ router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
       ]
     })
 
-    if (!dates.length) throw new Error('No dates available for rooms')
+    //if (!dates.length) throw new Error('No dates available for rooms')
     res.status(200).json(dates)
   }
 )
@@ -200,7 +200,7 @@ router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFi
       ]
     })
 
-    if (!dates.length) throw new Error('No dates available for current room')
+    //if (!dates.length) throw new Error('No dates available for current room')
     res.status(200).json(dates)
   }
 )
@@ -389,7 +389,7 @@ router.get('/:id/:date', tokenExtractor, isTokenUser, isSession, roomFinder, dat
       }
     }
 
-    if (room.settings.availability !== true) throw new Error('Room not available on this date')
+    //if (room.settings.availability !== true) throw new Error('Room not available on this date')
 
     const response = {
       id: room.id,

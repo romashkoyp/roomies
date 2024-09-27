@@ -32,7 +32,7 @@ router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
       ]
     })
 
-    if (!users.length) throw new Error ('No users found')
+    //if (!users.length) throw new Error ('No users found')
 
     res.status(200).json(users)
   }
