@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from '../services/signin'
 import { setNotification } from '../reducers/notificationReducer'
@@ -75,6 +75,7 @@ const Menu = () => {
               <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
               <NavLinkStyled to="/users">Users</NavLinkStyled>
               <NavLinkStyled to="/rooms/dates">Dates</NavLinkStyled>
+              <NavLinkStyled to="/settings/weekdays">Weekdays</NavLinkStyled>
             </>
           )}
           {user && <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>}

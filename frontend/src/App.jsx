@@ -22,6 +22,8 @@ import signinService from './services/signin'
 import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
 import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
 import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
+import AllWeekdaysView from './components/Weekdays/AllWeekdaysView'
+import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -41,6 +43,8 @@ const App = () => {
   const individualDates = useSelector(selectIndividualDates)
   // eslint-disable-next-line no-unused-vars
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
+  // eslint-disable-next-line no-unused-vars
+  const weekdays = useSelector(selectWeekdays)
 
   // Fetch logged in user data
   useEffect(() => {
@@ -132,6 +136,13 @@ const App = () => {
     }
   }, [dispatch, user, location.pathname])
 
+  // Fetch all weekdays for settings
+  useEffect(() => {
+    if (user?.enabled && user.admin) {
+      dispatch(fetchWeekdays())
+    }
+  }, [dispatch, user])
+
   return (
     <Container>
       <Menu />
@@ -149,6 +160,7 @@ const App = () => {
         <Route path="/rooms/dates" element={<AllDatesView />}/>
         <Route path="/rooms/:id/dates" element={<AllRoomDates/>}/>
         <Route path="/rooms/:id/dates/:date" element={<DateSingle/>}/>
+        <Route path="/settings/weekdays" element={<AllWeekdaysView/>}/>
       </Routes>
     </Container>
   )
