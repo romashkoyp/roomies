@@ -18,7 +18,7 @@ const NewDateForm = () => {
     name: 'Holiday',
     date: new Date().toISOString().slice(0, 10),
     availability: true,
-    time_begin: '15:00',
+    time_begin: '09:00',
     time_end: '17:00',
     roomId: currentRoom.id
   })
@@ -40,7 +40,6 @@ const NewDateForm = () => {
     event.preventDefault()
       const { name, date, availability, time_begin, time_end } = formData
       const result = await individualDateService.addRoomDate(currentRoom.id, { name, date, availability, time_begin, time_end })
-      console.log(formData)
 
       if (result.success) {
         dispatch(addIndividualDate(result.data))
@@ -106,6 +105,7 @@ const NewDateForm = () => {
             name="time_begin"
             value={formData.time_begin}
             onChange={handleChange}
+            disabled={!formData.availability}
           />
         </div>
           
@@ -117,6 +117,7 @@ const NewDateForm = () => {
             name="time_end"
             value={formData.time_end}
             onChange={handleChange}
+            disabled={!formData.availability}
           />
         </div>
         <PrimaryButton type="submit">Submit</PrimaryButton>
