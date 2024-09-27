@@ -21,6 +21,7 @@ const dateFinder = async (req, res, next) => {
   next()
 }
 
+// ROOM ROUTES
 // Get all rooms
 router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
@@ -74,6 +75,7 @@ router.delete('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
+// INDIVIDUAL DATES ROUTES
 // Get all dates for all rooms
 router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   async(req, res) => {
@@ -101,6 +103,7 @@ router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
   }
 )
 
+// INDIVIDUAL ROOM ROUTES
 // Get desired room
 router.get('/:id', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
@@ -188,7 +191,13 @@ router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFi
   async(req, res) => {
     const dates = await IndividualDate.findAll({
       where: { roomId: req.params.id },
-      order: [['date', 'DESC']]
+      order: [['date', 'DESC']],
+      include: [
+        {
+          model: Room,
+          attributes: { exclude: ['userId'] }
+        }
+      ]
     })
 
     if (!dates.length) throw new Error('No dates available for current room')
@@ -342,7 +351,7 @@ router.delete('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, is
   }
 )
 
-// Get desired room for desired date
+// Get desired date for desired room (for calendar)
 router.get('/:id/:date', tokenExtractor, isTokenUser, isSession, roomFinder, dateValidation,
   async (req, res) => {
     const { id, date } = req.params
