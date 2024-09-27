@@ -13,8 +13,8 @@ const AllDatesView = () => {
 
   if (!user) return null
 
-  const handleRowClick = (date) => {
-    navigate(`/rooms/dates/${date}`)
+  const handleRowClick = (date, roomId) => {
+    navigate(`/rooms/${roomId}/dates/${date}`)
   }
 
   if (Array.isArray(dates) && dates.length > 0) {
@@ -37,7 +37,7 @@ const AllDatesView = () => {
             {dates.map((date) => (
               <tr
                 key={date.id}
-                onClick={() => handleRowClick(date.date)}
+                onClick={() => handleRowClick(date.date, date.roomId)}
                 style={{ cursor: 'pointer' }}
               >
                 <td>{date.room.name}</td>
