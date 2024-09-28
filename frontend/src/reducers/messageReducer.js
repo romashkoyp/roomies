@@ -13,33 +13,39 @@ export const fetchMessages = createAsyncThunk(
   }
 )
 
+export const fetchMessage = createAsyncThunk(
+  'messages/fetchOne',
+  async (id, { rejectWithValue }) => {
+    const result = await messageService.getOneMessage(id)
+    if (result.success) {
+      return result.data
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
+
+const initialState = {
+  messages: [],
+  message: null
+}
+
 const messagesSlice = createSlice({
   name: 'messages',
-  initialState: [],
-  reducers: {
-    setMessages(state, action) {
-      return action.payload
-    },
-    addMessage(state, action) {
-      state.push(action.payload)
-    },
-    updateMessage(state, action) {
-      const index = state.findIndex(message => message.id === action.payload.id)
-      if (index !== -1) {
-        state[index] = action.payload
-      }
-    },
-    deleteMessage(state, action) {
-      return [...state.filter(message => message.id !== action.payload)]
-    },
-  },
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchMessages.fulfilled, (state, action) => {
-      return action.payload
-    })
+    builder
+      .addCase(fetchMessages.fulfilled, (state, action) => {
+        state.messages = action.payload
+      })
+      .addCase(fetchMessage.fulfilled, (state, action) => {
+        state.message = action.payload
+      })
   }
 })
 
-export const { setMessages, addMessage, updateMessage, deleteMessage } = messagesSlice.actions
-export const selectMessages = (state) => state.messages
+export const { updateMessage } = messagesSlice.actions
+export const selectMessages = (state) => state.messages.messages
+export const selectMessage = (state) => state.messages.message
 export default messagesSlice.reducer
