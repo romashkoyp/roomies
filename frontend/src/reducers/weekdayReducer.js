@@ -31,18 +31,6 @@ export const fetchWeekday = createAsyncThunk(
   }
 )
 
-export const updateGlobalWeekdays = createAsyncThunk(
-  'weekdays/updateAll',
-  async (availability, time_begin, time_end, { rejectWithValue }) => {
-    const response = await weekdaysService.updateGlobalWeekdays(availability, time_begin, time_end)
-  if (response.success) {
-    return response.data
-  } else {
-      return rejectWithValue(response.error)
-    }
-  }
-)
-
 const initialState = {
   weekdays: [],
   currentWeekday: []
