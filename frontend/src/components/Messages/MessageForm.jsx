@@ -6,7 +6,7 @@ import { setNotification } from '../../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { selectUser } from '../../reducers/userReducer'
 import messageService from '../../services/message'
-import { fetchMessages, addMessage } from '../../reducers/messageReducer'
+import { fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
 import LinkHeader from '../styles/LinkHeader'
 
@@ -29,12 +29,12 @@ const MessageForm = () => {
     const result = await messageService.postMessage({ content })
 
     if (result.success) {
-      dispatch(addMessage(result.data))
       dispatch(fetchMessages())
       dispatch(setNotification('Message created', 'success', 5))
-      setContent('')
+      setContent('Message 2')
       setIsVisible(false)
     } else {
+      dispatch(fetchMessages())
       dispatch(setNotification(result.error, 'error', 5))
     }
   }

@@ -17,7 +17,7 @@ import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { selectUser, setUser, selectUsers, fetchUsers, fetchUser, selectCurrentUser } from './reducers/userReducer'
 import { selectRooms, fetchRooms, fetchRoom, selectCurrentRoom } from './reducers/roomReducer'
-import { selectMessages, fetchMessages } from './reducers/messageReducer'
+import { selectMessages, selectMessage, fetchMessages, fetchMessage } from './reducers/messageReducer'
 import signinService from './services/signin'
 import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
 import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
@@ -33,6 +33,8 @@ const App = () => {
   const users = useSelector(selectUsers)
   // eslint-disable-next-line no-unused-vars
   const messages = useSelector(selectMessages)
+  // eslint-disable-next-line no-unused-vars
+  const message = useSelector(selectMessage)
   // eslint-disable-next-line no-unused-vars
   const currentUser = useSelector(selectCurrentUser)
   // eslint-disable-next-line no-unused-vars
@@ -73,7 +75,21 @@ const App = () => {
         dispatch(fetchUsers())
       }
     }
-  }, [dispatch, user])  
+  }, [dispatch, user])
+
+  // Fetch one message
+  useEffect(() => {
+    const path = location.pathname.split('/')
+    const notificationIdIndex = path.indexOf('notifications') + 1
+    const notificationId = path[notificationIdIndex]
+
+    if (/^\d+$/.test(notificationId)) {
+      const currentNotificationId = Number(notificationId)
+      if (user?.enabled && path[1] === 'notifications' && currentNotificationId > 0) {
+        dispatch(fetchMessage(currentNotificationId))
+      }
+    }
+  }, [dispatch, user, location.pathname])
   
   // Fetch one user
   useEffect(() => {

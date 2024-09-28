@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
-import { useDispatch } from 'react-redux'
 import { selectUser } from '../../reducers/userReducer'
 import messageService from '../../services/message'
-import { fetchMessages, updateMessage } from '../../reducers/messageReducer'
+import { fetchMessage, fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
 
 const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
@@ -23,11 +22,12 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
     event.preventDefault()
     const result = await messageService.updateMessage(id, content)
     if (result.success) {
-      dispatch(updateMessage(id))
+      dispatch(fetchMessage(id))
       dispatch(fetchMessages())
       onUpdateSuccess()
       dispatch(setNotification('Message updated', 'success', 5))
     } else {
+      dispatch(fetchMessages())
       dispatch(setNotification(result.error, 'error', 5))
     }
   }

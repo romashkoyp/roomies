@@ -8,7 +8,7 @@ import MessageWrapper from '../styles/MessageWrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
 import messageService from '../../services/message'
 import { setNotification } from '../../reducers/notificationReducer'
-import { fetchMessages, deleteMessage, selectMessages } from '../../reducers/messageReducer'
+import { fetchMessages, selectMessage } from '../../reducers/messageReducer'
 
 const SingleMessage = () => {
   const dispatch = useDispatch()
@@ -16,9 +16,8 @@ const SingleMessage = () => {
   const user = useSelector(selectUser)
   const { id } = useParams()
   const messageId = Number(id)
-  const messages = useSelector(selectMessages)
-  const message = messages.find(msg => msg.id === messageId)
-  const [isEditMode, setIsEditMode] = useState(false)
+  const message = useSelector(selectMessage)
+  const [isEditMode, setIsEditMode] = useState(false)  
 
   if (!user) return null
 
@@ -35,17 +34,11 @@ const SingleMessage = () => {
     if (confirm("Are you sure?")) {
       const result = await messageService.deleteMessage(id)
       if (result.success) {
-        dispatch(deleteMessage(id))
         dispatch(fetchMessages())
-        if (messages.length > 1) {
-          dispatch(setNotification('Message deleted', 'success', 5))
-          navigate('/notifications')
-        } else if (messages.length === 1 || messages.length === 0) {
-          navigate('/notifications')
-          window.location.reload() // I don't know how to solve a problem with the last message visibility after deletion without reloading page
-          dispatch(setNotification('Message deleted', 'success', 5))
-        }
+        navigate('/notifications')
+        dispatch(setNotification('Message deleted', 'success', 5))
       } else {
+        dispatch(fetchMessages())
         dispatch(setNotification(result.error, 'error', 5))
       }
     } else return null

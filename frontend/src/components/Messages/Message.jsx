@@ -12,7 +12,7 @@ const Message = () => {
 
   if (!user) return null
 
-  if (Array.isArray(messages) && messages.length > 0) {
+  if (messages?.length > 0) {
     const firstThreeMessages = messages.slice(0, 3)
 
     return (

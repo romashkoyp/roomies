@@ -5,7 +5,7 @@ import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import weekdaysService from '../../services/weekday'
-import { updateGlobalWeekdays, fetchWeekdays } from '../../reducers/weekdayReducer'
+import { fetchWeekdays } from '../../reducers/weekdayReducer'
 import LinkHeader from '../styles/LinkHeader'
 
 const AllWeekdaysForm = () => {
@@ -22,7 +22,6 @@ const AllWeekdaysForm = () => {
     const result = await weekdaysService.updateGlobalWeekdays(formData)
 
     if (result.success) {
-      dispatch(updateGlobalWeekdays(result.data))
       dispatch(fetchWeekdays())
       dispatch(setNotification('Weekdays updated successfully!', 'success', 5))
       setFormData({
