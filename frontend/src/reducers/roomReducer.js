@@ -33,34 +33,7 @@ const initialState = {
 const roomSlice = createSlice({
   name: 'rooms',
   initialState,
-  reducers: {
-    addRoom(state, action) {
-      return {
-        ...state,
-        rooms: [...state.rooms, action.payload]
-      }
-    },
-    setCurrentRoom(state, action) {
-      return {
-        ...state,
-        currentRoom: action.payload
-      }
-    },
-    updateRoom(state, action) {
-      return {
-        ...state,
-        rooms: state.rooms.map(room =>
-          room.id === action.payload.id ? action.payload : room
-        )
-      }
-    },
-    deleteRoom(state, action) {
-      return {
-        ...state,
-        rooms: state.rooms.filter(room => room.id !== action.payload),
-      } 
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchRooms.fulfilled, (state, action) => {
@@ -72,7 +45,6 @@ const roomSlice = createSlice({
   }
 })
 
-export const { addRoom, setCurrentRoom, deleteRoom, updateRoom } = roomSlice.actions
 export const selectRooms = (state) => state.rooms.rooms
 export const selectCurrentRoom = (state) => state.rooms.currentRoom
 export default roomSlice.reducer

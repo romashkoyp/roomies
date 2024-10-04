@@ -28,6 +28,20 @@ export const fetchIndividualDatesForRoom = createAsyncThunk(
   }
 )
 
+// Fetch one individual date for a specific room
+export const fetchIndividualDateForRoom = createAsyncThunk(
+  'individualDates/fetchIndividualDateForRoom',
+  async (id, { rejectWithValue }) => {
+    const result = await individualDateService.getRoomDates(id)
+
+    if (result.success) {
+      return result.data
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
+
 // Fetch all rooms for a specific date
 // export const fetchRoomsForIndividualDate = createAsyncThunk(
 //   'individualDates/fetchRoomsForDate',
@@ -64,14 +78,7 @@ const initialState = {
 const individualDateSlice = createSlice({
   name: 'individualDates',
   initialState,
-  reducers: {
-    addIndividualDate(state, action) {
-      return {
-        ...state,
-        individualDates: [...state.individualDates, action.payload],
-      }
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllIndividualDates.fulfilled, (state, action) => {
@@ -88,10 +95,6 @@ const individualDateSlice = createSlice({
       })
   },
 })
-
-export const {
-  addIndividualDate,
-} = individualDateSlice.actions
 
 export const selectIndividualDates = (state) => state.individualDates.individualDates
 export const selectIndividualDatesForRoom = (state) => state.individualDates.individualDatesForRoom
