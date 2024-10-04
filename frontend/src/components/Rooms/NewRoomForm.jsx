@@ -5,7 +5,7 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import roomService from '../../services/room'
-import { fetchRooms, addRoom } from '../../reducers/roomReducer'
+import { fetchRooms } from '../../reducers/roomReducer'
 import LinkHeader from '../styles/LinkHeader'
 
 const RoomForm = () => {
@@ -37,7 +37,6 @@ const RoomForm = () => {
     const result = await roomService.addRoom({ name, capacity, size, image_path })
 
     if (result.success) {
-      dispatch(addRoom(result.data))
       dispatch(fetchRooms())
       dispatch(setNotification('Room created', 'success', 5))
       setFormData({
@@ -48,6 +47,7 @@ const RoomForm = () => {
       })
       setIsVisible(false)
     } else {
+      dispatch(fetchRooms())
       dispatch(setNotification(result.error, 'error', 5))
     }
   }

@@ -5,7 +5,7 @@ import { PrimaryButton } from '../../styles/Buttons'
 import { setNotification } from '../../../reducers/notificationReducer'
 import { selectUser } from '../../../reducers/userReducer'
 import individualDateService from '../../../services/individualDate'
-import { fetchIndividualDatesForRoom, fetchAllIndividualDates, addIndividualDate } from '../../../reducers/individualDateReducer'
+import { fetchIndividualDatesForRoom, fetchAllIndividualDates } from '../../../reducers/individualDateReducer'
 import { selectCurrentRoom } from '../../../reducers/roomReducer'
 import LinkHeader from '../../styles/LinkHeader'
 
@@ -42,7 +42,6 @@ const NewDateForm = () => {
       const result = await individualDateService.addRoomDate(currentRoom.id, { name, date, availability, time_begin, time_end })
 
       if (result.success) {
-        dispatch(addIndividualDate(result.data))
         dispatch(fetchIndividualDatesForRoom(currentRoom.id))
         dispatch(fetchAllIndividualDates())
         dispatch(setNotification('Date added successfully', 'success', 5))

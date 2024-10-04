@@ -18,7 +18,7 @@ const SingleDate = () => {
   const currentIndividualDate = individualDatesForRoom.find(item => item.date === date)
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-  if (!user || !currentIndividualDate) return null;
+  if (!user || !currentIndividualDate) return null
 
   const handleDeleteDate = async (event) => {
     event.preventDefault()

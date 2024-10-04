@@ -15,7 +15,7 @@ import RoomSingle from './components/Rooms/RoomSingle'
 import DateSingle from './components/Rooms/IndividualDates/DateSingle'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
-import { selectUser, setUser, selectUsers, fetchUsers, fetchUser, selectCurrentUser } from './reducers/userReducer'
+import { selectUser, setUser, selectUsers, fetchUsers, fetchCurrentUser, selectCurrentUser } from './reducers/userReducer'
 import { selectRooms, fetchRooms, fetchRoom, selectCurrentRoom } from './reducers/roomReducer'
 import { selectMessages, selectMessage, fetchMessages, fetchMessage } from './reducers/messageReducer'
 import signinService from './services/signin'
@@ -91,7 +91,7 @@ const App = () => {
     }
   }, [dispatch, user, location.pathname])
   
-  // Fetch one user
+  // Fetch current user
   useEffect(() => {
     const path = location.pathname.split('/')
     const userIdIndex = path.indexOf('users') + 1
@@ -99,9 +99,9 @@ const App = () => {
 
     if (/^\d+$/.test(userId)) {
       const currentUserId = Number(userId)
-      if (user?.admin && user.enabled) {
-        dispatch(fetchUser(currentUserId))
-      }
+      if (user?.admin && user.enabled) { 
+        dispatch(fetchCurrentUser(currentUserId))
+       }
     }
   }, [dispatch, user, location.pathname])
 
@@ -128,13 +128,10 @@ const App = () => {
 
   // Fetch all individual dates for all rooms
   useEffect(() => {
-    const path = location.pathname.split('/')
     if (user?.enabled) {
-      if (path.length === 3 && path[1] === 'rooms' && path[2] === 'dates') {
-        dispatch(fetchAllIndividualDates())
-      }
+      dispatch(fetchAllIndividualDates())
     }
-  }, [dispatch, user, location.pathname ])
+  }, [dispatch, user])
 
   // Fetch all individual dates for one room
   useEffect(() => {
@@ -145,7 +142,7 @@ const App = () => {
     if (/^\d+$/.test(roomId)) {
       const currentRoomId = Number(roomId)
       if (user?.enabled) {
-        if (path.length === 5 && path[1] === 'rooms' && path[3] === 'dates') {
+        if (path[1] === 'rooms' && path[2] > 0 && path[3] === 'dates') {
           dispatch(fetchIndividualDatesForRoom(currentRoomId))
         }
       }

@@ -4,7 +4,7 @@ import { PrimaryButton } from './styles/Buttons'
 import signinService from '../services/signin'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { setUser } from '../reducers/userReducer'
+import { fetchUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const SigninForm = () => {
@@ -21,7 +21,7 @@ const SigninForm = () => {
       const user = result.data
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       signinService.setToken(user.token)
-      dispatch(setUser(user))
+      dispatch(fetchUser(user.id))
       dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
       setUsername('')
       setPassword('')

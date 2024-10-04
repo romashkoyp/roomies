@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
-import { deleteUser, selectUser, fetchUsers, selectCurrentUser, setCurrentUser } from '../../reducers/userReducer'
+import { selectUser, fetchUsers, selectCurrentUser } from '../../reducers/userReducer'
 import UserUpdateForm from './UserUpdateForm'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
@@ -32,8 +32,6 @@ const SingleUser = () => {
     if (confirm("Are you sure?")) { 
       const result = await userService.deleteUser(id)
       if (result.success) {
-        dispatch(deleteUser(id))
-        dispatch(setCurrentUser(null))
         dispatch(fetchUsers())
         dispatch(setNotification('User deleted', 'success', 5))
         navigate('/users')

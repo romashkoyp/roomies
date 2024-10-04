@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { selectUser } from '../../reducers/userReducer'
-import { deleteRoom, fetchRooms, selectCurrentRoom, selectRooms, setCurrentRoom } from '../../reducers/roomReducer'
+import { fetchRooms, selectCurrentRoom } from '../../reducers/roomReducer'
 import RoomUpdateForm from './RoomUpdateForm'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
@@ -14,7 +14,6 @@ const SingleRoom = () => {
   const navigate = useNavigate()
   const user = useSelector(selectUser)
   const currentRoom = useSelector(selectCurrentRoom)
-  const rooms = useSelector(selectRooms)
   const { id } = useParams()
   const currentRoomId = Number(id)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -34,18 +33,9 @@ const SingleRoom = () => {
     if (confirm("Are you sure?")) {    
       const result = await roomService.deleteRoom(id)
       if (result.success) {
-        dispatch(deleteRoom(id))
-        dispatch(setCurrentRoom(null))
         dispatch(fetchRooms())
-        if (rooms.length > 1) {
-          dispatch(setNotification('Room deleted', 'success', 5))
-          navigate('/rooms')
-        } else if (rooms.length === 1 || rooms.length === 0)
-          {
-            navigate('/rooms')
-            window.location.reload()
-            dispatch(setNotification('Room deleted', 'success', 5))
-          }
+        navigate('/rooms')
+        dispatch(setNotification('Room deleted', 'success', 5))
       } else {
         dispatch(fetchRooms())
         dispatch(setNotification(result.error, 'error', 5))
