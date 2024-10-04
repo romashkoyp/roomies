@@ -23,6 +23,7 @@ import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
 import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
 import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
 import AllWeekdaysView from './components/Weekdays/AllWeekdaysView'
+import WeekdaySingle from './components/Weekdays/WeekDaySingle'
 import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
 
 const App = () => {
@@ -171,9 +172,10 @@ const App = () => {
         <Route path="/rooms" element={<AllRoomsView />}/>
         <Route path="/rooms/:id" element={<RoomSingle />}/>
         <Route path="/rooms/dates" element={<AllDatesView />}/>
-        <Route path="/rooms/:id/dates" element={<AllRoomDates/>}/>
-        <Route path="/rooms/:id/dates/:date" element={<DateSingle/>}/>
-        <Route path="/settings/weekdays" element={<AllWeekdaysView/>}/>
+        <Route path="/rooms/:id/dates" element={<AllRoomDates />}/>
+        <Route path="/rooms/:id/dates/:date" element={<DateSingle />}/>
+        <Route path="/settings/weekdays" element={<AllWeekdaysView />}/>
+        <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
       </Routes>
     </Container>
   )

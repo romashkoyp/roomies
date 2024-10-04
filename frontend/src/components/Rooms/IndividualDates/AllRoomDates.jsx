@@ -11,6 +11,7 @@ const AllRoomDates = () => {
   const currentRoom = useSelector(selectCurrentRoom)
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
   const navigate = useNavigate()
+  const formatTime = (time) => (time ? time.slice(0, -3) : null)
 
   if (!user || !currentRoom) return null
 
@@ -44,8 +45,8 @@ const AllRoomDates = () => {
                   <td>{date.date}</td>
                   <td>{date.name}</td>
                   <td>{date.availability ? 'Yes' : 'No'}</td>
-                  <td>{date.timeBegin}</td>
-                  <td>{date.timeEnd}</td>
+                  <td>{formatTime(date.timeBegin)}</td>
+                  <td>{formatTime(date.timeEnd)}</td>
                 </tr>
               ))}
             </tbody>

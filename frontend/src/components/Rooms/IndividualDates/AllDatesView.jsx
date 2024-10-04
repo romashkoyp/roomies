@@ -10,6 +10,7 @@ const AllDatesView = () => {
   const dates = useSelector(selectIndividualDates)
   const navigate = useNavigate()
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const formatTime = (time) => (time ? time.slice(0, -3) : null)
 
   if (!user) return null
 
@@ -45,8 +46,8 @@ const AllDatesView = () => {
                 <td>{daysOfWeek[date.dayOfWeek]}</td>
                 <td>{date.name}</td>
                 <td>{date.availability ? 'Yes' : 'No'}</td>
-                <td>{date.timeBegin}</td>
-                <td>{date.timeEnd}</td>
+                <td>{formatTime(date.timeBegin)}</td>
+                <td>{formatTime(date.timeEnd)}</td>
               </tr>
             ))}
           </tbody>

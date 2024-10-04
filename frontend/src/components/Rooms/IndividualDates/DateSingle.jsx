@@ -1,8 +1,8 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
-import { selectUser } from '../../../reducers/userReducer';
-import { selectIndividualDatesForRoom } from '../../../reducers/individualDateReducer';
-import Wrapper from '../../styles/Wrapper';
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams, useNavigate } from 'react-router-dom'
+import { selectUser } from '../../../reducers/userReducer'
+import { selectIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
+import Wrapper from '../../styles/Wrapper'
 import { SecondaryButton } from '../../styles/Buttons'
 import individualDateService from '../../../services/individualDate'
 import { setNotification } from '../../../reducers/notificationReducer'
@@ -17,6 +17,7 @@ const SingleDate = () => {
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
   const currentIndividualDate = individualDatesForRoom.find(item => item.date === date)
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const formatTime = (time) => (time ? time.slice(0, -3) : null)
 
   if (!user || !currentIndividualDate) return null
 
@@ -56,12 +57,12 @@ const SingleDate = () => {
             <td>{currentIndividualDate.availability ? 'Yes' : 'No'}</td>
           </tr>
           <tr>
-            <th>Time Begin</th>
-            <td>{currentIndividualDate.timeBegin}</td>
+            <th>Time Start</th>
+            <td>{formatTime(currentIndividualDate.timeBegin)}</td>
           </tr>
           <tr>
             <th>Time End</th>
-            <td>{currentIndividualDate.timeEnd}</td>
+            <td>{formatTime(currentIndividualDate.timeEnd)}</td>
           </tr>
         </tbody>
       </table>

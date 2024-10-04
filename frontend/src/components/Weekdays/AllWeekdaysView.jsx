@@ -41,8 +41,8 @@ const AllWeekdaysView = () => {
                 >
                   <td>{daysOfWeek[weekday.dayOfWeek]}</td>
                   <td>{weekday.availability ? 'Yes' : 'No'}</td>
-                  <td>{weekday.timeBegin}</td>
-                  <td>{weekday.timeEnd}</td>
+                  <td>{weekday.timeBegin?.slice(0, -3)}</td>
+                  <td>{weekday.timeEnd?.slice(0, -3)}</td>
                 </tr>
               ))}
             </tbody>

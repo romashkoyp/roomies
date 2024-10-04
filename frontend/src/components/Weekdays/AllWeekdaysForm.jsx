@@ -37,7 +37,20 @@ const AllWeekdaysForm = () => {
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
-    setFormData(prevData => ({ ...prevData, [name]: type === 'checkbox' ? checked : value }))
+  
+    if (name === 'availability') {
+      setFormData(prevData => ({
+        ...prevData,
+        availability: checked,
+        time_begin: checked ? prevData.time_begin : '',
+        time_end: checked ? prevData.time_end : ''
+      }))
+    } else {
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value
+      }))
+    }
   }
 
   const [isVisible, setIsVisible] = useState(false)
@@ -86,7 +99,7 @@ const AllWeekdaysForm = () => {
               type="time"
               id="time_begin"
               name="time_begin"
-              value={formData.time_begin}
+              value={(formData.time_begin || '')}
               onChange={handleChange}
               disabled={!formData.availability}
             />
@@ -97,7 +110,7 @@ const AllWeekdaysForm = () => {
               type="time"
               id="time_end"
               name="time_end"
-              value={formData.time_end}
+              value={(formData.time_end || '')}
               onChange={handleChange}
               disabled={!formData.availability}
             />

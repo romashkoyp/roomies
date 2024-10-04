@@ -73,7 +73,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               placeholder="name"
               name="name"
               id="name"
-              value={formData.name}
+              value={(formData.name || '')}
               onChange={handleChange}
             />
           </div>
@@ -86,7 +86,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               id="capacity"
               name="capacity"
               placeholder="50"
-              value={formData.capacity}
+              value={(formData.capacity || '')}
               onChange={handleChange}
             />
           </div>
@@ -98,7 +98,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               id="size"
               name="size"
               placeholder="50"
-              value={formData.size}
+              value={(formData.size || '')}
               onChange={handleChange}
             />
           </div>
@@ -109,7 +109,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
               type="url"
               id="url"
               name="imagePath"
-              value={formData.imagePath}
+              value={formData.imagePath || ''}
               onChange={handleChange}
             />
           </div>
