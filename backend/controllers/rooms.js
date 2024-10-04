@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { sequelize } = require('../util/db')
 const { Room, IndividualDate, GlobalDate, GlobalWeekday, Booking } = require('../models')
 const { tokenExtractor, isTokenUser, isAdmin, isSession } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
@@ -174,15 +175,23 @@ router.put('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
     }
 
     await req.room.save()
-    return res.status(201).json(req.room)
+    return res.status(200).json(req.room)
   })
 
 // Delete desired room
 router.delete('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinder,
   async (req, res) => {
-    await req.room.destroy()
-    console.log('Room deleted')
-    res.status(204).end()
+    const t = await sequelize.transaction()
+    try {
+      await IndividualDate.destroy({ where: { roomId: req.room.id }, transaction: t })
+      await Room.destroy({ where: { id: req.room.id }, transaction: t })
+      console.log('Room and related records deleted')
+      await t.commit()
+      res.status(204).end()
+    } catch (error) {
+      await t.rollback()
+      console.error('Error deleting room:', error)
+    }
   }
 )
 

@@ -100,7 +100,7 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, isParamUser, isAdminO
     }
 
     await req.paramUser.save()
-    return res.status(201).json(excludePasswordHash(req.paramUser))
+    return res.status(200).json(excludePasswordHash(req.paramUser))
   }
 )
 

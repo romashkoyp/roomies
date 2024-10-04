@@ -61,8 +61,8 @@ router.put('/:id', tokenExtractor, notificationFinder, isTokenUser, isSession, i
 
     req.notification.content = req.body.content
     await req.notification.save()
-    res.json(req.notification)
     console.log('notification updated')
+    return res.status(200).json(req.notification)
   })
 
 router.delete('/:id', tokenExtractor, notificationFinder, isTokenUser, isSession, isAdmin,

@@ -113,7 +113,7 @@ router.put('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, weekday
       console.log('Global availability, time begin and time end for all weekdays updated')
     }
 
-    return res.status(201).json(updatedWeekdays)
+    return res.status(200).json(updatedWeekdays)
   }
 )
 
@@ -194,7 +194,7 @@ router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSessi
 
     await req.dayOfWeek.save()
     console.log('Global availability, time begin and time end for weekday updated')
-    return res.status(201).json(req.dayOfWeek)
+    return res.status(200).json(req.dayOfWeek)
   }
 )
 
