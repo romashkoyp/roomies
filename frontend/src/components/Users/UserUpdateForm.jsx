@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
-import { selectUser, updateUser, fetchUsers, fetchUser, selectCurrentUser } from '../../reducers/userReducer'
+import { fetchUser, selectUser, selectCurrentUser, fetchCurrentUser } from '../../reducers/userReducer'
 import userService from '../../services/user'
 
 const UserUpdateForm = ({ id, onUpdateSuccess }) => {
@@ -20,13 +20,9 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
   const [originalData, setOriginalData] = useState({})
 
   useEffect(() => {
-    if (!currentUser) {
-      dispatch(fetchUser(id))
-    } else {
-      setFormData(currentUser)
-      setOriginalData(currentUser)
-    }
-  }, [currentUser, dispatch, id])
+    setFormData(currentUser)
+    setOriginalData(currentUser)
+  }, [currentUser, dispatch])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -53,14 +49,21 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
       updatedFields.enabled)
 
     if (result.success) {
-      dispatch(updateUser(result.data))
-      dispatch(fetchUser(id))
-      dispatch(fetchUsers())
+      if (user.id === id) {
+        const storedUser = JSON.parse(window.localStorage.getItem('loggedUser'))
+        const updatedUser = {
+          ...storedUser,
+          ...updatedFields
+        }
+        window.localStorage.setItem('loggedUser', JSON.stringify(updatedUser))
+        dispatch(fetchUser(id))
+      }
+      dispatch(fetchCurrentUser(id))
       dispatch(setNotification('User updated', 'success', 5))
       onUpdateSuccess()
-    } else {
-      dispatch(setNotification(result.error, 'error', 5))
-    }
+      } else {
+        dispatch(setNotification(result.error, 'error', 5))
+      }
   }
 
   if (user === undefined) return null
