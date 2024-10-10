@@ -5,6 +5,7 @@ import messageReducer from './messageReducer'
 import roomReducer from './roomReducer'
 import individualDateReducer from './individualDateReducer'
 import weekdayReducer from './weekdayReducer'
+import globalDateReducer from './globalDateReducer'
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
       messages: messageReducer,
       rooms: roomReducer,
       individualDates: individualDateReducer,
-      weekdays: weekdayReducer
+      weekdays: weekdayReducer,
+      globalDates: globalDateReducer
     }
   })
 
