@@ -19,18 +19,6 @@ export const fetchWeekdays = createAsyncThunk(
   }
 )
 
-export const fetchWeekday = createAsyncThunk(
-  'weekdays/fetchOne',
-  async (id, { rejectWithValue }) => {
-    const result = await weekdaysService.getWeekday(id)
-    if (result.success) {
-      return result.data
-    } else {
-      return rejectWithValue(result.error)
-    }
-  }
-)
-
 const initialState = {
   weekdays: [],
   currentWeekday: []
@@ -43,9 +31,6 @@ const weekdaySlice = createSlice({
     builder
       .addCase(fetchWeekdays.fulfilled, (state, action) => {
         state.weekdays = action.payload
-      })
-      .addCase(fetchWeekday.fulfilled, (state, action) => {
-        state.currentWeekday = action.payload
       })
   }
 })
