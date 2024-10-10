@@ -25,6 +25,9 @@ import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
 import AllWeekdaysView from './components/Weekdays/AllWeekdaysView'
 import WeekdaySingle from './components/Weekdays/WeekDaySingle'
 import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
+import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
+import GlobalDateSingle from './components/Dates/GlobalDateSingle'
+import { fetchGlobalDates } from './reducers/globalDateReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -157,6 +160,13 @@ const App = () => {
     }
   }, [dispatch, user])
 
+  // Fetch all global dates for all rooms
+  useEffect(() => {
+    if (user?.enabled && user.admin) {
+      dispatch(fetchGlobalDates())
+    }
+  }, [dispatch, user])
+
   return (
     <Container>
       <Menu />
@@ -166,16 +176,18 @@ const App = () => {
         <Route path="/signin" element={<SigninForm />}/>
         <Route path="/signup" element={<SignupForm />}/>
         <Route path="/notifications" element={<Messages />}/>
-        <Route path="/notifications/:id" element={<MessageSingle />}/>
+          <Route path="/notifications/:id" element={<MessageSingle />}/>
         <Route path="/users" element={<AllUsersView />}/>
-        <Route path="/users/:id" element={<UserSingle />}/>
+          <Route path="/users/:id" element={<UserSingle />}/>
         <Route path="/rooms" element={<AllRoomsView />}/>
-        <Route path="/rooms/:id" element={<RoomSingle />}/>
-        <Route path="/rooms/dates" element={<AllDatesView />}/>
-        <Route path="/rooms/:id/dates" element={<AllRoomDates />}/>
-        <Route path="/rooms/:id/dates/:date" element={<DateSingle />}/>
+          <Route path="/rooms/:id" element={<RoomSingle />}/>
+          <Route path="/rooms/dates" element={<AllDatesView />}/>
+          <Route path="/rooms/:id/dates" element={<AllRoomDates />}/>
+          <Route path="/rooms/:id/dates/:date" element={<DateSingle />}/>
         <Route path="/settings/weekdays" element={<AllWeekdaysView />}/>
-        <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
+          <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
+        <Route path="/settings/dates" element={<AllGlobalDatesView />}/>
+          <Route path="/settings/dates/:date" element={<GlobalDateSingle />}/>
       </Routes>
     </Container>
   )
