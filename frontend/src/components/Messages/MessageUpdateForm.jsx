@@ -6,7 +6,7 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import messageService from '../../services/message'
-import { fetchMessage, fetchMessages } from '../../reducers/messageReducer'
+import { fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
 
 const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
@@ -22,7 +22,6 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
     event.preventDefault()
     const result = await messageService.updateMessage(id, content)
     if (result.success) {
-      dispatch(fetchMessage(id))
       dispatch(fetchMessages())
       onUpdateSuccess()
       dispatch(setNotification('Message updated', 'success', 5))

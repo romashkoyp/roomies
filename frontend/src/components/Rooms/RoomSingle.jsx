@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { selectUser } from '../../reducers/userReducer'
-import { fetchRooms, selectCurrentRoom } from '../../reducers/roomReducer'
+import { fetchRooms, selectRooms } from '../../reducers/roomReducer'
 import RoomUpdateForm from './RoomUpdateForm'
 import Wrapper from '../styles/Wrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
@@ -13,8 +13,9 @@ const SingleRoom = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectUser)
-  const currentRoom = useSelector(selectCurrentRoom)
+  const rooms = useSelector(selectRooms)
   const { id } = useParams()
+  const currentRoom = rooms.find(item => item.id === Number(id))
   const currentRoomId = Number(id)
   const [isEditMode, setIsEditMode] = useState(false)
 

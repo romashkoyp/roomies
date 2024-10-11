@@ -16,8 +16,8 @@ import DateSingle from './components/Rooms/IndividualDates/DateSingle'
 import Menu from './components/Menu'
 import Notification from './components/Notification'
 import { selectUser, setUser, selectUsers, fetchUsers, fetchCurrentUser, selectCurrentUser } from './reducers/userReducer'
-import { selectRooms, fetchRooms, fetchRoom, selectCurrentRoom } from './reducers/roomReducer'
-import { selectMessages, selectMessage, fetchMessages, fetchMessage } from './reducers/messageReducer'
+import { selectRooms, fetchRooms } from './reducers/roomReducer'
+import { selectMessages, fetchMessages} from './reducers/messageReducer'
 import signinService from './services/signin'
 import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
 import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
@@ -29,6 +29,7 @@ import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
 import GlobalDateSingle from './components/Dates/GlobalDateSingle'
 import { fetchGlobalDates } from './reducers/globalDateReducer'
 import { fetchBookingsByDate, selectBookings } from './reducers/bookingReducer'
+import MainCalendarView from './components/Bookings/MainCalendarView'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -39,13 +40,9 @@ const App = () => {
   // eslint-disable-next-line no-unused-vars
   const messages = useSelector(selectMessages)
   // eslint-disable-next-line no-unused-vars
-  const message = useSelector(selectMessage)
-  // eslint-disable-next-line no-unused-vars
   const currentUser = useSelector(selectCurrentUser)
   // eslint-disable-next-line no-unused-vars
   const rooms = useSelector(selectRooms)
-  // eslint-disable-next-line no-unused-vars
-  const currentRoom = useSelector(selectCurrentRoom)
   // eslint-disable-next-line no-unused-vars
   const individualDates = useSelector(selectIndividualDates)
   // eslint-disable-next-line no-unused-vars
@@ -83,20 +80,6 @@ const App = () => {
       }
     }
   }, [dispatch, user])
-
-  // Fetch one message
-  useEffect(() => {
-    const path = location.pathname.split('/')
-    const notificationIdIndex = path.indexOf('notifications') + 1
-    const notificationId = path[notificationIdIndex]
-
-    if (/^\d+$/.test(notificationId)) {
-      const currentNotificationId = Number(notificationId)
-      if (user?.enabled && path[1] === 'notifications' && currentNotificationId > 0) {
-        dispatch(fetchMessage(currentNotificationId))
-      }
-    }
-  }, [dispatch, user, location.pathname])
   
   // Fetch current user
   useEffect(() => {
@@ -118,20 +101,6 @@ const App = () => {
       dispatch(fetchRooms())
     }
   }, [dispatch, user])
-
-  // Fetch one room
-  useEffect(() => {
-    const path = location.pathname.split('/')
-    const roomIdIndex = path.indexOf('rooms') + 1
-    const roomId = path[roomIdIndex]
-
-    if (/^\d+$/.test(roomId)) {
-      const currentRoomId = Number(roomId)
-      if (user?.enabled && path[1] === 'rooms' && currentRoomId > 0) {
-        dispatch(fetchRoom(currentRoomId))
-      }
-    }
-  }, [dispatch, user, location.pathname])
 
   // Fetch all individual dates for all rooms
   useEffect(() => {
@@ -172,13 +141,11 @@ const App = () => {
 
   // Fetch all bookings for all rooms by date
   useEffect(() => {
+    const date = new Date().toISOString().slice(0, 10)
     const path = location.pathname.split('/')
-    const date = path[path.length - 1]
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      if (user?.enabled && path[1] === 'bookings') {
-        dispatch(fetchBookingsByDate(date))
-      }
+    const bookings = path[path.length - 1]
+    if (user?.enabled && bookings === 'bookings') {
+      dispatch(fetchBookingsByDate(date))
     }
   }, [dispatch, location.pathname, user])
 
@@ -204,6 +171,7 @@ const App = () => {
             <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
           <Route path="/settings/dates" element={<AllGlobalDatesView />}/>
             <Route path="/settings/dates/:date" element={<GlobalDateSingle />}/>
+          <Route path="/bookings" element={<MainCalendarView />}/>
         </Routes>
       </Container>
     </>

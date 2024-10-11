@@ -6,13 +6,16 @@ import { setNotification } from '../../../reducers/notificationReducer'
 import { selectUser } from '../../../reducers/userReducer'
 import individualDateService from '../../../services/individualDate'
 import { fetchIndividualDatesForRoom, fetchAllIndividualDates } from '../../../reducers/individualDateReducer'
-import { selectCurrentRoom } from '../../../reducers/roomReducer'
+import { selectRooms } from '../../../reducers/roomReducer'
 import LinkHeader from '../../styles/LinkHeader'
+import { useParams } from 'react-router-dom'
 
 const NewDateForm = () => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
-  const currentRoom = useSelector(selectCurrentRoom)
+  const rooms = useSelector(selectRooms)
+  const { id } = useParams()
+  const currentRoom = rooms.find(item => item.id === Number(id))
   const [isVisible, setIsVisible] = useState(false)
   const [formData, setFormData] = useState({
     name: 'Holiday',

@@ -8,15 +8,16 @@ import MessageWrapper from '../styles/MessageWrapper'
 import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
 import messageService from '../../services/message'
 import { setNotification } from '../../reducers/notificationReducer'
-import { fetchMessages, selectMessage } from '../../reducers/messageReducer'
+import { fetchMessages, selectMessages } from '../../reducers/messageReducer'
 
 const SingleMessage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectUser)
+  const messages = useSelector(selectMessages)
   const { id } = useParams()
   const messageId = Number(id)
-  const message = useSelector(selectMessage)
+  const message = messages.find(item => item.id == messageId)
   const [isEditMode, setIsEditMode] = useState(false)  
 
   if (!user) return null

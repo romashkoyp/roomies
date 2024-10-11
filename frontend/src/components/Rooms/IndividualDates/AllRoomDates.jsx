@@ -1,14 +1,16 @@
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../../reducers/userReducer'
-import { useNavigate } from 'react-router-dom'
-import { selectCurrentRoom } from '../../../reducers/roomReducer'
+import { useNavigate, useParams } from 'react-router-dom'
+import { selectRooms } from '../../../reducers/roomReducer'
 import { selectIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
 import Wrapper from '../../styles/Wrapper'
 import NewDateForm from './NewDateForm'
 
 const AllRoomDates = () => {
   const user = useSelector(selectUser)
-  const currentRoom = useSelector(selectCurrentRoom)
+  const rooms = useSelector(selectRooms)
+  const { id } = useParams()
+  const currentRoom = rooms.find(item => item.id == Number(id))
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
   const navigate = useNavigate()
   const formatTime = (time) => (time ? time.slice(0, -3) : null)

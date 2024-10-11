@@ -50,6 +50,7 @@ const NavLinkStyledSignOut = styled(NavLink)`
 
 const Menu = () => {
   const user = useSelector((state) => state.users.user)
+  const date = new Date().toISOString().slice(0, 10)
   const dispatch = useDispatch()
 
   const handleSignout = async () => {
@@ -79,7 +80,12 @@ const Menu = () => {
               <NavLinkStyled to="/settings/dates">Dates</NavLinkStyled>
             </>
           )}
-          {user && <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>}
+          {user &&
+            <> 
+              <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>
+              <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+            </>
+          }
       </NavList>
       <NavList>
         {user ? (

@@ -5,7 +5,7 @@ import { selectRooms } from '../../reducers/roomReducer'
 import Wrapper from '../styles/Wrapper'
 import RoomForm from './NewRoomForm'
 
-const Users = () => {
+const Rooms = () => {
   const user = useSelector(selectUser)
   const rooms = useSelector(selectRooms)
   const navigate = useNavigate()
@@ -62,4 +62,4 @@ const Users = () => {
   }
 }
 
-export default Users
+export default Rooms

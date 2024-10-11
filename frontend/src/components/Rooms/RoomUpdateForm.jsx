@@ -6,19 +6,18 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import roomService from '../../services/room'
-import { selectCurrentRoom, fetchRoom, fetchRooms } from '../../reducers/roomReducer'
+import { selectRooms, fetchRooms } from '../../reducers/roomReducer'
 
 const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
-  const currentRoom = useSelector(selectCurrentRoom)
+  const rooms = useSelector(selectRooms)
+  const currentRoom = rooms.find(item => item.id === Number(id))
   const [formData, setFormData] = useState({})
   const [originalData, setOriginalData] = useState({})
 
   useEffect(() => {
-    if (!currentRoom) {
-      dispatch(fetchRoom(id))
-    } else {
+    if (currentRoom) {
       setFormData(currentRoom)
       setOriginalData(currentRoom)
     }
@@ -49,7 +48,6 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
       updatedFields.imagePath)
 
     if (result.success) {
-      dispatch(fetchRoom(id))
       dispatch(fetchRooms())
       dispatch(setNotification('Room updated', 'success', 5))
       onUpdateSuccess()
