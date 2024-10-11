@@ -13,21 +13,8 @@ export const fetchMessages = createAsyncThunk(
   }
 )
 
-export const fetchMessage = createAsyncThunk(
-  'messages/fetchOne',
-  async (id, { rejectWithValue }) => {
-    const result = await messageService.getOneMessage(id)
-    if (result.success) {
-      return result.data
-    } else {
-      return rejectWithValue(result.error)
-    }
-  }
-)
-
 const initialState = {
-  messages: [],
-  message: null
+  messages: []
 }
 
 const messagesSlice = createSlice({
@@ -39,12 +26,8 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.messages = action.payload
       })
-      .addCase(fetchMessage.fulfilled, (state, action) => {
-        state.message = action.payload
-      })
   }
 })
 
 export const selectMessages = (state) => state.messages.messages
-export const selectMessage = (state) => state.messages.message
 export default messagesSlice.reducer
