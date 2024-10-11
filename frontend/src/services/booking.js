@@ -3,12 +3,15 @@ import BASE_URL from './config'
 
 const url = BASE_URL + '/bookings'
 
-const getBookingsByDate = (date) => apiCall('get', `${url}/${date}`)
+const getBookingsByDate = (date) => apiCall('get', url, null, { date })
 
-const addBooking = (date) => apiCall('post', `${url}/${date}`)
+const addBooking = (bookingData) => apiCall('post', url, bookingData)
 
-const changeBooking = (date) => apiCall('put', `${url}/${date}`)
+const changeBooking = (bookingData) => {
+  const { id: bookingId, ...restOfData } = bookingData
+  return apiCall('put', url, restOfData, { id: bookingId })
+}
 
-const deleteBooking = (date) => apiCall('delete', `${url}/${date}`)
+const deleteBooking = (id) => apiCall('delete', url, null, { id })
 
 export default { getBookingsByDate, addBooking, changeBooking, deleteBooking }
