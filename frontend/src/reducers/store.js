@@ -6,6 +6,7 @@ import roomReducer from './roomReducer'
 import individualDateReducer from './individualDateReducer'
 import weekdayReducer from './weekdayReducer'
 import globalDateReducer from './globalDateReducer'
+import bookingReducer from './bookingReducer'
 
 const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
       rooms: roomReducer,
       individualDates: individualDateReducer,
       weekdays: weekdayReducer,
-      globalDates: globalDateReducer
+      globalDates: globalDateReducer,
+      bookings: bookingReducer
     }
   })
 
