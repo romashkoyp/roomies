@@ -28,6 +28,7 @@ import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
 import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
 import GlobalDateSingle from './components/Dates/GlobalDateSingle'
 import { fetchGlobalDates } from './reducers/globalDateReducer'
+import { fetchBookingsByDate, selectBookings } from './reducers/bookingReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -51,6 +52,8 @@ const App = () => {
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
   // eslint-disable-next-line no-unused-vars
   const weekdays = useSelector(selectWeekdays)
+  // eslint-disable-next-line no-unused-vars
+  const bookings = useSelector(selectBookings)
 
   // Fetch logged in user data
   useEffect(() => {
@@ -167,29 +170,43 @@ const App = () => {
     }
   }, [dispatch, user])
 
+  // Fetch all bookings for all rooms by date
+  useEffect(() => {
+    const path = location.pathname.split('/')
+    const date = path[path.length - 1]
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      if (user?.enabled && path[1] === 'bookings') {
+        dispatch(fetchBookingsByDate(date))
+      }
+    }
+  }, [dispatch, location.pathname, user])
+
   return (
-    <Container>
+    <>
       <Menu />
-      <Notification />
-      <Routes>
-        <Route path="/" element={<MainPage />}/>
-        <Route path="/signin" element={<SigninForm />}/>
-        <Route path="/signup" element={<SignupForm />}/>
-        <Route path="/notifications" element={<Messages />}/>
-          <Route path="/notifications/:id" element={<MessageSingle />}/>
-        <Route path="/users" element={<AllUsersView />}/>
-          <Route path="/users/:id" element={<UserSingle />}/>
-        <Route path="/rooms" element={<AllRoomsView />}/>
-          <Route path="/rooms/:id" element={<RoomSingle />}/>
-          <Route path="/rooms/dates" element={<AllDatesView />}/>
-          <Route path="/rooms/:id/dates" element={<AllRoomDates />}/>
-          <Route path="/rooms/:id/dates/:date" element={<DateSingle />}/>
-        <Route path="/settings/weekdays" element={<AllWeekdaysView />}/>
-          <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
-        <Route path="/settings/dates" element={<AllGlobalDatesView />}/>
-          <Route path="/settings/dates/:date" element={<GlobalDateSingle />}/>
-      </Routes>
-    </Container>
+      <Container>
+        <Notification />
+        <Routes>
+          <Route path="/" element={<MainPage />}/>
+          <Route path="/signin" element={<SigninForm />}/>
+          <Route path="/signup" element={<SignupForm />}/>
+          <Route path="/notifications" element={<Messages />}/>
+            <Route path="/notifications/:id" element={<MessageSingle />}/>
+          <Route path="/users" element={<AllUsersView />}/>
+            <Route path="/users/:id" element={<UserSingle />}/>
+          <Route path="/rooms" element={<AllRoomsView />}/>
+            <Route path="/rooms/:id" element={<RoomSingle />}/>
+            <Route path="/rooms/dates" element={<AllDatesView />}/>
+            <Route path="/rooms/:id/dates" element={<AllRoomDates />}/>
+            <Route path="/rooms/:id/dates/:date" element={<DateSingle />}/>
+          <Route path="/settings/weekdays" element={<AllWeekdaysView />}/>
+            <Route path="/settings/weekdays/:dayOfWeek" element={<WeekdaySingle />}/>
+          <Route path="/settings/dates" element={<AllGlobalDatesView />}/>
+            <Route path="/settings/dates/:date" element={<GlobalDateSingle />}/>
+        </Routes>
+      </Container>
+    </>
   )
 }
 
