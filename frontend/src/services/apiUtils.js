@@ -16,12 +16,13 @@ export const handleError = (error, defaultMessage) => {
   }
 }
 
-export const apiCall = async (method, endpoint, data = null) => {
+export const apiCall = async (method, endpoint, data = null, queryParams = {}) => {
   try {
     const config = {
       method,
       url: endpoint,
-      data
+      data,
+      params: queryParams
     }
     const res = await axios(config)
     return { success: true, data: res.data }
