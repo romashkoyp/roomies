@@ -1,11 +1,12 @@
 const router = require('express').Router()
-const { Booking, IndividualDate, GlobalDate, GlobalWeekday } = require('../models')
+const { Room, Booking, IndividualDate, GlobalDate, GlobalWeekday } = require('../models')
 const { tokenExtractor, isTokenUser, isSession } = require('../util/middleware')
 const { body, validationResult } = require('express-validator')
 const { Op } = require('sequelize')
 
 const bookingFinder = async (req, res, next) => {
-  req.booking = await Booking.findByPk(req.params.id)
+  // req.booking = await Booking.findByPk(req.params.id)
+  req.booking = await Booking.findByPk(req.body.id)
   if (!req.booking) throw new Error('Booking not found')
   next()
 }
@@ -16,17 +17,72 @@ const isUsersBookingOrAdmin = async (req, res, next) => {
   next()
 }
 
-// Get all bookings for all rooms
-router.get('/', tokenExtractor, isTokenUser, isSession,
+const dateValidation = async (req, res, next) => {
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/
+  if (!datePattern.test(req.params.date)) throw new Error('Invalid date format. Use YYYY-MM-DD')
+  next()
+}
+
+// Get all bookings for all rooms by date
+router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
   async (req, res) => {
-    const bookings = await Booking.findAll()
-    if (!bookings.length) throw new Error('Bookings for all rooms not found')
-    res.status(200).json(bookings)
-  }
-)
+    const { date } = req.params
+    const rooms = await Room.findAll({
+      include: [
+        {
+          model: Booking,
+          where: { date, enabled: true },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        },
+        {
+          model: IndividualDate,
+          where: { date },
+          required: false,
+          attributes: { exclude: ['roomId'] }
+        }
+      ]
+    })
+
+    const response = []
+
+    for (const room of rooms) {
+      let settings
+
+      if (room.individualDates.length === 1) {
+        // eslint-disable-next-line no-unused-vars
+        settings = room.individualDates
+      } else if (!room.individualDates.length) {
+        const globalDate = await GlobalDate.findOne({ where: { date } })
+        const dayOfWeek = new Date(date).getDay()
+        const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } })
+
+        if (globalDate) {
+          room.settings = globalDate
+        } else if (globalWeekday) {
+          room.settings = globalWeekday
+        } else {
+          throw new Error('No settings found')
+        }
+      }
+
+      response.push({
+        id: room.id,
+        name: room.name,
+        capacity: room.capacity,
+        size: room.size,
+        imagePath: room.imagePath,
+        date,
+        bookings: room.bookings,
+        settings: room.settings
+      })
+    }
+
+    res.status(200).json(response)
+  })
 
 // Create new booking for desired room on desired date
-router.post('/', tokenExtractor, isTokenUser, isSession,
+router.post('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
   body('name')
     .notEmpty().withMessage('Name is required'),
   body('date')
@@ -138,15 +194,12 @@ router.post('/', tokenExtractor, isTokenUser, isSession,
     res.status(201).json(booking)
   })
 
-// Get desired booking
-router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
-  async (req, res) => res.status(200).json(req.booking)
-)
 
 // Change desired booking by user or admin
-router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
+router.put('/:date', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin, dateValidation,
   async (req, res) => {
-    const { id } = req.params
+    // const { id } = req.params
+    const id = req.booking.id
     const currentBooking = req.booking
     const actualDate = req.body.date ? req.body.date : currentBooking.date
 
@@ -360,12 +413,26 @@ router.put('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
 )
 
 // Delete desired booking by user or admin
-router.delete('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
+router.delete('/:date', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin, dateValidation,
   async (req, res) => {
     await req.booking.destroy()
     res.status(204).end()
     console.log('Booking deleted')
   }
 )
+
+// // Get all bookings for all rooms
+// router.get('/', tokenExtractor, isTokenUser, isSession,
+//   async (req, res) => {
+//     const bookings = await Booking.findAll()
+//     if (!bookings.length) throw new Error('Bookings for all rooms not found')
+//     res.status(200).json(bookings)
+//   }
+// )
+
+// // Get desired booking
+// router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
+//   async (req, res) => res.status(200).json(req.booking)
+// )
 
 module.exports = router

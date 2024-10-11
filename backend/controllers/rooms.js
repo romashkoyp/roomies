@@ -214,63 +214,63 @@ router.get('/:id/dates', tokenExtractor, isTokenUser, isAdmin, isSession, roomFi
   }
 )
 
-// Get all rooms for desired date
-router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
-  async (req, res) => {
-    const { date } = req.params
-    const rooms = await Room.findAll({
-      include: [
-        {
-          model: Booking,
-          where: { date, enabled: true },
-          required: false,
-          attributes: { exclude: ['roomId'] }
-        },
-        {
-          model: IndividualDate,
-          where: { date },
-          required: false,
-          attributes: { exclude: ['roomId'] }
-        }
-      ]
-    })
+// // Get all rooms for desired date
+// router.get('/:date', tokenExtractor, isTokenUser, isSession, dateValidation,
+//   async (req, res) => {
+//     const { date } = req.params
+//     const rooms = await Room.findAll({
+//       include: [
+//         {
+//           model: Booking,
+//           where: { date, enabled: true },
+//           required: false,
+//           attributes: { exclude: ['roomId'] }
+//         },
+//         {
+//           model: IndividualDate,
+//           where: { date },
+//           required: false,
+//           attributes: { exclude: ['roomId'] }
+//         }
+//       ]
+//     })
 
-    const response = []
+//     const response = []
 
-    for (const room of rooms) {
-      let settings
+//     for (const room of rooms) {
+//       let settings
 
-      if (room.individualDates.length === 1) {
-        // eslint-disable-next-line no-unused-vars
-        settings = room.individualDates
-      } else if (!room.individualDates.length) {
-        const globalDate = await GlobalDate.findOne({ where: { date } })
-        const dayOfWeek = new Date(date).getDay()
-        const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } })
+//       if (room.individualDates.length === 1) {
+//         // eslint-disable-next-line no-unused-vars
+//         settings = room.individualDates
+//       } else if (!room.individualDates.length) {
+//         const globalDate = await GlobalDate.findOne({ where: { date } })
+//         const dayOfWeek = new Date(date).getDay()
+//         const globalWeekday = await GlobalWeekday.findOne({ where: { dayOfWeek } })
 
-        if (globalDate) {
-          room.settings = globalDate
-        } else if (globalWeekday) {
-          room.settings = globalWeekday
-        } else {
-          throw new Error('No settings found')
-        }
-      }
+//         if (globalDate) {
+//           room.settings = globalDate
+//         } else if (globalWeekday) {
+//           room.settings = globalWeekday
+//         } else {
+//           throw new Error('No settings found')
+//         }
+//       }
 
-      response.push({
-        id: room.id,
-        name: room.name,
-        capacity: room.capacity,
-        size: room.size,
-        imagePath: room.imagePath,
-        date,
-        bookings: room.bookings,
-        settings: room.settings
-      })
-    }
+//       response.push({
+//         id: room.id,
+//         name: room.name,
+//         capacity: room.capacity,
+//         size: room.size,
+//         imagePath: room.imagePath,
+//         date,
+//         bookings: room.bookings,
+//         settings: room.settings
+//       })
+//     }
 
-    res.status(200).json(response)
-  })
+//     res.status(200).json(response)
+//   })
 
 // Add new date for desired room
 router.post('/:id/dates', tokenExtractor, roomFinder, isTokenUser, isAdmin, isSession,
