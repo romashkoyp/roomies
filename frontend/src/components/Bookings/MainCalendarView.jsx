@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectBookings, fetchBookingsByDate } from '../../reducers/bookingReducer'
 import { selectUser } from '../../reducers/userReducer'
@@ -9,15 +12,60 @@ import bookingService from '../../services/booking'
 import { setNotification } from '../../reducers/notificationReducer'
 import NewBookingForm from './NewBookingForm'
 
+const getSlotPropGetter = (resources) => {
+  return (date, resource) => {
+    const room = resources.find((r) => r.id === resource)
+    if (!room) return {}
+    const slotTime = moment(date)
+    let isUnavailable = false
+    
+    if (room?.settingsTimeBegin && room?.settingsTimeEnd) {
+      const roomStart = moment(date).set({ hour: room.settingsTimeBegin.split(':')[0], minute: room.settingsTimeBegin.split(':')[1] })
+      const roomEnd = moment(date).set({ hour: room.settingsTimeEnd.split(':')[0], minute: room.settingsTimeEnd.split(':')[1] })
+      isUnavailable = slotTime.isBefore(roomStart) || slotTime.isSameOrAfter(roomEnd)
+    } else {
+      isUnavailable = room.availability
+    }
+    
+    if (isUnavailable || !room.availability) {
+      isUnavailable = true
+    }
+
+    if (isUnavailable) {
+      return {
+        style: {
+          backgroundColor: 'red',
+          opacity: 0.2,
+        },
+      }
+    }
+    return {
+      style: {
+        backgroundColor: 'white',
+        opacity: 1,
+      },
+    }
+  }
+}
+
 const BookingCalendar = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [currentDate, setCurrentDate] = useState(moment().format('YYYY-MM-DD'))
   const localizer = momentLocalizer(moment)
+  const DnDCalendar = withDragAndDrop(Calendar)
   const user = useSelector(selectUser)
   const bookings = useSelector(selectBookings)
   const [events, setEvents] = useState([])
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [editingBooking, setEditingBooking] = useState(null)
+
+  useEffect(() => {
+    if (user?.enabled) {
+      dispatch(fetchBookingsByDate(currentDate))
+    }
+  }, [currentDate, dispatch, user])
 
   useEffect(() => {
     const events = bookings.flatMap(room => 
@@ -35,7 +83,33 @@ const BookingCalendar = () => {
   const resources = bookings.map(room => ({
     id: room.id,
     title: `Room - ${room.name}`,
+    settingsTimeBegin: room.settings.timeBegin,
+    settingsTimeEnd: room.settings.timeEnd,
+    availability: room.settings.availability
   }))
+
+  useEffect(() => {
+    const resourceHeaders = document.querySelectorAll('.rbc-row-resource')
+    resourceHeaders.forEach((header, index) => {
+      const resource = resources[index]
+      if (resource) {
+        header.setAttribute('resource-id', resource.id)
+        header.style.cursor = 'pointer'
+        header.onclick = () => {
+          const resourceId = header.getAttribute('resource-id')
+          handleResourceClick(resourceId)
+        }
+      }
+    })
+  }, [resources])
+
+  const handleDateChange = (newDate) => {
+    setCurrentDate(moment(newDate).format('YYYY-MM-DD'))
+  }
+
+  const handleResourceClick = (resourceId) => {
+    navigate(`/rooms/${resourceId}`)
+  }
 
   const handleSelectEvent = (event) => {
     const bookingToUpdate = bookings.flatMap(room => room.bookings).find(
@@ -94,25 +168,107 @@ const BookingCalendar = () => {
     handleBookingFormClose()
   }
 
+  const moveEvent = async ({ event, start, end, resourceId }) => {
+    const originalBooking = bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId)
+
+    if (originalBooking.roomId !== resourceId) {
+      const newBookingData = {
+        name: originalBooking.name,
+        date: moment(start).format('YYYY-MM-DD'),
+        time_begin: moment(start).format('HH:mm'),
+        time_end: moment(end).format('HH:mm'),
+        room_id: resourceId,
+      }
+
+      const createResult = await bookingService.addBooking(newBookingData)
+      if (!createResult.success) {
+        dispatch(setNotification(createResult.error, 'error', 5))
+        return
+      }
+      
+      const deleteResult = await bookingService.deleteBooking(originalBooking.id)
+      if (!deleteResult.success) {
+        dispatch(setNotification(deleteResult.error, 'error', 5))
+        return
+      }
+      dispatch(fetchBookingsByDate(moment(start).format('YYYY-MM-DD')))
+      dispatch(setNotification('Booking moved successfully!', 'success', 5))
+    } else {
+        const updatedBooking = {
+          ...bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId),
+          date: moment(start).format('YYYY-MM-DD'),
+          time_begin: moment(start).format('HH:mm'),
+          time_end: moment(end).format('HH:mm')
+        }
+      
+      const result = await bookingService.changeBooking({...updatedBooking})
+
+      if (result.success) {
+        dispatch(setNotification('Booking moved successfully!', 'success', 5))
+        dispatch(fetchBookingsByDate(updatedBooking.date)) 
+      } else {
+        dispatch(setNotification(result.error, 'error', 5))
+      }
+    }
+  }
+
+  const resizeEvent = async ({ event, start, end }) => {
+    const bookingToResize = bookings.flatMap(room => room.bookings).find(
+      booking => booking.id === event.bookingId
+    )
+
+    if (bookingToResize) {
+      const updatedBooking = {
+        ...bookingToResize,
+        date: moment(start).format('YYYY-MM-DD'),
+        time_begin: moment(start).format('HH:mm'),
+        time_end: moment(end).format('HH:mm')
+      }
+
+      const result = await bookingService.changeBooking({...updatedBooking})
+
+      if (result.success) {
+        dispatch(setNotification('Booking duration updated successfully!', 'success', 5))
+        dispatch(fetchBookingsByDate(updatedBooking.date))
+      } else {
+        dispatch(setNotification(result.error, 'error', 5))
+      }
+    }
+  }
+
+  const slotPropGetter = useCallback(getSlotPropGetter(resources), [resources])
+
+  const formats = {
+    timeGutterFormat: (date, culture, localizer) => localizer.format(date, 'HH:mm', culture),
+    dayHeaderFormat: (date, culture, localizer) => localizer.format(date, 'MMMM Do dddd YYYY', culture)
+  }
+
   if (!user) return null
 
   return (
     <div>
-      <Calendar
+      <DnDCalendar
         localizer={localizer}
+        defaultDate={moment(currentDate).toDate()}
+        onNavigate={handleDateChange}
         events={events}
         resources={resources}
         resourceAccessor="resourceId"
         startAccessor="start"
         endAccessor="end"
         defaultView="day"
-        views={['day']}
+        views={['day', 'work_week']}
         step={30}
-        min={moment().hours(8).minutes(0).toDate()} // visibility of hours
-        max={moment().hours(20).minutes(0).toDate()}
+        min={moment().hours(7).minutes(0).toDate()}  // visibility of hours
+        max={moment().hours(17).minutes(0).toDate()} // visibility of hours
+        formats={formats}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
+        onEventDrop={moveEvent}
+        onEventResize={resizeEvent}
+        slotPropGetter={slotPropGetter}
         selectable
+        resizable
       />
 
       {showBookingForm && selectedSlot && (
