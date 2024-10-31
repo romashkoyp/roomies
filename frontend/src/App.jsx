@@ -28,7 +28,6 @@ import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
 import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
 import GlobalDateSingle from './components/Dates/GlobalDateSingle'
 import { fetchGlobalDates } from './reducers/globalDateReducer'
-import { fetchBookingsByDate, selectBookings } from './reducers/bookingReducer'
 import MainCalendarView from './components/Bookings/MainCalendarView'
 
 const App = () => {
@@ -50,7 +49,6 @@ const App = () => {
   // eslint-disable-next-line no-unused-vars
   const weekdays = useSelector(selectWeekdays)
   // eslint-disable-next-line no-unused-vars
-  const bookings = useSelector(selectBookings)
 
   // Fetch logged in user data
   useEffect(() => {
@@ -138,16 +136,6 @@ const App = () => {
       dispatch(fetchGlobalDates())
     }
   }, [dispatch, user])
-
-  // Fetch all bookings for all rooms by date
-  useEffect(() => {
-    const date = new Date().toISOString().slice(0, 10)
-    const path = location.pathname.split('/')
-    const bookings = path[path.length - 1]
-    if (user?.enabled && bookings === 'bookings') {
-      dispatch(fetchBookingsByDate(date))
-    }
-  }, [dispatch, location.pathname, user])
 
   return (
     <>
