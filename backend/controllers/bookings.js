@@ -186,7 +186,7 @@ router.post('/', tokenExtractor, isTokenUser, isSession, dateValidation,
       ...req.body,
       timeBegin: req.body.time_begin,
       timeEnd: req.body.time_end,
-      userId: req.tokenUser.id,
+      userId: req.body.user_id ? req.body.user_id : req.tokenUser.id,
       roomId: req.body.room_id
     })
 
