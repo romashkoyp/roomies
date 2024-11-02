@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectUser } from '../../../reducers/userReducer'
 import { selectIndividualDates } from '../../../reducers/individualDateReducer'
-import Wrapper from '../../styles/Wrapper'
+import Wrapper from '../../styles/Wrappers'
 
 
 const AllDatesView = () => {

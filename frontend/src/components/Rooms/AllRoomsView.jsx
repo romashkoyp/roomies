@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectUser } from '../../reducers/userReducer'
 import { selectRooms } from '../../reducers/roomReducer'
-import Wrapper from '../styles/Wrapper'
+import Wrapper from '../styles/Wrappers'
 import RoomForm from './NewRoomForm'
 
 const Rooms = () => {

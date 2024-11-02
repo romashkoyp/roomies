@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Wrapper from './styles/Wrapper'
+import Wrapper from './styles/Wrappers'
 import { PrimaryButton } from './styles/Buttons'
 import signupService from '../services/signup'
 import { setNotification } from '../reducers/notificationReducer'

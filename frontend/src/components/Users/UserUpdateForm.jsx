@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
-import Wrapper from '../styles/Wrapper'
+import Wrapper from '../styles/Wrappers'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { fetchUser, selectUser, selectCurrentUser, fetchCurrentUser } from '../../reducers/userReducer'

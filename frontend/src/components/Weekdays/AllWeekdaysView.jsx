@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import Wrapper from '../styles/Wrapper'
+import Wrapper from '../styles/Wrappers'
 import AllWeekdaysForm from './AllWeekdaysForm'
 import { selectUser } from '../../reducers/userReducer'
 import { selectWeekdays } from '../../reducers/weekdayReducer'

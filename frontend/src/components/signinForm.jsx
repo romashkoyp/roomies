@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Wrapper from './styles/Wrapper'
+import Wrapper from './styles/Wrappers'
 import { PrimaryButton } from './styles/Buttons'
 import signinService from '../services/signin'
 import { useDispatch } from 'react-redux'

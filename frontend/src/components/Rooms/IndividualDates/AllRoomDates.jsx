@@ -3,7 +3,7 @@ import { selectUser } from '../../../reducers/userReducer'
 import { useNavigate, useParams } from 'react-router-dom'
 import { selectRooms } from '../../../reducers/roomReducer'
 import { selectIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
-import Wrapper from '../../styles/Wrapper'
+import Wrapper from '../../styles/Wrappers'
 import NewDateForm from './NewDateForm'
 
 const AllRoomDates = () => {

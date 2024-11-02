@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import Wrapper from '../styles/Wrapper'
+import Wrapper from '../styles/Wrappers'
 import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
