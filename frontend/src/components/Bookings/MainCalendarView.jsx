@@ -48,6 +48,17 @@ const getSlotPropGetter = (resources) => {
   }
 }
 
+const eventStyleGetter = (event, user) => {
+  const isMyEvent = event.eventOwner === user.id
+  return {
+    style: {
+      backgroundColor: isMyEvent ? '#4CAF50' : '#9E9E9E',
+      borderColor: isMyEvent ? '#2E7D32' : '#757575',
+      color: 'white'
+    }
+  }
+}
+
 const BookingCalendar = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -70,19 +81,20 @@ const BookingCalendar = () => {
   useEffect(() => {
     const events = bookings.flatMap(room => 
       room.bookings.map(booking => ({
-        title: `${booking.name}`, 
+        title: user.id === booking.userId ? `My event "${booking.name}"` : `${booking.name}`,
         start: moment(`${booking.date} ${booking.timeBegin}`).toDate(),
         end: moment(`${booking.date} ${booking.timeEnd}`).toDate(),
         resourceId: room.id,
-        bookingId: booking.id
+        bookingId: booking.id,
+        eventOwner: booking.userId,
       }))
     )
     setEvents(events)
-  }, [bookings])
-
+  }, [bookings, user])
+  
   const resources = bookings.map(room => ({
     id: room.id,
-    title: `Room - ${room.name}`,
+    title: room.name,
     settingsTimeBegin: room.settings.timeBegin,
     settingsTimeEnd: room.settings.timeEnd,
     availability: room.settings.availability
@@ -115,15 +127,18 @@ const BookingCalendar = () => {
     const bookingToUpdate = bookings.flatMap(room => room.bookings).find(
       booking => booking.id === event.bookingId
     )
+    console.log(user.id, event.eventOwner)
 
-    if (bookingToUpdate) {
-      setEditingBooking(bookingToUpdate)
-      setSelectedSlot({
-        start: event.start,
-        end: event.end,
-        resourceId: event.resourceId,
-      })
-      setShowBookingForm(true)
+    if (user.admin || user.id === event.eventOwner) {
+      if (bookingToUpdate) {
+        setEditingBooking(bookingToUpdate)
+        setSelectedSlot({
+          start: event.start,
+          end: event.end,
+          resourceId: event.resourceId,
+        })
+        setShowBookingForm(true)
+      }
     }
   }
 
@@ -147,8 +162,9 @@ const BookingCalendar = () => {
         room_id: formData.roomId,
       })
 
-      if (result.success) {dispatch(setNotification('Booking updated successfully!', 'success', 5))
-        dispatch(fetchBookingsByDate(formData.date)) 
+      if (result.success) {
+        dispatch(setNotification('Booking updated successfully!', 'success', 5))
+        dispatch(fetchBookingsByDate(currentDate))
       } else {
         dispatch(setNotification(result.error, 'error', 5))
       }
@@ -160,7 +176,7 @@ const BookingCalendar = () => {
 
       if (result.success) {
         dispatch(setNotification('Booking created successfully!', 'success', 5))
-        dispatch(fetchBookingsByDate(formData.date))
+        dispatch(fetchBookingsByDate(currentDate))
       } else {
         dispatch(setNotification(result.error, 'error', 5))
       }
@@ -170,45 +186,51 @@ const BookingCalendar = () => {
 
   const moveEvent = async ({ event, start, end, resourceId }) => {
     const originalBooking = bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId)
+    console.log(originalBooking.userId)
 
-    if (originalBooking.roomId !== resourceId) {
-      const newBookingData = {
-        name: originalBooking.name,
-        date: moment(start).format('YYYY-MM-DD'),
-        time_begin: moment(start).format('HH:mm'),
-        time_end: moment(end).format('HH:mm'),
-        room_id: resourceId,
-      }
-
-      const createResult = await bookingService.addBooking(newBookingData)
-      if (!createResult.success) {
-        dispatch(setNotification(createResult.error, 'error', 5))
-        return
-      }
-      
-      const deleteResult = await bookingService.deleteBooking(originalBooking.id)
-      if (!deleteResult.success) {
-        dispatch(setNotification(deleteResult.error, 'error', 5))
-        return
-      }
-      dispatch(fetchBookingsByDate(moment(start).format('YYYY-MM-DD')))
-      dispatch(setNotification('Booking moved successfully!', 'success', 5))
-    } else {
-        const updatedBooking = {
-          ...bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId),
+    if (user.admin || user.id === event.eventOwner) {
+      if (originalBooking.roomId !== resourceId) {
+        const newBookingData = {
+          name: originalBooking.name,
           date: moment(start).format('YYYY-MM-DD'),
           time_begin: moment(start).format('HH:mm'),
-          time_end: moment(end).format('HH:mm')
+          time_end: moment(end).format('HH:mm'),
+          room_id: resourceId,
+          user_id: originalBooking.userId
         }
-      
-      const result = await bookingService.changeBooking({...updatedBooking})
 
-      if (result.success) {
+        const createResult = await bookingService.addBooking(newBookingData)
+        if (!createResult.success) {
+          dispatch(setNotification(createResult.error, 'error', 5))
+          return
+        }
+        
+        const deleteResult = await bookingService.deleteBooking(originalBooking.id)
+        if (!deleteResult.success) {
+          dispatch(setNotification(deleteResult.error, 'error', 5))
+          return
+        }
+        dispatch(fetchBookingsByDate(moment(start).format('YYYY-MM-DD')))
         dispatch(setNotification('Booking moved successfully!', 'success', 5))
-        dispatch(fetchBookingsByDate(updatedBooking.date)) 
       } else {
-        dispatch(setNotification(result.error, 'error', 5))
+          const updatedBooking = {
+            ...bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId),
+            date: moment(start).format('YYYY-MM-DD'),
+            time_begin: moment(start).format('HH:mm'),
+            time_end: moment(end).format('HH:mm')
+          }
+        
+        const result = await bookingService.changeBooking({...updatedBooking})
+
+        if (result.success) {
+          dispatch(setNotification('Booking moved successfully!', 'success', 5))
+          dispatch(fetchBookingsByDate(updatedBooking.date))
+        } else {
+          dispatch(setNotification(result.error, 'error', 5))
+        }
       }
+    } else {
+      dispatch(setNotification('You can change only your own event', 'error', 5))
     }
   }
 
@@ -217,30 +239,33 @@ const BookingCalendar = () => {
       booking => booking.id === event.bookingId
     )
 
-    if (bookingToResize) {
-      const updatedBooking = {
-        ...bookingToResize,
-        date: moment(start).format('YYYY-MM-DD'),
-        time_begin: moment(start).format('HH:mm'),
-        time_end: moment(end).format('HH:mm')
-      }
+    if (user.admin || user.id === event.eventOwner) {
+      if (bookingToResize) {
+        const updatedBooking = {
+          ...bookingToResize,
+          date: moment(start).format('YYYY-MM-DD'),
+          time_begin: moment(start).format('HH:mm'),
+          time_end: moment(end).format('HH:mm')
+        }
 
-      const result = await bookingService.changeBooking({...updatedBooking})
+        const result = await bookingService.changeBooking({...updatedBooking})
 
-      if (result.success) {
-        dispatch(setNotification('Booking duration updated successfully!', 'success', 5))
-        dispatch(fetchBookingsByDate(updatedBooking.date))
-      } else {
-        dispatch(setNotification(result.error, 'error', 5))
+        if (result.success) {
+          dispatch(setNotification('Booking duration updated successfully!', 'success', 5))
+          dispatch(fetchBookingsByDate(updatedBooking.date))
+        } else {
+          dispatch(setNotification(result.error, 'error', 5))
+        }
       }
+    } else {
+      dispatch(setNotification('You can change only your own event', 'error', 5))
     }
   }
 
   const slotPropGetter = useCallback(getSlotPropGetter(resources), [resources])
 
   const formats = {
-    timeGutterFormat: (date, culture, localizer) => localizer.format(date, 'HH:mm', culture),
-    dayHeaderFormat: (date, culture, localizer) => localizer.format(date, 'MMMM Do dddd YYYY', culture)
+    dayHeaderFormat: (date, culture, localizer) => localizer.format(date, 'MMMM Do dddd YYYY', culture),
   }
 
   if (!user) return null
@@ -257,7 +282,7 @@ const BookingCalendar = () => {
         startAccessor="start"
         endAccessor="end"
         defaultView="day"
-        views={['day', 'work_week']}
+        views={['day']}
         step={30}
         min={moment().hours(7).minutes(0).toDate()}  // visibility of hours
         max={moment().hours(17).minutes(0).toDate()} // visibility of hours
@@ -267,6 +292,7 @@ const BookingCalendar = () => {
         onEventDrop={moveEvent}
         onEventResize={resizeEvent}
         slotPropGetter={slotPropGetter}
+        eventPropGetter={(event) => eventStyleGetter(event, user)}
         selectable
         resizable
       />
