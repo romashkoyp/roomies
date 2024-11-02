@@ -12,9 +12,9 @@ const SingleUser = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectUser)
-  const currentUser = useSelector(selectCurrentUser)
   const { id } = useParams()
   const currentUserId = Number(id)
+  const currentUser = useSelector(selectCurrentUser)
   const [isEditMode, setIsEditMode] = useState(false)
 
   if (!user) return null
@@ -41,12 +41,15 @@ const SingleUser = () => {
       }
     } else return null
   }
+
+  console.log(user ? user.id : 'no user')
+  console.log(currentUser ? currentUser.id : 'no current user')
   
   if (currentUser) {
     return (
       <>
         <Wrapper>
-          <h3>Current user</h3>
+          <h3>{currentUser.name}</h3>
           <table>
             <tbody>
               <tr>
