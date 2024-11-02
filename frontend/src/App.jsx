@@ -48,7 +48,6 @@ const App = () => {
   const individualDatesForRoom = useSelector(selectIndividualDatesForRoom)
   // eslint-disable-next-line no-unused-vars
   const weekdays = useSelector(selectWeekdays)
-  // eslint-disable-next-line no-unused-vars
 
   // Fetch logged in user data
   useEffect(() => {
@@ -87,7 +86,7 @@ const App = () => {
 
     if (/^\d+$/.test(userId)) {
       const currentUserId = Number(userId)
-      if (user?.admin && user.enabled) { 
+      if ((user?.admin && user.enabled) || (user?.id === currentUserId && user.enabled)) { 
         dispatch(fetchCurrentUser(currentUserId))
        }
     }
@@ -102,7 +101,7 @@ const App = () => {
 
   // Fetch all individual dates for all rooms
   useEffect(() => {
-    if (user?.enabled) {
+    if (user?.enabled && user.admin) {
       dispatch(fetchAllIndividualDates())
     }
   }, [dispatch, user])
