@@ -115,6 +115,29 @@ const GlobalStyles = createGlobalStyle`
     height: 30px;
     cursor: pointer;
   }
+
+  .rbc-addons-dnd-row-body {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  .rbc-time-header-content > .rbc-row.rbc-row-resource {
+    border-bottom: 0;
+  }
+
+  .rbc-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    background-color: white;
+    border-bottom: 0;
+  }
+
+  // .rbc-event {
+  //   opacity: 0.7;  
+  // }
 `
 
 export default GlobalStyles
