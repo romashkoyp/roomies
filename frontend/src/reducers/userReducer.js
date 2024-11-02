@@ -13,18 +13,6 @@ export const fetchUser = createAsyncThunk(
   }
 )
 
-export const fetchCurrentUser = createAsyncThunk(
-  'users/fetchOne',
-  async (id, { rejectWithValue }) => {
-    const result = await userService.getOneUser(id)
-    if (result.success) {
-      return result.data
-    } else {
-      return rejectWithValue(result.error)
-    }
-  }
-)
-
 export const fetchUsers = createAsyncThunk(
   'users/fetchAll',
   async (_, { rejectWithValue }) => {
@@ -37,10 +25,22 @@ export const fetchUsers = createAsyncThunk(
   }
 )
 
+export const fetchCurrentUser = createAsyncThunk(
+  'users/fetchOne',
+  async (id, { rejectWithValue }) => {
+    const result = await userService.getOneUser(id)
+    if (result.success) {
+      return result.data
+    } else {
+      return rejectWithValue(result.error)
+    }
+  }
+)
+
 const initialState = {
   user: null,
-  currentUser: null,
-  users: []
+  users: [],
+  currentUser: null
 }
 
 const userSlice = createSlice({
