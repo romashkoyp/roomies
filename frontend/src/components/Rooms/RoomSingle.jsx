@@ -48,7 +48,7 @@ const SingleRoom = () => {
     return (
       <>
         <Wrapper>
-          <h3>Current room is {currentRoom.name}</h3>
+          <h3>{currentRoom.name}</h3>
           <a href={currentRoom.imagePath}>
             <img src={currentRoom.imagePath} alt="picture of room" ></img>
           </a>
@@ -70,14 +70,18 @@ const SingleRoom = () => {
                 <th>Size</th>
                 <td>{currentRoom.size} m<sup>2</sup></td>
               </tr>
-              <tr>
-                <th>Image Path</th>
-                <td><Link to={currentRoom.imagePath} target='_blank'>Link to image</Link></td>
-              </tr>
-              <tr>
-                <th>Individual Dates</th>
-                <td><Link to={`/rooms/${currentRoom.id}/dates`}>Link to dates availability</Link></td>
-              </tr>
+              {user.admin && user.enabled ?
+                <>
+                  <tr>
+                    <th>Image Path</th>
+                    <td><Link to={currentRoom.imagePath} target='_blank'>Link to image</Link></td>
+                  </tr>
+                  <tr>
+                    <th>Individual Dates</th>
+                    <td><Link to={`/rooms/${currentRoom.id}/dates`}>Link to dates availability</Link></td>
+                  </tr>
+                </>
+              : null}
             </tbody>
           </table>
         
