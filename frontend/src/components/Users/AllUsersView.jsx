@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectUser, selectUsers } from '../../reducers/userReducer'
-import Wrapper from '../styles/Wrappers'
+import Wrapper from '../styles/Wrapper'
 
 const Users = () => {
   const user = useSelector(selectUser)

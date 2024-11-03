@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Container from './components/styles/Wrappers'
+import Container from './components/styles/Container'
 import SigninForm from './components/signinForm'
 import SignupForm from './components/signupForm'
 import Messages from './components/Messages/Messages'

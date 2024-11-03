@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../reducers/userReducer'
 import { selectMessages } from '../../reducers/messageReducer'
-import {Wrapper, MessageWrapper} from '../styles/Wrappers'
+import Wrapper from '../styles/Wrapper'
+import MessageWrapper from '../styles/MessageWrapper'
 import LinkHeader from '../styles/LinkHeader'
 
 const Message = () => {

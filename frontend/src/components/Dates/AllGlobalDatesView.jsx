@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import Wrapper from '../styles/Wrappers'
+import Wrapper from '../styles/Wrapper'
 import AllGlobalDatesForm from './AllGlobalDatesForm'
 import { selectUser } from '../../reducers/userReducer'
 import { selectGlobalDates } from '../../reducers/globalDateReducer'
