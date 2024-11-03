@@ -50,7 +50,7 @@ router.post('/',
     const token = jwt.sign(
       userForToken,
       SECRET,
-      { expiresIn: 60*60 }
+      { expiresIn: '24h' }
     )
 
     await Session.create({
