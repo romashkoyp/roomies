@@ -44,4 +44,19 @@ const SecondaryButton = styled.button`
     color: #fff;
   }
 `
-export { PrimaryButton, SecondaryButton }
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 0.2rem;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: #888;
+  &:hover {
+    color: #333;
+  }
+`
+
+export { PrimaryButton, SecondaryButton, CloseButton }

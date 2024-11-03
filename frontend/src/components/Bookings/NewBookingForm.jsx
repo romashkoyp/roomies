@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Wrapper from '../styles/Wrapper'
-import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
+import { PrimaryButton, SecondaryButton, CloseButton } from '../styles/Buttons'
 import bookingService from '../../services/booking'
 import { setNotification } from '../../reducers/notificationReducer'
 import { fetchBookingsByDate } from '../../reducers/bookingReducer'
@@ -63,7 +63,8 @@ const NewBookingForm = ({ slotInfo, onClose, onSubmit, editingBooking }) => {
   if (!user) return null
 
   return (
-    <Wrapper className="booking-form-popup"> 
+    <Wrapper className="booking-form-popup">
+      <CloseButton onClick={onClose} aria-label="Close form">×</CloseButton>
       <h3>{editingBooking ? 'Edit Booking' : 'Create New Booking'}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -111,7 +112,6 @@ const NewBookingForm = ({ slotInfo, onClose, onSubmit, editingBooking }) => {
           />
         </div>
         <PrimaryButton type="submit">Submit</PrimaryButton>
-        <PrimaryButton type="button" onClick={onClose}>Cancel</PrimaryButton>
         {editingBooking && ( 
           <SecondaryButton type="button" onClick={handleDelete}>Delete</SecondaryButton>
         )}
