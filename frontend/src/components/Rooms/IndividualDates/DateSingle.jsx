@@ -7,6 +7,7 @@ import { SecondaryButton } from '../../styles/Buttons'
 import individualDateService from '../../../services/individualDate'
 import { setNotification } from '../../../reducers/notificationReducer'
 import { fetchIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
+import moment from 'moment'
 
 const SingleDate = () => {
   const dispatch = useDispatch()
@@ -37,12 +38,12 @@ const SingleDate = () => {
 
   return (
     <Wrapper>
-      <h3>Individual date for {currentIndividualDate.room?.name} room</h3>
+      <h3>Individual date for {currentIndividualDate.room?.name}</h3>
       <table>
         <tbody>
           <tr>
             <th>Date</th>
-            <td>{currentIndividualDate.date}</td>
+            <td>{moment(currentIndividualDate.date).format('MMMM Do, YYYY')}</td>
           </tr>
           <tr>
             <th>Day Of Week</th>

@@ -5,6 +5,7 @@ import { selectRooms } from '../../../reducers/roomReducer'
 import { selectIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
 import Wrapper from '../../styles/Wrapper'
 import NewDateForm from './NewDateForm'
+import moment from 'moment'
 
 const AllRoomDates = () => {
   const user = useSelector(selectUser)
@@ -26,7 +27,7 @@ const AllRoomDates = () => {
       <>
         {user.admin && user.enabled ? <NewDateForm /> : null}
         <Wrapper>
-          <h3>Individual dates for {currentRoom.name} room</h3>
+          <h3>Individual dates for {currentRoom.name}</h3>
           <table>
             <thead>
               <tr>
@@ -44,7 +45,7 @@ const AllRoomDates = () => {
                   onClick={() => handleRowClick(date.date)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <td>{date.date}</td>
+                  <td>{moment(date.date).format('MMMM Do, YYYY')}</td>
                   <td>{date.name}</td>
                   <td>{date.availability ? 'Yes' : 'No'}</td>
                   <td>{formatTime(date.timeBegin)}</td>

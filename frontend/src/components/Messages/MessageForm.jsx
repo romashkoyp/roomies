@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Wrapper from '../styles/Wrapper'
-import { PrimaryButton } from '../styles/Buttons'
+import { PrimaryButton, CloseButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { selectUser } from '../../reducers/userReducer'
@@ -45,6 +45,7 @@ const MessageForm = () => {
     return (
       <Wrapper>
         <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
+        {/* <FontAwesomeIcon icon="fa-regular fa-circle-xmark" style={{color: "#74C0FC",}} /> */}
         {isVisible ?
           <form onSubmit={handleSubmit}>
             <div>

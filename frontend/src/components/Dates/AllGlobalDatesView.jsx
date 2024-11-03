@@ -4,6 +4,7 @@ import Wrapper from '../styles/Wrapper'
 import AllGlobalDatesForm from './AllGlobalDatesForm'
 import { selectUser } from '../../reducers/userReducer'
 import { selectGlobalDates } from '../../reducers/globalDateReducer'
+import moment from 'moment'
 
 const AllGlobalDatesView = () => {
   const user = useSelector(selectUser)
@@ -41,7 +42,7 @@ const AllGlobalDatesView = () => {
                   onClick={() => handleRowClick(date.date)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <td>{date.date}</td>
+                  <td>{moment(date.date).format('MMMM Do, YYYY')}</td>
                   <td>{daysOfWeek[date.dayOfWeek]}</td>
                   <td>{date.name}</td>
                   <td>{date.availability ? 'Yes' : 'No'}</td>

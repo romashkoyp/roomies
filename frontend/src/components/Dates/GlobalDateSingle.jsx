@@ -7,6 +7,7 @@ import { SecondaryButton } from '../styles/Buttons'
 import globalDateService from '../../services/globalDate'
 import { setNotification } from '../../reducers/notificationReducer'
 import { fetchGlobalDates } from '../../reducers/globalDateReducer'
+import moment from 'moment'
 
 const GlobalDateSingle = () => {
   const dispatch = useDispatch()
@@ -41,7 +42,7 @@ const GlobalDateSingle = () => {
         <tbody>
           <tr>
             <th>Date</th>
-            <td>{currentGlobalDate.date}</td>
+            <td>{moment(currentGlobalDate.date).format('MMMM Do, YYYY')}</td>
           </tr>
           <tr>
             <th>Day Of Week</th>

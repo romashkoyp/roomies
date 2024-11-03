@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { selectUser } from '../../../reducers/userReducer'
 import { selectIndividualDates } from '../../../reducers/individualDateReducer'
 import Wrapper from '../../styles/Wrapper'
-
+import moment from 'moment'
 
 const AllDatesView = () => {
   const user = useSelector(selectUser)
@@ -42,7 +42,7 @@ const AllDatesView = () => {
                 style={{ cursor: 'pointer' }}
               >
                 <td>{date.room.name}</td>
-                <td>{date.date}</td>
+                <td>{moment(date.date).format('MMMM Do, YYYY')}</td>
                 <td>{daysOfWeek[date.dayOfWeek]}</td>
                 <td>{date.name}</td>
                 <td>{date.availability ? 'Yes' : 'No'}</td>

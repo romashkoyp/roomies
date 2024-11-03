@@ -66,7 +66,7 @@ const NewDateForm = () => {
 
   return (
     <Wrapper>
-      <LinkHeader onClick={handleClick}><h3>Add new date for {currentRoom.name} room</h3></LinkHeader>
+      <LinkHeader onClick={handleClick}><h3>Add new date for {currentRoom.name}</h3></LinkHeader>
       { isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
