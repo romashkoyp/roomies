@@ -25,6 +25,8 @@ const SingleRoom = () => {
     setIsEditMode(!isEditMode)
   }
 
+  const handleCloseEdit = () => setIsEditMode(false)
+
   const handleUpdateSuccess = () => {
     setIsEditMode(false)
   }
@@ -101,6 +103,7 @@ const SingleRoom = () => {
           <RoomUpdateForm
             id={currentRoomId}
             onUpdateSuccess={handleUpdateSuccess}
+            onCloseEdit={handleCloseEdit}
           />
         : null}
       </>

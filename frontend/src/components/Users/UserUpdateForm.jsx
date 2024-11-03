@@ -6,8 +6,9 @@ import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { fetchUser, selectUser, selectCurrentUser, fetchCurrentUser } from '../../reducers/userReducer'
 import userService from '../../services/user'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
-const UserUpdateForm = ({ id, onUpdateSuccess }) => {
+const UserUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const currentUser = useSelector(selectCurrentUser)
@@ -71,7 +72,11 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Edit current user</h3>
+        <CloseButtonWrapper>
+          <h3>Edit current user</h3>
+          <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
+        </CloseButtonWrapper>
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Username</label>
@@ -128,7 +133,8 @@ const UserUpdateForm = ({ id, onUpdateSuccess }) => {
 
 UserUpdateForm.propTypes = {
   id: PropTypes.number.isRequired,
-  onUpdateSuccess: PropTypes.func.isRequired
+  onUpdateSuccess: PropTypes.func.isRequired,
+  onCloseEdit: PropTypes.func.isRequired
 }
 
 export default UserUpdateForm

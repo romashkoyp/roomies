@@ -7,6 +7,7 @@ import { selectUser } from '../../reducers/userReducer'
 import roomService from '../../services/room'
 import { fetchRooms } from '../../reducers/roomReducer'
 import LinkHeader from '../styles/LinkHeader'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
 const RoomForm = () => {
   const dispatch = useDispatch()
@@ -57,7 +58,13 @@ const RoomForm = () => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <LinkHeader onClick={handleClick}><h3>Add new room</h3></LinkHeader>
+        <CloseButtonWrapper>
+          <LinkHeader onClick={handleClick}><h3>Add new room</h3></LinkHeader>
+          {isVisible ?
+            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
+          : null}
+        </CloseButtonWrapper>
+        
         {isVisible ?
           <form onSubmit={handleSubmit}>   
             <div className="form-group">

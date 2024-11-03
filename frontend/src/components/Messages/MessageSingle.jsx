@@ -26,6 +26,8 @@ const SingleMessage = () => {
     setIsEditMode(!isEditMode)
   }
 
+  const handleCloseEdit = () => setIsEditMode(false)
+
   const handleUpdateSuccess = () => {
     setIsEditMode(false)
   }
@@ -67,6 +69,7 @@ const SingleMessage = () => {
             message={message}
             id={messageId}
             onUpdateSuccess={handleUpdateSuccess}
+            onCloseEdit={handleCloseEdit}
           />
         : null}
       </>

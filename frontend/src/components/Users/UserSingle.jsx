@@ -23,6 +23,8 @@ const SingleUser = () => {
     setIsEditMode(!isEditMode)
   }
 
+  const handleCloseEdit = () => setIsEditMode(false)
+
   const handleUpdateSuccess = () => {
     setIsEditMode(false)
   }
@@ -90,6 +92,7 @@ const SingleUser = () => {
           <UserUpdateForm
             id={currentUserId}
             onUpdateSuccess={handleUpdateSuccess}
+            onCloseEdit={handleCloseEdit}
           />
         : null}
       </>

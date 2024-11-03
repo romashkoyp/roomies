@@ -7,6 +7,7 @@ import { selectUser } from '../../reducers/userReducer'
 import weekdaysService from '../../services/weekday'
 import { fetchWeekdays } from '../../reducers/weekdayReducer'
 import LinkHeader from '../styles/LinkHeader'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
 const AllWeekdaysForm = () => {
   const dispatch = useDispatch()
@@ -80,7 +81,13 @@ const AllWeekdaysForm = () => {
 
   return (
     <Wrapper>
-      <LinkHeader onClick={handleClick}><h3>Edit global weekdays for all rooms</h3></LinkHeader>
+      <CloseButtonWrapper>
+        <LinkHeader onClick={handleClick}><h3>Edit global weekdays for all rooms</h3></LinkHeader>
+        {isVisible ?
+            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
+          : null}
+      </CloseButtonWrapper>
+      
       {isVisible && (
         <form onSubmit={handleSubmit}>
           <div className="form-group">

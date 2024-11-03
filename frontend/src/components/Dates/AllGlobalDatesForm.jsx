@@ -7,6 +7,7 @@ import { selectUser } from '../../reducers/userReducer'
 import globalDateService from '../../services/globalDate'
 import { fetchGlobalDates } from '../../reducers/globalDateReducer'
 import LinkHeader from '../styles/LinkHeader'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
 const AllGlobalDatesForm = () => {
   const dispatch = useDispatch()
@@ -58,7 +59,12 @@ const AllGlobalDatesForm = () => {
 
   return (
     <Wrapper>
-      <LinkHeader onClick={handleClick}><h3>Add new global date</h3></LinkHeader>
+      <CloseButtonWrapper>
+        <LinkHeader onClick={handleClick}><h3>Add new global date</h3></LinkHeader>
+        {isVisible ?
+            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
+          : null}
+      </CloseButtonWrapper>
       { isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>

@@ -7,8 +7,9 @@ import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import roomService from '../../services/room'
 import { selectRooms, fetchRooms } from '../../reducers/roomReducer'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
-const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
+const RoomUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const rooms = useSelector(selectRooms)
@@ -62,7 +63,11 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Edit current room</h3>
+        <CloseButtonWrapper>
+          <h3>Edit current room</h3>
+          <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
+        </CloseButtonWrapper>
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
@@ -121,7 +126,8 @@ const RoomUpdateForm = ({ id, onUpdateSuccess }) => {
 
 RoomUpdateForm.propTypes = {
   id: PropTypes.number.isRequired,
-  onUpdateSuccess: PropTypes.func.isRequired
+  onUpdateSuccess: PropTypes.func.isRequired,
+  onCloseEdit: PropTypes.func.isRequired
 }
 
 export default RoomUpdateForm

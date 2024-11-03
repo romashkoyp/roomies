@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Wrapper from '../styles/Wrapper'
-import { PrimaryButton, CloseButton } from '../styles/Buttons'
+import { PrimaryButton } from '../styles/Buttons'
 import { setNotification } from '../../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { selectUser } from '../../reducers/userReducer'
@@ -9,6 +9,7 @@ import messageService from '../../services/message'
 import { fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
 import LinkHeader from '../styles/LinkHeader'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
 const MessageForm = () => {
   const dispatch = useDispatch()
@@ -44,8 +45,12 @@ const MessageForm = () => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
-        {/* <FontAwesomeIcon icon="fa-regular fa-circle-xmark" style={{color: "#74C0FC",}} /> */}
+        <CloseButtonWrapper>
+          <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
+          {isVisible ?
+            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
+          : null}
+        </CloseButtonWrapper>      
         {isVisible ?
           <form onSubmit={handleSubmit}>
             <div>

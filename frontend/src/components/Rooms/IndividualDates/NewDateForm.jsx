@@ -9,6 +9,7 @@ import { fetchIndividualDatesForRoom, fetchAllIndividualDates } from '../../../r
 import { selectRooms } from '../../../reducers/roomReducer'
 import LinkHeader from '../../styles/LinkHeader'
 import { useParams } from 'react-router-dom'
+import CloseButtonWrapper from '../../styles/CloseButtonWrapper'
 
 const NewDateForm = () => {
   const dispatch = useDispatch()
@@ -66,8 +67,14 @@ const NewDateForm = () => {
 
   return (
     <Wrapper>
-      <LinkHeader onClick={handleClick}><h3>Add new date for {currentRoom.name}</h3></LinkHeader>
-      { isVisible ? <form onSubmit={handleSubmit}>
+      <CloseButtonWrapper>
+        <LinkHeader onClick={handleClick}><h3>Add new date for {currentRoom.name}</h3></LinkHeader>
+        {isVisible ?
+            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
+          : null}
+      </CloseButtonWrapper>
+      
+      {isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
           <input
@@ -124,7 +131,8 @@ const NewDateForm = () => {
           />
         </div>
         <PrimaryButton type="submit">Submit</PrimaryButton>
-      </form>: null}
+        </form>
+      : null}
     </Wrapper>
   )
 }

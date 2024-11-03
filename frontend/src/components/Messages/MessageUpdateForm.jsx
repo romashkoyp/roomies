@@ -8,8 +8,9 @@ import { selectUser } from '../../reducers/userReducer'
 import messageService from '../../services/message'
 import { fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
-const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
+const MessageUpdateForm = ({ message, id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const [content, setContent] = useState(message.content)
@@ -36,7 +37,11 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Edit current message</h3>
+        <CloseButtonWrapper>
+          <h3>Edit current message</h3>
+          <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
+        </CloseButtonWrapper>
+        
         <form onSubmit={handleSubmit}>
           <div>
             <ResizableTextarea
@@ -57,7 +62,8 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess }) => {
 MessageUpdateForm.propTypes = {
   message: PropTypes.shape({ content: PropTypes.string.isRequired }),
   id: PropTypes.number.isRequired,
-  onUpdateSuccess: PropTypes.func.isRequired
+  onUpdateSuccess: PropTypes.func.isRequired,
+  onCloseEdit: PropTypes.func.isRequired
 }
 
 export default MessageUpdateForm
