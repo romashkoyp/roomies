@@ -104,7 +104,7 @@ const App = () => {
     if (user?.enabled && user.admin) {
       dispatch(fetchAllIndividualDates())
     }
-  }, [dispatch, user])
+  }, [dispatch, user, rooms])
 
   // Fetch all individual dates for one room
   useEffect(() => {
