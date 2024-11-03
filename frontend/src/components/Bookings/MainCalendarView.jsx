@@ -266,6 +266,7 @@ const BookingCalendar = () => {
 
   const formats = {
     dayHeaderFormat: (date, culture, localizer) => localizer.format(date, 'MMMM Do dddd YYYY', culture),
+    timeGutterFormat: (date, culture, localizer) => localizer.format(date, 'HH:mm', culture)
   }
 
   if (!user) return null
