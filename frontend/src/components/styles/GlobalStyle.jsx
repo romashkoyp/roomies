@@ -133,6 +133,21 @@ const GlobalStyles = createGlobalStyle`
     margin-top: 0.2em;
   }
 
+  .sidebar-nav-ul {
+    width: 100%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .sidebar-li {
+    width: 80%;
+    padding: 4% 10% 4% 10%;
+    border-radius: 0;
+  }
+
   .rbc-addons-dnd-row-body {
     height: 0;
     overflow: hidden;

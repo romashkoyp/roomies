@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import signinService from '../services/signin'
 import { setNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/userReducer'
 import styled from 'styled-components'
+import StyledSidebar from './styles/Sidebar'
 
 const StyledNav = styled.nav`
   display: flex;
@@ -104,6 +106,7 @@ const Menu = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const isSettingsActive = location.pathname.startsWith('/settings')
+  const [sidebarVisible, setSidebarVisible] = useState(false)
 
   const handleSignout = async () => {
     if (confirm("Are you sure?")) {
@@ -119,63 +122,118 @@ const Menu = () => {
     }
   }
 
+  const showSidebar = async () => {
+    setSidebarVisible(!sidebarVisible)
+  }
+
   return (
-    <StyledNav>
-      <NavList>
-        <NavLinkStyled to="/" end>Roomies App</NavLinkStyled>
-          {user?.admin && (
-            <>
-              <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
-              <NavLinkStyled to="/users">Users</NavLinkStyled>
-              
-              <DropdownContainer>
-                <LinkDropDown 
-                  to="/settings/weekdays"
-                  className={isSettingsActive ? "active" : ""}>
-                    Settings
-                </LinkDropDown>
-                <DropdownContent className="dropdown-content">
-                  <DropdownItem to="/settings/weekdays">Weekdays</DropdownItem>
-                  <DropdownItem to="/settings/dates">Holidays</DropdownItem>
-                </DropdownContent>
-              </DropdownContainer>
-            </>
-          )}
+    <>
+      <StyledSidebar visible={sidebarVisible}>
+        <NavList className='sidebar-nav-ul'>
+          <NavLinkStyled 
+            style={{
+              width: '10%',
+              padding: '10% 5% 10% 85%',
+              borderRadius: '0',
+            }}
+            onClick={showSidebar}
+            to="#">
+              <i className="fa-solid fa-xmark fa-xl" />
+          </NavLinkStyled>
+          <NavLinkStyled className='sidebar-li' to="/" end>Roomies App</NavLinkStyled>
+            {user?.admin && (
+              <>
+                <NavLinkStyled className='sidebar-li' to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/users">Users</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/settings/weekdays">Weekdays</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/settings/dates">Holidays</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms">Rooms</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms/dates">Individual dates</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/bookings">Bookings</NavLinkStyled>
+              </>
+            )}
 
-          {user?.admin && (
+            {user && !user.admin && (
+              <> 
+                <NavLinkStyled className='sidebar-li' to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms">Rooms</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/bookings">Bookings</NavLinkStyled>
+              </>
+            )}
+        
+        
+          {user ? (
             <>
-              <DropdownContainer>
-                <LinkDropDown to="/rooms">Rooms</LinkDropDown>
-                <DropdownContent className="dropdown-content">
-                  <DropdownItem to="/rooms/dates">Individual dates</DropdownItem>
-                </DropdownContent>
-              </DropdownContainer>
-              <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+              <NavLinkStyled className='sidebar-li' to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
+              <NavLinkStyledSignOut className='sidebar-li' to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
+            </>
+          ) : (
+            <>
+              <NavLinkStyled className='sidebar-li' to="/signin">Sign In</NavLinkStyled>
+              <NavLinkStyled className='sidebar-li' to="/signup">Sign Up</NavLinkStyled>
             </>
           )}
+        </NavList>
+      </StyledSidebar>
 
-          {user && !user.admin && (
-            <> 
-              <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
-              <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>
-              <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+      <StyledNav>
+        <NavList>
+          <NavLinkStyled to="/" end>Roomies App</NavLinkStyled>
+            {user?.admin && (
+              <>
+                <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled to="/users">Users</NavLinkStyled>
+                
+                <DropdownContainer>
+                  <LinkDropDown 
+                    to="/settings/weekdays"
+                    className={isSettingsActive ? "active" : ""}>
+                      Settings
+                  </LinkDropDown>
+                  <DropdownContent className="dropdown-content">
+                    <DropdownItem to="/settings/weekdays">Weekdays</DropdownItem>
+                    <DropdownItem to="/settings/dates">Holidays</DropdownItem>
+                  </DropdownContent>
+                </DropdownContainer>
+              </>
+            )}
+  
+            {user?.admin && (
+              <>
+                <DropdownContainer>
+                  <LinkDropDown to="/rooms">Rooms</LinkDropDown>
+                  <DropdownContent className="dropdown-content">
+                    <DropdownItem to="/rooms/dates">Individual dates</DropdownItem>
+                  </DropdownContent>
+                </DropdownContainer>
+                <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+              </>
+            )}
+  
+            {user && !user.admin && (
+              <> 
+                <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>
+                <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+              </>
+            )}
+        </NavList>
+        <NavList>
+          {user ? (
+            <>
+              <NavLinkStyled to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
+              <NavLinkStyledSignOut to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
+            </>
+          ) : (
+            <>
+              <NavLinkStyled to="/signin">Sign In</NavLinkStyled>
+              <NavLinkStyled to="/signup">Sign Up</NavLinkStyled>
             </>
           )}
-      </NavList>
-      <NavList>
-        {user ? (
-          <>
-            <NavLinkStyled to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
-            <NavLinkStyledSignOut to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
-          </>
-        ) : (
-          <>
-            <NavLinkStyled to="/signin">Sign In</NavLinkStyled>
-            <NavLinkStyled to="/signup">Sign Up</NavLinkStyled>
-          </>
-        )}
-      </NavList>
-    </StyledNav>
+          <NavLinkStyled to="#" onClick={showSidebar}><i className="fa-solid fa-bars"></i></NavLinkStyled>
+        </NavList>
+      </StyledNav>
+    </>
   )
 }
 
