@@ -134,10 +134,6 @@ const GlobalStyles = createGlobalStyle`
     background-color: white;
     border-bottom: 0;
   }
-
-  // .rbc-event {
-  //   opacity: 0.7;  
-  // }
 `
 
 export default GlobalStyles
