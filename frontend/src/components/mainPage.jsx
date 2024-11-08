@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../reducers/userReducer'
 import Wrapper from './styles/Wrapper'
@@ -6,23 +5,14 @@ import Message from './Messages/Message'
 import { selectMessages, selectMessagesLoading, selectMessagesError } from '../reducers/messageReducer'
 import Spinner from './spinner'
 import MainWrapper from './styles/MainWrapper'
+import useDelayedLoading from '../services/delayedLoading'
 
 const MainPage = () => {
   const user = useSelector(selectUser)
   const messages = useSelector(selectMessages)
   const loading = useSelector(selectMessagesLoading)
   const error = useSelector(selectMessagesError)
-  const [showSpinner, setShowSpinner] = useState(false)
-
-  useEffect(() => {
-    let timer
-    if (loading) {
-      setShowSpinner(true)
-    } else if (!loading && showSpinner) {
-      timer = setTimeout(() => setShowSpinner(false), 700)
-    }
-    return () => clearTimeout(timer)
-  }, [loading, showSpinner])
+  const showSpinner = useDelayedLoading(loading)
 
   return (
     <>
