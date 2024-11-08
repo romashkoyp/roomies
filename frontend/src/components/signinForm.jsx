@@ -34,12 +34,12 @@ const SigninForm = () => {
 
   const handleUsernameChange = (event) => {
     const newUsername = event.target.value
-    dispatch(setUsername(newUsername))
+    setUsername(newUsername)
   }
 
   const handlePasswordChange = (event) => {
     const newPassword = event.target.value
-    dispatch(setPassword(newPassword))
+    setPassword(newPassword)
   }
 
   return (

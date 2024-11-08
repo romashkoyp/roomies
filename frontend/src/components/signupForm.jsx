@@ -17,6 +17,7 @@ const SignupForm = () => {
   })
 
   const handleChange = (event) => {
+    event.preventDefault()
     const { name, value } = event.target
     setFormData(prevData => ({
       ...prevData,
