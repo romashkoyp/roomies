@@ -21,7 +21,9 @@ export const fetchWeekdays = createAsyncThunk(
 
 const initialState = {
   weekdays: [],
-  currentWeekday: []
+  currentWeekday: [],
+  loading: false,
+  error: null
 }
 
 const weekdaySlice = createSlice({
@@ -29,12 +31,22 @@ const weekdaySlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+      .addCase(fetchWeekdays.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
       .addCase(fetchWeekdays.fulfilled, (state, action) => {
+        state.loading = false
         state.weekdays = action.payload
+      })
+      .addCase(fetchWeekdays.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
       })
   }
 })
 
 export const selectWeekdays = (state) => state.weekdays.weekdays
+export const selectWeekdaysLoading = (state) => state.weekdays.loading
+export const selectWeekdaysError = (state) => state.weekdays.error
 export default weekdaySlice.reducer
-

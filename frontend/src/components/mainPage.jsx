@@ -4,7 +4,6 @@ import Wrapper from './styles/Wrapper'
 import Message from './Messages/Message'
 import { selectMessages, selectMessagesLoading, selectMessagesError } from '../reducers/messageReducer'
 import Spinner from './spinner'
-import MainWrapper from './styles/MainWrapper'
 import useDelayedLoading from '../services/delayedLoading'
 
 const MainPage = () => {
@@ -22,11 +21,11 @@ const MainPage = () => {
       </Wrapper>
 
       {user && 
-        <MainWrapper>
+        <>
           {showSpinner && <Spinner />}
           {!showSpinner && !loading && error && <p>Error: {error}</p>}
-          {!showSpinner && !loading && !error && (<Message messages={messages} />)}
-        </MainWrapper>
+          {!showSpinner && !loading && !error && <Message messages={messages} />}
+        </>
       }
     </>
   )

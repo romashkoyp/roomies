@@ -67,9 +67,7 @@ const SingleDate = () => {
           </tr>
         </tbody>
       </table>
-      {user.admin && user.enabled ? (
-        <SecondaryButton onClick={handleDeleteDate}>Delete</SecondaryButton>
-      ) : null}
+      {user.admin && user.enabled && <SecondaryButton onClick={handleDeleteDate}>Delete</SecondaryButton>}
     </Wrapper>
   )
 }

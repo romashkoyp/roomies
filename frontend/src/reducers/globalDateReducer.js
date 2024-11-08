@@ -14,7 +14,9 @@ export const fetchGlobalDates = createAsyncThunk(
 )
 
 const initialState = {
-  globalDates: []
+  globalDates: [],
+  loading: false,
+  error: null
 }
 
 const globalDateSlice = createSlice({
@@ -22,11 +24,22 @@ const globalDateSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+      .addCase(fetchGlobalDates.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
       .addCase(fetchGlobalDates.fulfilled, (state, action) => {
+        state.loading = false
         state.globalDates = action.payload
+      })
+      .addCase(fetchGlobalDates.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
       })
   }
 })
 
 export const selectGlobalDates = (state) => state.globalDates.globalDates
+export const selectGlobalDatesLoading = (state) => state.globalDates.loading
+export const selectGlobalDatesError = (state) => state.globalDates.error
 export default globalDateSlice.reducer

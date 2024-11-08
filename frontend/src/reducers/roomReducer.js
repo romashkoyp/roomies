@@ -14,7 +14,9 @@ export const fetchRooms = createAsyncThunk(
 )
 
 const initialState = {
-  rooms: []
+  rooms: [],
+  loading: false,
+  error: null
 }
 
 const roomSlice = createSlice({
@@ -23,11 +25,22 @@ const roomSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchRooms.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
       .addCase(fetchRooms.fulfilled, (state, action) => {
+        state.loading = false
         state.rooms = action.payload
+      })
+      .addCase(fetchRooms.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
       })
   }
 })
 
 export const selectRooms = (state) => state.rooms.rooms
+export const selectRoomsLoading = (state) => state.rooms.loading
+export const selectRoomsError = (state) => state.rooms.error
 export default roomSlice.reducer

@@ -6,11 +6,13 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectBookings, fetchBookingsByDate } from '../../reducers/bookingReducer'
+import { selectBookings, selectBookingsLoading, selectBookingsError, fetchBookingsByDate } from '../../reducers/bookingReducer'
 import { selectUser } from '../../reducers/userReducer'
 import bookingService from '../../services/booking'
 import { setNotification } from '../../reducers/notificationReducer'
 import NewBookingForm from './NewBookingForm'
+import Spinner from '../spinner'
+import useDelayedLoading from '../../services/delayedLoading'
 
 const getSlotPropGetter = (resources) => {
   return (date, resource) => {
@@ -67,6 +69,9 @@ const BookingCalendar = () => {
   const DnDCalendar = withDragAndDrop(Calendar)
   const user = useSelector(selectUser)
   const bookings = useSelector(selectBookings)
+  const loading = useSelector(selectBookingsLoading)
+  const error = useSelector(selectBookingsError)
+  const showSpinner = useDelayedLoading(loading)
   const [events, setEvents] = useState([])
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState(null)
@@ -272,31 +277,35 @@ const BookingCalendar = () => {
   if (!user) return null
 
   return (
-    <div>
-      <DnDCalendar
-        localizer={localizer}
-        defaultDate={moment(currentDate).toDate()}
-        onNavigate={handleDateChange}
-        events={events}
-        resources={resources}
-        resourceAccessor="resourceId"
-        startAccessor="start"
-        endAccessor="end"
-        defaultView="day"
-        views={['day']}
-        step={30}
-        min={moment().hours(7).minutes(0).toDate()}  // visibility of hours
-        max={moment().hours(17).minutes(0).toDate()} // visibility of hours
-        formats={formats}
-        onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
-        onEventDrop={moveEvent}
-        onEventResize={resizeEvent}
-        slotPropGetter={slotPropGetter}
-        eventPropGetter={(event) => eventStyleGetter(event, user)}
-        selectable
-        resizable
-      />
+    <>
+      {showSpinner && <Spinner />}
+      {!showSpinner && !loading && error && <p>Error: {error}</p>}
+      {!showSpinner && !loading && !error &&
+        <DnDCalendar
+          localizer={localizer}
+          defaultDate={moment(currentDate).toDate()}
+          onNavigate={handleDateChange}
+          events={events}
+          resources={resources}
+          resourceAccessor="resourceId"
+          startAccessor="start"
+          endAccessor="end"
+          defaultView="day"
+          views={['day']}
+          step={30}
+          min={moment().hours(7).minutes(0).toDate()}  // visibility of hours
+          max={moment().hours(17).minutes(0).toDate()} // visibility of hours
+          formats={formats}
+          onSelectEvent={handleSelectEvent}
+          onSelectSlot={handleSelectSlot}
+          onEventDrop={moveEvent}
+          onEventResize={resizeEvent}
+          slotPropGetter={slotPropGetter}
+          eventPropGetter={(event) => eventStyleGetter(event, user)}
+          selectable
+          resizable
+        />
+      }
 
       {showBookingForm && selectedSlot && (
         <div className="overlay">
@@ -308,7 +317,7 @@ const BookingCalendar = () => {
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
