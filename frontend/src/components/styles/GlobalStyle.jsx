@@ -148,6 +148,20 @@ const GlobalStyles = createGlobalStyle`
     border-radius: 0;
   }
 
+  .menu-button {
+    display: none;
+  }
+
+  @media(max-width: 830px){
+    .hideOnMobile{
+      display: none;
+    }
+
+    .menu-button {
+      display: block;
+    }
+  }
+
   .rbc-addons-dnd-row-body {
     height: 0;
     overflow: hidden;

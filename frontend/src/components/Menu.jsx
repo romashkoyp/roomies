@@ -38,7 +38,7 @@ const NavLinkStyled = styled(NavLink)`
   }
 `
 
-const NavLinkStyledSignOut = styled(NavLink)`
+const NavLinkStyledNoActive = styled(NavLink)`
   text-decoration: none;
   padding: 10px 15px;
   color: #333;
@@ -165,7 +165,7 @@ const Menu = () => {
           {user ? (
             <>
               <NavLinkStyled className='sidebar-li' to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
-              <NavLinkStyledSignOut className='sidebar-li' to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
+              <NavLinkStyledNoActive className='sidebar-li' to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledNoActive>
             </>
           ) : (
             <>
@@ -181,10 +181,10 @@ const Menu = () => {
           <NavLinkStyled to="/" end>Roomies App</NavLinkStyled>
             {user?.admin && (
               <>
-                <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
-                <NavLinkStyled to="/users">Users</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/users">Users</NavLinkStyled>
                 
-                <DropdownContainer>
+                <DropdownContainer className="hideOnMobile">
                   <LinkDropDown 
                     to="/settings/weekdays"
                     className={isSettingsActive ? "active" : ""}>
@@ -200,37 +200,42 @@ const Menu = () => {
   
             {user?.admin && (
               <>
-                <DropdownContainer>
+                <DropdownContainer className="hideOnMobile">
                   <LinkDropDown to="/rooms">Rooms</LinkDropDown>
                   <DropdownContent className="dropdown-content">
                     <DropdownItem to="/rooms/dates">Individual dates</DropdownItem>
                   </DropdownContent>
                 </DropdownContainer>
-                <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/bookings">Bookings</NavLinkStyled>
               </>
             )}
   
             {user && !user.admin && (
               <> 
-                <NavLinkStyled to="/notifications">Messages</NavLinkStyled>
-                <NavLinkStyled to="/rooms">Rooms</NavLinkStyled>
-                <NavLinkStyled to="/bookings">Bookings</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/notifications">Messages</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/rooms">Rooms</NavLinkStyled>
+                <NavLinkStyled className="hideOnMobile" to="/bookings">Bookings</NavLinkStyled>
               </>
             )}
         </NavList>
         <NavList>
           {user ? (
             <>
-              <NavLinkStyled to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
-              <NavLinkStyledSignOut to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledSignOut>
+              <NavLinkStyled className="hideOnMobile" to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
+              <NavLinkStyledNoActive className="hideOnMobile" to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledNoActive>
             </>
           ) : (
             <>
-              <NavLinkStyled to="/signin">Sign In</NavLinkStyled>
-              <NavLinkStyled to="/signup">Sign Up</NavLinkStyled>
+              <NavLinkStyled className="hideOnMobile" to="/signin">Sign In</NavLinkStyled>
+              <NavLinkStyled className="hideOnMobile" to="/signup">Sign Up</NavLinkStyled>
             </>
           )}
-          <NavLinkStyled to="#" onClick={showSidebar}><i className="fa-solid fa-bars"></i></NavLinkStyled>
+          <NavLinkStyledNoActive 
+            className="menu-button"
+            to="#"
+            onClick={showSidebar}>
+            <i className="fa-solid fa-bars"></i>
+          </NavLinkStyledNoActive>
         </NavList>
       </StyledNav>
     </>
