@@ -19,7 +19,7 @@ const Users = () => {
     navigate(`/users/${userId}`);
   }
 
-  if (user?.admin && Array.isArray(users) && users.length > 0 ) {
+  if (user.admin && user.enabled) {
     return (
       <>
         {showSpinner && <Spinner />}
@@ -27,6 +27,7 @@ const Users = () => {
         {!showSpinner && !loading && !error &&
           <Wrapper>
             <h3>Users</h3>
+            {users.length == 0 && <p>No users found.</p>}
             <table>
               <thead>
                 <tr>

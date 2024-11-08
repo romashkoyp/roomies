@@ -30,6 +30,10 @@ const WeekdaySingle = () => {
     setIsEditMode(false)
   }
 
+  const handleCloseEdit = () => {
+    setIsEditMode(false)
+  }
+
   const handleDelete = async (event) => {
     event.preventDefault()
     if (confirm("Are you sure?")) {
@@ -70,7 +74,7 @@ const WeekdaySingle = () => {
             </tr>
           </tbody>
         </table>
-        {user.admin && user.enabled ? (
+        {user.admin && user.enabled &&
         <>
           <PrimaryButton onClick={handleEditClick}>
             {isEditMode ? 'Cancel' : 'Edit'}
@@ -79,14 +83,15 @@ const WeekdaySingle = () => {
             Restore
           </SecondaryButton>
         </>
-      ) : null}
+        }
       </Wrapper>
-        {isEditMode && user.admin && user.enabled ? (
+        {isEditMode && user.admin && user.enabled &&
           <WeekdayUpdateForm
             dayOfWeek={dayOfWeek}
             onUpdateSuccess={handleUpdateSuccess}
+            onCloseEdit={handleCloseEdit}
           />
-        ) : null}
+        }
     </>
   )
 }

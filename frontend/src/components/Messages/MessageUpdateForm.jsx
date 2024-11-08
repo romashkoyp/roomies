@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
@@ -14,6 +14,13 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const [content, setContent] = useState(message.content)
+  const formRef = useRef(null)
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
 
   const handleChange = (event) => {
     setContent(event.target.value)
@@ -42,7 +49,7 @@ const MessageUpdateForm = ({ message, id, onUpdateSuccess, onCloseEdit }) => {
           <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
         </CloseButtonWrapper>
         
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div>
             <ResizableTextarea
               type="text"

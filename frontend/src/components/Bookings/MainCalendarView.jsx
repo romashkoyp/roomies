@@ -294,7 +294,7 @@ const BookingCalendar = () => {
           views={['day']}
           step={30}
           min={moment().hours(7).minutes(0).toDate()}  // visibility of hours
-          max={moment().hours(17).minutes(0).toDate()} // visibility of hours
+          max={moment().hours(19).minutes(0).toDate()} // visibility of hours
           formats={formats}
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}

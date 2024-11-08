@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
@@ -19,10 +19,15 @@ const UserUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
     enabled: false
   })
   const [originalData, setOriginalData] = useState({})
+  const formRef = useRef(null)
 
   useEffect(() => {
     setFormData(currentUser)
     setOriginalData(currentUser)
+
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
   }, [currentUser, dispatch])
 
   const handleChange = (event) => {
@@ -77,7 +82,7 @@ const UserUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
           <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
         </CloseButtonWrapper>
         
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Username</label>
             <input

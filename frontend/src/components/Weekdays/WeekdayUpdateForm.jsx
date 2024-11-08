@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
@@ -7,8 +7,9 @@ import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import weekdaysService from '../../services/weekday'
 import { fetchWeekdays, selectWeekdays } from '../../reducers/weekdayReducer'
+import CloseButtonWrapper from '../styles/CloseButtonWrapper'
 
-const WeekdayUpdateForm = ({ dayOfWeek, onUpdateSuccess }) => {
+const WeekdayUpdateForm = ({ dayOfWeek, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
   const weekdays = useSelector(selectWeekdays)
@@ -20,6 +21,13 @@ const WeekdayUpdateForm = ({ dayOfWeek, onUpdateSuccess }) => {
     time_end: weekday.timeEnd?.slice(0, -3),
     day_of_week: weekday.dayOfWeek
   })
+  const formRef = useRef(null)
+
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -58,8 +66,12 @@ const WeekdayUpdateForm = ({ dayOfWeek, onUpdateSuccess }) => {
   if (user?.admin && user.enabled) {
     return (
       <Wrapper>
-        <h3>Edit global settings for {daysOfWeek[weekday.dayOfWeek]}</h3>
-        <form onSubmit={handleSubmit}>
+        <CloseButtonWrapper>
+          <h3>Edit global settings for {daysOfWeek[weekday.dayOfWeek]}</h3>
+          <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
+        </CloseButtonWrapper>
+        
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="availability">Availability:</label>
             <input
@@ -101,7 +113,8 @@ const WeekdayUpdateForm = ({ dayOfWeek, onUpdateSuccess }) => {
 
 WeekdayUpdateForm.propTypes = {
   dayOfWeek: PropTypes.string.isRequired,
-  onUpdateSuccess: PropTypes.func.isRequired
+  onUpdateSuccess: PropTypes.func.isRequired,
+  onCloseEdit: PropTypes.func.isRequired
 }
 
 export default WeekdayUpdateForm

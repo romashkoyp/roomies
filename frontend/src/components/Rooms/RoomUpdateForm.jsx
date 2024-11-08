@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Wrapper from '../styles/Wrapper'
@@ -16,11 +16,16 @@ const RoomUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
   const currentRoom = rooms.find(item => item.id === Number(id))
   const [formData, setFormData] = useState({})
   const [originalData, setOriginalData] = useState({})
+  const formRef = useRef(null)
 
   useEffect(() => {
     if (currentRoom) {
       setFormData(currentRoom)
       setOriginalData(currentRoom)
+    }
+
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [currentRoom, dispatch, id])
 
@@ -68,7 +73,7 @@ const RoomUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
           <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={onCloseEdit}></i>
         </CloseButtonWrapper>
         
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input

@@ -47,11 +47,9 @@ const MessageForm = () => {
       <Wrapper>
         <CloseButtonWrapper>
           <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
-          {isVisible ?
-            <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
-          : null}
+          {isVisible && <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>}
         </CloseButtonWrapper>      
-        {isVisible ?
+        {isVisible &&
           <form onSubmit={handleSubmit}>
             <div>
               <ResizableTextarea
@@ -64,7 +62,7 @@ const MessageForm = () => {
             </div>
             <PrimaryButton type="submit">Submit</PrimaryButton>
           </form>
-          : null}
+        }
       </Wrapper>
     )
   }

@@ -23,7 +23,9 @@ const SingleUser = () => {
     setIsEditMode(!isEditMode)
   }
 
-  const handleCloseEdit = () => setIsEditMode(false)
+  const handleCloseEdit = () => {
+    setIsEditMode(false)
+  }
 
   const handleUpdateSuccess = () => {
     setIsEditMode(false)
@@ -43,9 +45,6 @@ const SingleUser = () => {
       }
     } else return null
   }
-
-  console.log(user ? user.id : 'no user')
-  console.log(currentUser ? currentUser.id : 'no current user')
   
   if (currentUser) {
     return (
@@ -77,7 +76,7 @@ const SingleUser = () => {
             </tbody>
           </table>
         
-          {user.admin && user.enabled ?
+          {user.admin && user.enabled &&
             <>
               <PrimaryButton onClick={handleEditClick}>
                 {isEditMode ? 'Cancel' : 'Edit'}
@@ -86,15 +85,16 @@ const SingleUser = () => {
                 Delete
               </SecondaryButton>
             </>
-          : null}
+          }
         </Wrapper>
-        {isEditMode && user.admin && user.enabled ?
+
+        {isEditMode && user.admin && user.enabled &&
           <UserUpdateForm
             id={currentUserId}
             onUpdateSuccess={handleUpdateSuccess}
             onCloseEdit={handleCloseEdit}
           />
-        : null}
+        }
       </>
     )
   } else {
