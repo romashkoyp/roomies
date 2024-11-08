@@ -6,15 +6,64 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { fetchUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import StyledInput from './styles/InputValidationStyle'
 
 const SigninForm = () => {
-  const [username, setUsername] = useState('admin@admin.com')
-  const [password, setPassword] = useState('gfghlur4754675')
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    username: 'admin@admin.com',
+    password: 'gfghlur4754675'
+  })
+  
+  const [formErrors, setFormErrors] = useState({
+    username: '',
+    password: ''
+  })
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }))
+    validateField(name, value)
+  }
+
+  const validateField = (name, value) => {
+    let errorMessage = ''
+    switch (name) {
+      case 'username':
+        if (value.trim() === '') {
+          errorMessage = 'Email is required'
+        } else if (!isValidEmail(value)) {
+          errorMessage = 'Invalid email address'
+        }
+        break
+      case 'password':
+        if (value.trim() === '') {
+          errorMessage = 'Password is required'
+        } else if (value.length < 8) {
+          errorMessage = 'Password must be at least 8 characters long'
+        }
+        break
+      default:
+        break
+    }
+    setFormErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: errorMessage
+    }))
+  }
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    return emailRegex.test(email)
+  }
 
   const handleSignin = async (event) => {
     event.preventDefault()
+    const { username, password } = formData
     const result = await signinService.signin({ username, password })
 
     if (result.success) {
@@ -23,8 +72,8 @@ const SigninForm = () => {
       signinService.setToken(user.token)
       dispatch(fetchUser(user.id))
       dispatch(setNotification(`You have successfully signed in to Roomies App as ${user.name}`, 'success', 5))
-      setUsername('')
-      setPassword('')
+      setFormData({ username: '', password: '' })
+      setFormErrors({ username: '', password: '' })
       navigate('/')
     } else {
       dispatch(setNotification(result.error, 'error', 5))
@@ -32,44 +81,44 @@ const SigninForm = () => {
     }
   }
 
-  const handleUsernameChange = (event) => {
-    const newUsername = event.target.value
-    setUsername(newUsername)
-  }
-
-  const handlePasswordChange = (event) => {
-    const newPassword = event.target.value
-    setPassword(newPassword)
-  }
-
   return (
-    <Wrapper>
+    <Wrapper style={{ maxWidth: '350px', alignSelf: 'center', padding: '2em' }}>
       <form onSubmit={handleSignin}>
         <h2>Sign In</h2>
+        
         <div className="form-group">
           <label htmlFor="username">Username</label>
-          <input
-            type="email"
-            placeholder="Email"
-            id="username"
-            name="username"
-            value={username}
-            onChange={handleUsernameChange}
-            autoComplete="current-username"
-          />
+          <div className="input-container">
+            <StyledInput
+              type="email"
+              placeholder="Email"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              hasError={formErrors.username.length > 0}
+            />
+            {formErrors.username && <div className="error">{formErrors.username}</div>}
+          </div>
         </div>
         
         <div className="form-group">
           <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            placeholder="Password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={handlePasswordChange}
-            autoComplete="current-password"
-          />
+          <div className="input-container">
+            <StyledInput
+              type="password"
+              placeholder="Password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength={8}
+              hasError={formErrors.password.length > 0}
+            />
+            {formErrors.password && <div className="error">{formErrors.password}</div>}
+          </div>
         </div>
         
         <PrimaryButton type="submit">Sign In</PrimaryButton>
