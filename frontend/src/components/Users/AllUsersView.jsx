@@ -16,7 +16,7 @@ const Users = () => {
   if (!user) return null
 
   const handleRowClick = (userId) => {
-    navigate(`/users/${userId}`);
+    navigate(`/users/${userId}`)
   }
 
   if (user.admin && user.enabled) {
