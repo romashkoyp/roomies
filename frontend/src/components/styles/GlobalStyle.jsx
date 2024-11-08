@@ -1,16 +1,18 @@
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyles = createGlobalStyle`
+  
   body {
     margin: 1.5rem;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Poppins", sans-serif; 
     color: #333;
     background-color: #f5f5f5;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+    font-family: "Noto Serif", serif;
+    font-weight: 800;
     margin-top: 0;
   }
 
@@ -19,13 +21,12 @@ const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: grey; /* Set the default link color */
-    text-decoration: none; /* Remove underline */
-    transition: color 0.3s ease; /* Add smooth color transition */
+    color: grey;
+    text-decoration: none;
+    transition: color 0.3s ease;
 
     &:hover {
-      color: black; /* Change color on hover */
-      //text-decoration: underline; /* Add underline on hover */
+      color: black;
     }
   }
 
@@ -114,6 +115,22 @@ const GlobalStyles = createGlobalStyle`
     width: 30px;
     height: 30px;
     cursor: pointer;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .error {
+    color: #ff5c5c;
+    font-size: 0.85em;
+    margin-top: 0.2em;
   }
 
   .rbc-addons-dnd-row-body {
