@@ -184,6 +184,7 @@ router.delete('/:id', tokenExtractor, isTokenUser, isAdmin, isSession, roomFinde
     const t = await sequelize.transaction()
     try {
       await IndividualDate.destroy({ where: { roomId: req.room.id }, transaction: t })
+      await Booking.destroy({ where: { roomId: req.room.id }, transaction: t})
       await Room.destroy({ where: { id: req.room.id }, transaction: t })
       console.log('Room and related records deleted')
       await t.commit()
