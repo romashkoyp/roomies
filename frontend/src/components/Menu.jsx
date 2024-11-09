@@ -178,7 +178,11 @@ const Menu = () => {
 
       <StyledNav>
         <NavList>
-          <NavLinkStyled to="/" end>Roomies App</NavLinkStyled>
+          <NavLinkStyled 
+            to="/" end>
+              <i style={{ paddingRight: '0.5em' }} className="fa-solid fa-house" />
+              Roomies App
+          </NavLinkStyled>
             {user?.admin && (
               <>
                 <NavLinkStyled className="hideOnMobile" to="/notifications">Messages</NavLinkStyled>

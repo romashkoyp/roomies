@@ -13,6 +13,7 @@ const NotificationWrapper = styled.div`
   font-size: 16px;
   font-weight: 500;
   animation: fadeIn 0.3s ease-in-out;
+  z-index: 999;
 
   @keyframes fadeIn {
     0% {

@@ -16,7 +16,6 @@ const buttonStyles = css`
   width: 120px; // Set the width of the button
   &:focus {
     outline: none;
-    //box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
   }
 
   &:disabled {
