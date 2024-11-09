@@ -29,7 +29,7 @@ const AllDatesView = () => {
       {!showSpinner && !loading && error && <p>Error: {error}</p>}
       {!showSpinner && !loading && !error &&
         <Wrapper>
-          <h3>All Dates</h3>
+          <h3>Individual dates for specific rooms</h3>
           {dates.length == 0 ? <p>No individual dates found.</p> :
             <table>
               <thead>

@@ -190,7 +190,6 @@ const BookingCalendar = () => {
 
   const moveEvent = async ({ event, start, end, resourceId }) => {
     const originalBooking = bookings.flatMap(room => room.bookings).find(booking => booking.id === event.bookingId)
-    console.log(originalBooking.userId)
 
     if (user.admin || user.id === event.eventOwner) {
       if (originalBooking.roomId !== resourceId) {

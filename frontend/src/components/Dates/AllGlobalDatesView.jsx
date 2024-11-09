@@ -30,7 +30,7 @@ const AllGlobalDatesView = () => {
       {!showSpinner && !loading && error && <p>Error: {error}</p>}
       {!showSpinner && !loading && !error &&
         <Wrapper>
-          <h3>Global Dates for all rooms</h3>
+          <h3>Current holidays for all rooms</h3>
           {globalDates.length == 0 ? <p>No holidays found.</p> :
             <table>
               <thead>

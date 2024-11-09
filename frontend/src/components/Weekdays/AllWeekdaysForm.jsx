@@ -82,11 +82,16 @@ const AllWeekdaysForm = () => {
   return (
     <Wrapper>
       <CloseButtonWrapper>
-        <LinkHeader onClick={handleClick}><h3>Edit global weekdays for all rooms</h3></LinkHeader>
+        <LinkHeader onClick={handleClick}><h3>Edit weekdays for all rooms</h3></LinkHeader>
         {isVisible ?
             <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
           : null}
       </CloseButtonWrapper>
+      <p>
+        Set default room availability for each day of the week. 
+        Configure standard operating hours for all rooms or make them unavailable by default on specific days. 
+        The lowest priority. These settings can be overridden by holiday and specific date settings for specific room.
+      </p>
       
       {isVisible && (
         <form onSubmit={handleSubmit}>

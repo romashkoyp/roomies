@@ -41,7 +41,7 @@ const AllGlobalDatesForm = () => {
 
     if (result.success) {
       dispatch(fetchGlobalDates())
-      dispatch(setNotification('Date added successfully', 'success', 5))
+      dispatch(setNotification('Holiday added successfully', 'success', 5))
       setFormData({
           name: 'Holiday',
           date: new Date().toISOString().slice(0, 10),
@@ -60,11 +60,16 @@ const AllGlobalDatesForm = () => {
   return (
     <Wrapper>
       <CloseButtonWrapper>
-        <LinkHeader onClick={handleClick}><h3>Add new global date</h3></LinkHeader>
+        <LinkHeader onClick={handleClick}><h3>Add holiday for all rooms</h3></LinkHeader>
         {isVisible ?
             <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
           : null}
       </CloseButtonWrapper>
+      <p>
+        Simply add days like holidays or company events and set special schedule for all rooms on these days. 
+        Middle priority. These settings can be overridden by individual date for special room.
+      </p>
+
       { isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>

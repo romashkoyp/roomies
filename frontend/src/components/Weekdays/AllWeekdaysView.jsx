@@ -30,7 +30,7 @@ const AllWeekdaysView = () => {
         {!showSpinner && !loading && error && <p>Error: {error}</p>}
         {!showSpinner && !loading && !error &&
           <Wrapper>
-            <h3>Global Weekdays for all rooms</h3>
+            <h3>Current weekdays for all rooms</h3>
             <table>
               <thead>
                 <tr>

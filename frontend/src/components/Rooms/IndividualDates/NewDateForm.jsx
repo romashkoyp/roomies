@@ -73,6 +73,10 @@ const NewDateForm = () => {
             <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>
           : null}
       </CloseButtonWrapper>
+      <p>
+        View and manage all custom date settings for individual room across the entire system.
+        The highest priority. Overriding other global settings for current room as weekdays and holidays.
+      </p>
       
       {isVisible ? <form onSubmit={handleSubmit}>
         <div className="form-group">
