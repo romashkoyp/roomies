@@ -27,7 +27,6 @@ const AllRoomDates = () => {
     navigate(`/rooms/${currentRoom.id}/dates/${date}`)
   }
 
-  if (individualDatesForRoom?.length > 0) {
     return (
       <>
         {user.admin && user.enabled && <NewDateForm />}
@@ -36,37 +35,39 @@ const AllRoomDates = () => {
         {!showSpinner && !loading && !error &&
           <Wrapper>
             <h3>Individual dates for {currentRoom.name}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Name</th>
-                  <th>Availability</th>
-                  <th>Time Start</th>
-                  <th>Time End</th>
-                </tr>
-              </thead>
-              <tbody>
-                {individualDatesForRoom.map((date) => (
-                  <tr
-                    key={date.id}
-                    onClick={() => handleRowClick(date.date)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <td>{moment(date.date).format('MMMM Do, YYYY')}</td>
-                    <td>{date.name}</td>
-                    <td>{date.availability ? 'Yes' : 'No'}</td>
-                    <td>{formatTime(date.timeBegin)}</td>
-                    <td>{formatTime(date.timeEnd)}</td>
+            {individualDatesForRoom.length == 0 ? <p>No individual dates found for current room.</p> :
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Availability</th>
+                    <th>Time Start</th>
+                    <th>Time End</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {individualDatesForRoom.map((date) => (
+                    <tr
+                      key={date.id}
+                      onClick={() => handleRowClick(date.date)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td>{moment(date.date).format('MMMM Do, YYYY')}</td>
+                      <td>{date.name}</td>
+                      <td>{date.availability ? 'Yes' : 'No'}</td>
+                      <td>{formatTime(date.timeBegin)}</td>
+                      <td>{formatTime(date.timeEnd)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            }
           </Wrapper>
         }
       </>
     )
-  }
+
 }
 
 export default AllRoomDates

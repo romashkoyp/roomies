@@ -50,7 +50,10 @@ const SingleUser = () => {
     return (
       <>
         <Wrapper>
-          <h3>{currentUser.name}</h3>
+          <h3>
+            <i style={{ paddingRight: '0.5em' }} className="fa-solid fa-user-tie" />
+            {currentUser.name}
+          </h3>
           <table>
             <tbody>
               <tr>

@@ -26,7 +26,10 @@ const Users = () => {
         {!showSpinner && !loading && error && <p>Error: {error}</p>}
         {!showSpinner && !loading && !error &&
           <Wrapper>
-            <h3>Users</h3>
+            <h3>
+              <i style={{ paddingRight: '0.5em' }} className="fa-solid fa-user-group" />
+              Users
+            </h3>
             {users.length == 0 && <p>No users found.</p>}
             <table>
               <thead>

@@ -23,14 +23,14 @@ const AllDatesView = () => {
     navigate(`/rooms/${roomId}/dates/${date}`)
   }
 
-  if (Array.isArray(dates) && dates.length > 0) {
-    return (
-      <>
-        {showSpinner && <Spinner />}
-        {!showSpinner && !loading && error && <p>Error: {error}</p>}
-        {!showSpinner && !loading && !error &&
-          <Wrapper>
-            <h3>All Dates</h3>
+  return (
+    <>
+      {showSpinner && <Spinner />}
+      {!showSpinner && !loading && error && <p>Error: {error}</p>}
+      {!showSpinner && !loading && !error &&
+        <Wrapper>
+          <h3>All Dates</h3>
+          {dates.length == 0 ? <p>No individual dates found.</p> :
             <table>
               <thead>
                 <tr>
@@ -61,11 +61,12 @@ const AllDatesView = () => {
                 ))}
               </tbody>
             </table>
-          </Wrapper>
-        }
-      </>
-    )
-  }
+          }
+        </Wrapper>
+      }
+    </>
+  )
+
 }
 
 export default AllDatesView

@@ -24,7 +24,7 @@ const Messages = () => {
       {!showSpinner && !loading && error && <p>Error: {error}</p>}
       {!showSpinner && !loading && !error && (
         <Wrapper>
-          <h3>Last messages</h3>
+          <h3><i style={{ paddingRight: '0.5em' }} className="fa-regular fa-envelope" />Last messages</h3>
           {messages.length == 0 ? <p>No messages found.</p> :
             messages.map((m) => (
               <Link to={`/notifications/${m.id}`} key={m.id}>

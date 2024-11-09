@@ -221,8 +221,14 @@ const Menu = () => {
         <NavList>
           {user ? (
             <>
-              <NavLinkStyled className="hideOnMobile" to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
-              <NavLinkStyledNoActive className="hideOnMobile" to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledNoActive>
+              <NavLinkStyled className="hideOnMobile" to={`/users/${user.id}`} end>
+                <i style={{ paddingRight: '0.5em' }} className="fa-solid fa-user-tie" />
+                {user.name}
+              </NavLinkStyled>
+              <NavLinkStyledNoActive className="hideOnMobile" to="/" end onClick={handleSignout}>
+                <i style={{ paddingRight: '0.5em' }} className="fa-solid fa-arrow-right-from-bracket" />
+                Sign Out
+              </NavLinkStyledNoActive>
             </>
           ) : (
             <>

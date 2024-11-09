@@ -17,7 +17,14 @@ const Message = () => {
 
     return (
       <Wrapper>
-        <LinkHeader><Link to="/notifications"><h3>Messages</h3></Link></LinkHeader>
+        <LinkHeader>
+          <Link to="/notifications">
+            <h3>
+              <i style={{ paddingRight: '0.5em' }} className="fa-regular fa-envelope" />
+              Messages
+            </h3>
+          </Link>
+        </LinkHeader>
           {firstThreeMessages.map((m) => {
             const truncatedContent = m.content.length > 50 
               ? m.content.substring(0, 50) + '...'
@@ -33,7 +40,14 @@ const Message = () => {
   } else {
     return (
       <Wrapper>
-        <LinkHeader><Link to="/notifications"><h3>Messages</h3></Link></LinkHeader>
+        <LinkHeader>
+          <Link to="/notifications">
+            <h3>
+              <i style={{ paddingRight: '0.5em' }} className="fa-regular fa-envelope" />
+              Messages
+            </h3>
+          </Link>
+        </LinkHeader>
         <p>No messages yet.</p>
       </Wrapper>
     )

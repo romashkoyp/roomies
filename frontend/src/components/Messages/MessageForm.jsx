@@ -46,7 +46,12 @@ const MessageForm = () => {
     return (
       <Wrapper>
         <CloseButtonWrapper>
-          <LinkHeader onClick={handleClick}><h3>Add new message</h3></LinkHeader>
+          <LinkHeader onClick={handleClick}>
+            <h3>
+              <i style={{ paddingRight: '0.5em' }} className="fa-regular fa-comment-dots" />
+              Add new message
+            </h3>
+          </LinkHeader>
           {isVisible && <i className="fa-solid fa-xmark fa-xl" style={{ cursor: 'pointer'}} onClick={handleClick}></i>}
         </CloseButtonWrapper>      
         {isVisible &&
