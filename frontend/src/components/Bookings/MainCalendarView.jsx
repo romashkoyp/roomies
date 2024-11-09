@@ -132,7 +132,6 @@ const BookingCalendar = () => {
     const bookingToUpdate = bookings.flatMap(room => room.bookings).find(
       booking => booking.id === event.bookingId
     )
-    console.log(user.id, event.eventOwner)
 
     if (user.admin || user.id === event.eventOwner) {
       if (bookingToUpdate) {
