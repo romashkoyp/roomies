@@ -23,15 +23,15 @@ const AllGlobalDatesView = () => {
 
   if (!user) return null
 
-  if (globalDates.length > 0) {
-    return (
-      <>
-        {user.admin && user.enabled && <AllGlobalDatesForm />}
-        {showSpinner && <Spinner />}
-        {!showSpinner && !loading && error && <p>Error: {error}</p>}
-        {!showSpinner && !loading && !error &&
-          <Wrapper>
-            <h3>Global Dates for all rooms</h3>
+  return (
+    <>
+      {user.admin && user.enabled && <AllGlobalDatesForm />}
+      {showSpinner && <Spinner />}
+      {!showSpinner && !loading && error && <p>Error: {error}</p>}
+      {!showSpinner && !loading && !error &&
+        <Wrapper>
+          <h3>Global Dates for all rooms</h3>
+          {globalDates.length == 0 ? <p>No holidays found.</p> :
             <table>
               <thead>
                 <tr>
@@ -60,11 +60,11 @@ const AllGlobalDatesView = () => {
                 ))}
               </tbody>
             </table>
-          </Wrapper>
-        }
-      </>
-    )
-  }
+          }
+        </Wrapper>
+      }
+    </>
+  )
 }
 
 export default AllGlobalDatesView

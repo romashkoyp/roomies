@@ -30,31 +30,32 @@ const Rooms = () => {
       {!showSpinner && !loading && !error &&
         <Wrapper>
           <h3>Rooms</h3>
-          {rooms.length == 0 && <p>No rooms found.</p>}
-          <table>
-            <thead>
-              <tr>
-                <th>Room ID</th>
-                <th>Name</th>
-                <th>Capacity, people</th>
-                <th>Size, m<sup>2</sup></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rooms.map((u) => (
-                <tr
-                  key={u.id}
-                  onClick={()=>handleRowClick(u.id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>{u.id}</td>
-                  <td>{u.name}</td>
-                  <td>{u.capacity}</td>
-                  <td>{u.size}</td>
+          {rooms.length == 0 ? <p>No rooms found.</p> :
+            <table>
+              <thead>
+                <tr>
+                  <th>Room ID</th>
+                  <th>Name</th>
+                  <th>Capacity, people</th>
+                  <th>Size, m<sup>2</sup></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rooms.map((u) => (
+                  <tr
+                    key={u.id}
+                    onClick={()=>handleRowClick(u.id)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <td>{u.id}</td>
+                    <td>{u.name}</td>
+                    <td>{u.capacity}</td>
+                    <td>{u.size}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          }
         </Wrapper>
       }
     </>
