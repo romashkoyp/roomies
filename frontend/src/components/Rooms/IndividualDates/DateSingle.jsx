@@ -6,7 +6,7 @@ import Wrapper from '../../styles/Wrapper'
 import { SecondaryButton } from '../../styles/Buttons'
 import individualDateService from '../../../services/individualDate'
 import { setNotification } from '../../../reducers/notificationReducer'
-import { fetchIndividualDatesForRoom } from '../../../reducers/individualDateReducer'
+import { fetchIndividualDatesForRoom, fetchAllIndividualDates } from '../../../reducers/individualDateReducer'
 import moment from 'moment'
 
 const SingleDate = () => {
@@ -28,6 +28,7 @@ const SingleDate = () => {
       const result = await individualDateService.deleteRoomDate(currentRoomId, date)
       if (result.success) {
         dispatch(fetchIndividualDatesForRoom(currentRoomId))
+        dispatch(fetchAllIndividualDates())
         dispatch(setNotification('Date deleted', 'success', 5))
         navigate(`/rooms/${currentRoomId}/dates`)
       } else {
