@@ -19,6 +19,7 @@ const settingRouter = require('./controllers/settings')
 
 const { errorHandler } = require('./util/middleware')
 const { createRooms } = require('./util/roomsCreator')
+const { createMessages } = require('./util/messagesCreator')
 
 app.use(cors())
 app.use(express.json())
@@ -44,6 +45,7 @@ const start = async () => {
     await createAdminUser()
     await createGlobalRoomsWeekdays()
     await createRooms()
+    await createMessages()
   }
 }
 
