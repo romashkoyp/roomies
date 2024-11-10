@@ -18,6 +18,7 @@ const bookingRouter = require('./controllers/bookings')
 const settingRouter = require('./controllers/settings')
 
 const { errorHandler } = require('./util/middleware')
+const { createRooms } = require('./util/roomsCreator')
 
 app.use(cors())
 app.use(express.json())
@@ -42,6 +43,7 @@ const start = async () => {
   if (TEST === false) {
     await createAdminUser()
     await createGlobalRoomsWeekdays()
+    await createRooms()
   }
 }
 
