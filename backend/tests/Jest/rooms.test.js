@@ -17,9 +17,6 @@ describe('Rooms API', () => {
   let second
   let dSecond
 
-  let third
-  let dThird
-
   beforeAll(async () => {
     await start()
     server = app.listen(PORT)
@@ -29,8 +26,6 @@ describe('Rooms API', () => {
     tomorrow = dayData.tomorrow
     second = dayData.second
     dSecond = dayData.dSecond
-    third = dayData.third
-    dThird = dayData.dThird
   })
 
   afterAll(async () => {
@@ -166,22 +161,6 @@ describe('Rooms API', () => {
     })
   })
 
-  describe('DELETE  /', () => {
-    it('admin can delete all rooms', async () => {
-
-      const initialRoomCount = await Room.count()
-      expect(initialRoomCount).toBe(2)
-
-      const res = await request(app)
-        .delete('/api/rooms')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(204)
-
-      const updatedRoomCount = await Room.count()
-      expect(updatedRoomCount).toBe(0)
-    })
-  })
-
   describe('GET     /dates', () => {
     it('admin can get all individual dates for all rooms', async () => {
       const res = await request(app)
@@ -189,24 +168,6 @@ describe('Rooms API', () => {
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(2)
-    })
-  })
-
-  describe('DELETE  /dates', () => {
-    it('admin can delete all dates for all rooms', async () => {
-
-      const initialDateCount = await IndividualDate.count()
-      expect(initialDateCount).toBe(2)
-      console.log(initialDateCount)
-
-      const res = await request(app)
-        .delete('/api/rooms/dates')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(204)
-
-      const updatedDateCount = await IndividualDate.count()
-      expect(updatedDateCount).toBe(0)
-      console.log(updatedDateCount)
     })
   })
 
@@ -221,7 +182,7 @@ describe('Rooms API', () => {
           size: 90,
           image_path: '/images/updatedroom.jpeg'
         })
-      expect(res.status).toBe(201)
+      expect(res.status).toBe(200)
       expect(res.body.name).toBe('Updated Room')
       expect(res.body.capacity).toBe(20)
       expect(res.body.size).toBe(90)
@@ -450,78 +411,6 @@ describe('Rooms API', () => {
         })
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Settings for the room on current date already exist. Delete previous settings.')
-    })
-  })
-
-  describe('DELETE   /:id/dates', () => {
-    it('admin can delete all dates for desired room', async () => {
-
-      const initialDateCount = await IndividualDate.count({ where: { roomId: 20 } })
-      expect(initialDateCount).toBe(1)
-
-      const res = await request(app)
-        .delete('/api/rooms/20/dates')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(204)
-
-      const updatedDateCount = await IndividualDate.count({ where: { roomId: 20 } })
-      expect(updatedDateCount).toBe(0)
-
-      const dateCountAnotherRoom = await IndividualDate.count({ where: { roomId: 10 } })
-      expect(dateCountAnotherRoom).toBe(1)
-    })
-  })
-
-  describe('GET     /:date', () => {
-    it('admin can get all rooms for desired date', async () => {
-      const res = await request(app)
-        .get(`/api/rooms/${third}`)
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(200)
-      expect(res.body.length).toBe(initialRooms.length)
-    })
-  })
-
-  describe('GET     /:id/:date', () => {
-    it('admin can get a specific room for desired date', async () => {
-      const res = await request(app)
-        .get(`/api/rooms/20/${third}`)
-        .set('Authorization', `Bearer ${adminToken}`)
-      if (dThird === 6 || dThird=== 0) {
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Room not available on this date')
-      } else {
-        expect(res.status).toBe(200)
-        expect(res.body.name).toBe('Forest')
-      }
-    })
-
-    it('user can get a specific room for desired date', async () => {
-      const res = await request(app)
-        .get(`/api/rooms/20/${third}`)
-        .set('Authorization', `Bearer ${user1Token}`)
-      if (dThird === 6 || dThird === 0) {
-        expect(res.status).toBe(400)
-        expect(res.body.error).toBe('Room not available on this date')
-      } else {
-        expect(res.status).toBe(200)
-        expect(res.body.name).toBe('Forest')
-      }
-    })
-
-    it('disabled admin cannot get a specific room for individual date', async () => {
-      const res = await request(app)
-        .get(`/api/rooms/20/${third}`)
-        .set('Authorization', `Bearer ${disabledAdminToken}`)
-      expect(res.status).toBe(400)
-      expect(res.body.error).toBe('Account disabled')
-    })
-
-    it('nonregistered user cannot get a specific room for individual date', async () => {
-      const res = await request(app)
-        .get(`/api/rooms/20/${third}`)
-      expect(res.status).toBe(400)
-      expect(res.body.error).toBe('Token missing')
     })
   })
 

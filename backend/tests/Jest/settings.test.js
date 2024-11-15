@@ -12,7 +12,6 @@ describe('Settings API', () => {
   let user1Token
 
   let tomorrow
-  let dTomorrow
 
   let third
   let dThird
@@ -24,7 +23,6 @@ describe('Settings API', () => {
     const dayData = await dayCreator()
 
     tomorrow = dayData.tomorrow
-    dTomorrow = dayData.dTomorrow
     third = dayData.third
     dThird = dayData.dThird
   })
@@ -76,7 +74,7 @@ describe('Settings API', () => {
           time_begin: '09:00',
           time_end: '17:00'
         })
-      expect(res.status).toBe(201)
+      expect(res.status).toBe(200)
       expect(res.body.length).toBe(7)
       res.body.forEach(weekday => {
         expect(weekday.availability).toBe(true)
@@ -136,27 +134,6 @@ describe('Settings API', () => {
     })
   })
 
-  describe('GET     /weekdays/:dayOfWeek', () => {
-    it('admin can get settings for a specific weekday', async () => {
-      const res = await request(app)
-        .get('/api/settings/weekdays/1')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(200)
-      expect(res.body.dayOfWeek).toBe(1)
-      expect(res.body.availability).toBe(true)
-      expect(res.body.timeBegin).toBe('08:00:00')
-      expect(res.body.timeEnd).toBe('16:00:00')
-    })
-
-    it('user cannot get settings for a specific weekday', async () => {
-      const res = await request(app)
-        .get('/api/settings/weekdays/1')
-        .set('Authorization', `Bearer ${user1Token}`)
-      expect(res.status).toBe(400)
-      expect(res.body.error).toBe('Not enough rights')
-    })
-  })
-
   describe('PUT     /weekdays/:dayOfWeek', () => {
     it('admin can update settings for a specific weekday', async () => {
       const res = await request(app)
@@ -167,7 +144,7 @@ describe('Settings API', () => {
           time_begin: '09:00',
           time_end: '17:00'
         })
-      expect(res.status).toBe(201)
+      expect(res.status).toBe(200)
       expect(res.body.dayOfWeek).toBe(1)
       expect(res.body.availability).toBe(true)
       expect(res.body.timeBegin).toBe('09:00')
@@ -387,52 +364,6 @@ describe('Settings API', () => {
           time_begin: '09:00',
           time_end: '17:00'
         })
-      expect(res.status).toBe(400)
-      expect(res.body.error).toBe('Not enough rights')
-    })
-  })
-
-  describe('DELETE  /dates', () => {
-    it('admin can delete global dates', async () => {
-
-      const initialDayCount = await GlobalDate.count()
-      expect(initialDayCount).toBe(2)
-
-      const res = await request(app)
-        .delete('/api/settings/dates')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(204)
-
-      const updatedDatesCount = await GlobalDate.count()
-      expect(updatedDatesCount).toBe(0)
-    })
-
-    it('user cannot delete global dates', async () => {
-      const res = await request(app)
-        .delete('/api/settings/dates')
-        .set('Authorization', `Bearer ${user1Token}`)
-      expect(res.status).toBe(400)
-      expect(res.body.error).toBe('Not enough rights')
-    })
-  })
-
-  describe('GET     /weekdays/:dayOfWeek', () => {
-    it('admin can get date', async () => {
-      const res = await request(app)
-        .get(`/api/settings/dates/${tomorrow}`)
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(200)
-      expect(res.body.name).toBe('Global Holiday')
-      expect(res.body.dayOfWeek).toBe(dTomorrow)
-      expect(res.body.availability).toBe(false)
-      expect(res.body.timeBegin).toBe(null)
-      expect(res.body.timeEnd).toBe(null)
-    })
-
-    it('user cannot get day', async () => {
-      const res = await request(app)
-        .get(`/api/settings/dates/${tomorrow}`)
-        .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
     })

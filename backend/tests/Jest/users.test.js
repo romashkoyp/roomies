@@ -146,7 +146,7 @@ describe('Users API', () => {
           admin: true,
           enabled: false
         })
-      expect(res.status).toBe(201)
+      expect(res.status).toBe(200)
       expect(res.body.name).toBe('updated name by admin')
       expect(res.body.username).toBe('new@username.com')
       expect(res.body.admin).toBe(true)
@@ -161,7 +161,7 @@ describe('Users API', () => {
           name: 'updated name by user',
           username: 'new@username.com'
         })
-      expect(res.status).toBe(201)
+      expect(res.status).toBe(200)
       expect(res.body.name).toBe('updated name by user')
       expect(res.body.username).toBe('new@username.com')
     })

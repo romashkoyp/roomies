@@ -27,7 +27,6 @@ const dateValidation = async (req, res, next) => {
 // Get all bookings for all rooms by date
 router.get('/', tokenExtractor, isTokenUser, isSession,
   async (req, res) => {
-    // const { date } = req.params
     const date = req.query.date
     const datePattern = /^\d{4}-\d{2}-\d{2}$/
     if (!date) throw new Error ('Date is required')

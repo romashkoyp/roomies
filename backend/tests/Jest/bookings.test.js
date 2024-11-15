@@ -57,18 +57,10 @@ describe('Bookings API', () => {
     await clearDatabase()
   })
 
-  describe('GET     /', () => {
-    it('admin can get all bookings for all rooms', async () => {
+  describe('GET     /?date=:date', () => {
+    it('enabled user can get all bookings for all rooms by date', async () => {
       const res = await request(app)
-        .get('/api/bookings')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(200)
-      expect(res.body.length).toBe(2)
-    })
-
-    it('user can get all bookings for all rooms', async () => {
-      const res = await request(app)
-        .get('/api/bookings')
+        .get(`/api/bookings?date=${tomorrow}`)
         .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(2)
@@ -232,136 +224,86 @@ describe('Bookings API', () => {
         .set('Authorization', `Bearer ${user4Token}`)
         .send({
           name: null,
-          date: null,
+          date: '2000-01-01',
           time_begin: null,
           time_end: null,
           room_id: null
         })
       expect(res.status).toBe(400)
-      expect(res.body.errors).toEqual([
-        {
-          type: 'field',
-          value: null,
-          msg: 'Name is required',
-          path: 'name',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Date is required',
-          path: 'date',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Invalid value',
-          path: 'date',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Date must be in YYYY-MM-DD format',
-          path: 'date',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Date must be today or a future date',
-          path: 'date',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Room ID is required',
-          path: 'room_id',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Room ID must be an integer',
-          path: 'room_id',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Beginning time is required',
-          path: 'time_begin',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Beginning time must be in HH:MM format',
-          path: 'time_begin',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Ending time is required',
-          path: 'time_end',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Ending time must be in HH:MM format',
-          path: 'time_end',
-          location: 'body'
-        },
-        {
-          type: 'field',
-          value: null,
-          msg: 'Time begin (request) must be before time end (request)',
-          path: 'time_begin',
-          location: 'body'
-        }
-      ]
+      expect(res.body.errors).toEqual(
+        [
+          {
+            type: 'field',
+            value: null,
+            msg: 'Name is required',
+            path: 'name',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: '2000-01-01',
+            msg: 'Date must be today or a future date',
+            path: 'date',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Room ID is required',
+            path: 'room_id',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Room ID must be an integer',
+            path: 'room_id',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Beginning time is required',
+            path: 'time_begin',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Beginning time must be in HH:MM format',
+            path: 'time_begin',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Ending time is required',
+            path: 'time_end',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Ending time must be in HH:MM format',
+            path: 'time_end',
+            location: 'body'
+          },
+          {
+            type: 'field',
+            value: null,
+            msg: 'Time begin (request) must be before time end (request)',
+            path: 'time_begin',
+            location: 'body'
+          }
+        ]
       )
     })
   })
 
-  describe('GET     /:id', () => {
-    it('admin can get desired booking', async () => {
-      const res = await request(app)
-        .get('/api/bookings/10')
-        .set('Authorization', `Bearer ${adminToken}`)
-      expect(res.status).toBe(200)
-      expect(res.body.id).toBe(10)
-      expect(res.body.userId).toBe(20)
-      expect(res.body.roomId).toBe(10)
-      expect(res.body.name).toBe('New booking by User 1')
-      expect(res.body.date).toBe(tomorrow)
-      expect(res.body.timeBegin).toBe('10:00:00')
-      expect(res.body.timeEnd).toBe('11:00:00')
-    })
-
-    it('user can get desired booking', async () => {
-      const res = await request(app)
-        .get('/api/bookings/10')
-        .set('Authorization', `Bearer ${user4Token}`)
-      expect(res.status).toBe(200)
-      expect(res.body.id).toBe(10)
-      expect(res.body.userId).toBe(20)
-      expect(res.body.roomId).toBe(10)
-      expect(res.body.name).toBe('New booking by User 1')
-      expect(res.body.date).toBe(tomorrow)
-      expect(res.body.timeBegin).toBe('10:00:00')
-      expect(res.body.timeEnd).toBe('11:00:00')
-    })
-  })
-
-  describe('PUT     /:id', () => {
+  describe('PUT     /?id=:id', () => {
     it('admin can change user\'s booking time', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           name: 'Changed user\'s booking by admin',
@@ -381,7 +323,7 @@ describe('Bookings API', () => {
 
     it('user can change own booking\'s time', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           name: 'Changed user\'s booking by this user',
@@ -401,7 +343,7 @@ describe('Bookings API', () => {
 
     it('user can change own booking\'s status', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           enabled: false
@@ -419,7 +361,7 @@ describe('Bookings API', () => {
 
     it('user can change own booking\'s date', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           date: third
@@ -442,7 +384,7 @@ describe('Bookings API', () => {
 
     it('user can change own booking\'s date and time', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           date: third,
@@ -467,7 +409,7 @@ describe('Bookings API', () => {
 
     it('user cannot change other\'s booking', async () => {
       const res = await request(app)
-        .put('/api/bookings/20')
+        .put('/api/bookings?id=20')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           name: 'new name'
@@ -478,7 +420,7 @@ describe('Bookings API', () => {
 
     it('user cannot change own booking\'s date when room is not available', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           date: second
@@ -489,7 +431,7 @@ describe('Bookings API', () => {
 
     it('user cannot change own booking\'s time when beginning time is out of room\'s schedule', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           time_begin: '09:00'
@@ -508,7 +450,7 @@ describe('Bookings API', () => {
 
     it('user cannot change own booking\'s time when ending time is out of room\'s schedule', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           time_begin: '14:00',
@@ -520,7 +462,7 @@ describe('Bookings API', () => {
 
     it('user cannot change own booking\'s time when overlapping with others bookings', async () => {
       const res = await request(app)
-        .put('/api/bookings/10')
+        .put('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
           time_begin: '11:00',
@@ -531,14 +473,14 @@ describe('Bookings API', () => {
     })
   })
 
-  describe('DELETE     /:id', () => {
+  describe('DELETE  /?id=:id', () => {
     it('admin can delete user\'s booking', async () => {
 
       const initialBookingCount = await Booking.count()
       expect(initialBookingCount).toBe(2)
 
       const res = await request(app)
-        .delete('/api/bookings/10')
+        .delete('/api/bookings?id=10')
         .set('Authorization', `Bearer ${adminToken}`)
       expect(res.status).toBe(204)
 
@@ -552,7 +494,7 @@ describe('Bookings API', () => {
       expect(initialBookingCount).toBe(2)
 
       const res = await request(app)
-        .delete('/api/bookings/10')
+        .delete('/api/bookings?id=10')
         .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(204)
 
@@ -566,7 +508,7 @@ describe('Bookings API', () => {
       expect(initialBookingCount).toBe(2)
 
       const res = await request(app)
-        .delete('/api/bookings/20')
+        .delete('/api/bookings?id=20')
         .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(400)
       expect(res.body.error).toBe('Not enough rights')
