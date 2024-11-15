@@ -1,4 +1,9 @@
 import Wrapper from './styles/Wrapper'
+import styled from 'styled-components'
+
+const StyledTd = styled.td`
+  text-align: center;
+`
 
 const MainPage = () => {
   return (
@@ -30,65 +35,65 @@ const MainPage = () => {
         <thead>
           <tr>
             <th>Functional</th>
-            <th>User</th>
-            <th>Admin</th>
+            <th style={{ textAlign: "center" }}>User</th>
+            <th style={{ textAlign: "center" }}>Admin</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>View room availability</td>
-            <td>✓</td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Read messages</td>
-            <td>✓</td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Book rooms</td>
-            <td>✓</td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Manage own bookings (edit/delete)</td>
-            <td>✓</td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Manage all bookings (edit/delete)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Manage messages (add/edit/delete)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Manage users (add/edit/delete/disable)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Manage rooms (add/edit/delete/disable)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Set weekday availability/hours (edit/restore)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Set holidays availability/hours (add/delete)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
           <tr>
             <td>Set individual room date availability/hours (add/delete)</td>
             <td></td>
-            <td>✓</td>
+            <StyledTd><i className="fa-solid fa-check fa-lg" /></StyledTd>
           </tr>
         </tbody>
       </table>
