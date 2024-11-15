@@ -20,6 +20,9 @@ git branch -M master
 # Push the local repository to GitHub
 git push -u origin master
 
+# Lint all code
+npm run lint -- --fix
+
 # In WSL
 docker-compose -f docker-compose.yml -p roomies_dev down
 docker-compose -f docker-compose.yml -p roomies_dev up -d
