@@ -28,40 +28,11 @@ export const fetchIndividualDatesForRoom = createAsyncThunk(
   }
 )
 
-// // Fetch one individual date for a specific room
-// export const fetchIndividualDateForRoom = createAsyncThunk(
-//   'individualDates/fetchIndividualDateForRoom',
-//   async (id, { rejectWithValue }) => {
-//     const result = await individualDateService.getRoomDates(id)
-
-//     if (result.success) {
-//       return result.data
-//     } else {
-//       return rejectWithValue(result.error)
-//     }
-//   }
-// )
-
-// // Fetch a specific room for a specific date
-// export const fetchRoomForIndividualDate = createAsyncThunk(
-//   'individualDates/fetchRoomForDate',
-//   async ({ id, date }, { rejectWithValue }) => {
-//     const result = await individualDateService.getRoomForDate(id, date)
-//     if (result.success) {
-//       return result.data
-//     } else {
-//       return rejectWithValue(result.error)
-//     }
-//   }
-// )
-
 const initialState = {
   individualDates: [],
   individualDatesForRoom: [],
   loading: false,
   error: null,
-  // currentIndividualDate: [],
-  // roomsForIndividualDate: [],
 }
 
 const individualDateSlice = createSlice({
@@ -96,9 +67,6 @@ const individualDateSlice = createSlice({
         state.loading = false
         state.error = action.payload
       })
-      // .addCase(fetchRoomForIndividualDate.fulfilled, (state, action) => {
-      //   state.currentIndividualDate = action.payload
-      // })
   },
 })
 
@@ -109,8 +77,5 @@ export const selectIndividualDatesError = (state) => state.individualDates.error
 export const selectIndividualDatesForRoom = (state) => state.individualDates.individualDatesForRoom
 export const selectIndividualDatesForRoomLoading = (state) => state.individualDates.loading
 export const selectIndividualDatesForRoomError = (state) => state.individualDates.error
-
-//export const selectCurrentIndividualDate = (state) => state.individualDates.currentIndividualDate
-//export const selectRoomsForIndividualDate = (state) => state.individualDates.roomsForIndividualDate
 
 export default individualDateSlice.reducer

@@ -127,13 +127,6 @@ router.delete('/weekdays', tokenExtractor, isTokenUser, isAdmin, isSession, week
   }
 )
 
-// Get one weekday for all rooms
-router.get('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
-  async(req, res) => {
-    res.json(req.dayOfWeek)
-  }
-)
-
 // Change for one weekday global availability, time end, time begin
 router.put('/weekdays/:dayOfWeek', tokenExtractor, isTokenUser, isAdmin, isSession, weekdaysCorrector, weekdayFinder,
   async(req, res) => {
@@ -215,7 +208,6 @@ router.get('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
       order: [['date', 'ASC']]
     })
 
-    //if (!dates.length) throw new Error('No global dates available')
     res.json(dates)
   }
 )
@@ -291,22 +283,6 @@ router.post('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
     })
 
     res.status(201).json(globalDate)
-  }
-)
-
-// Delete all global dates
-router.delete('/dates', tokenExtractor, isTokenUser, isAdmin, isSession,
-  async(req, res) => {
-    await GlobalDate.destroy({ truncate: true, cascade: false })
-    res.status(204).end()
-    console.log('All dates deleted from global settings')
-  }
-)
-
-// Get one date
-router.get('/dates/:date', tokenExtractor, isTokenUser, isAdmin, isSession, dateFinder,
-  async(req, res) => {
-    res.json(req.date)
   }
 )
 

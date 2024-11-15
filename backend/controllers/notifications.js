@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
     }
   })
 
-  //if (!notifications.length) throw new Error('Notifications not found')
   res.json(notifications)
 })
 

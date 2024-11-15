@@ -196,7 +196,6 @@ router.post('/', tokenExtractor, isTokenUser, isSession, dateValidation,
 // Change desired booking by user or admin
 router.put('/', tokenExtractor, isTokenUser, isSession, bookingFinder, isUsersBookingOrAdmin,
   async (req, res) => {
-    // const { id } = req.params
     const id = req.booking.id
     const currentBooking = req.booking
     const actualDate = req.body.date ? req.body.date : currentBooking.date
@@ -418,19 +417,5 @@ router.delete('/', tokenExtractor, isTokenUser, isSession, bookingFinder, isUser
     console.log('Booking deleted')
   }
 )
-
-// // Get all bookings for all rooms
-// router.get('/', tokenExtractor, isTokenUser, isSession,
-//   async (req, res) => {
-//     const bookings = await Booking.findAll()
-//     if (!bookings.length) throw new Error('Bookings for all rooms not found')
-//     res.status(200).json(bookings)
-//   }
-// )
-
-// // Get desired booking
-// router.get('/:id', tokenExtractor, isTokenUser, isSession, bookingFinder,
-//   async (req, res) => res.status(200).json(req.booking)
-// )
 
 module.exports = router

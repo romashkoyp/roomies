@@ -41,10 +41,8 @@ const WeekdaySingle = () => {
       if (result.success) {
         dispatch(fetchWeekdays())
         dispatch(setNotification('Weekday settings restored to default', 'success', 5))
-        setIsEditMode(!isEditMode)
       } else {
         dispatch(fetchWeekdays())
-        setIsEditMode(!isEditMode)
         dispatch(setNotification(result.error, 'error', 5))
       }
     } else return null

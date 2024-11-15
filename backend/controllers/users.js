@@ -10,12 +10,6 @@ const excludePasswordHash = (user) => {
   return userWithoutPassword
 }
 
-router.get('/:id', tokenExtractor, isTokenUser, isParamUser, isSession, isAdminOrParamTokenUser,
-  async (req, res) => {
-    res.status(200).json(excludePasswordHash(req.paramUser))
-  }
-)
-
 router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
   async (req, res) => {
     const users = await User.findAll({
@@ -32,9 +26,13 @@ router.get('/', tokenExtractor, isTokenUser, isAdmin, isSession,
       ]
     })
 
-    //if (!users.length) throw new Error ('No users found')
-
     res.status(200).json(users)
+  }
+)
+
+router.get('/:id', tokenExtractor, isTokenUser, isParamUser, isSession, isAdminOrParamTokenUser,
+  async (req, res) => {
+    res.status(200).json(excludePasswordHash(req.paramUser))
   }
 )
 

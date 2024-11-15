@@ -13,10 +13,10 @@ export const fetchUser = createAsyncThunk(
   }
 )
 
-export const fetchUsers = createAsyncThunk(
-  'users/fetchAll',
-  async (_, { rejectWithValue }) => {
-    const result = await userService.getAllUsers()
+export const fetchCurrentUser = createAsyncThunk(
+  'users/fetchOne',
+  async (id, { rejectWithValue }) => {
+    const result = await userService.getOneUser(id)
     if (result.success) {
       return result.data
     } else {
@@ -25,10 +25,10 @@ export const fetchUsers = createAsyncThunk(
   }
 )
 
-export const fetchCurrentUser = createAsyncThunk(
-  'users/fetchOne',
-  async (id, { rejectWithValue }) => {
-    const result = await userService.getOneUser(id)
+export const fetchUsers = createAsyncThunk(
+  'users/fetchAll',
+  async (_, { rejectWithValue }) => {
+    const result = await userService.getAllUsers()
     if (result.success) {
       return result.data
     } else {
@@ -61,6 +61,9 @@ const userSlice = createSlice({
         .addCase(fetchUser.fulfilled, (state, action) => {
           state.user = action.payload
         })
+        .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+          state.currentUser = action.payload
+        })
         .addCase(fetchUsers.pending, (state) => {
           state.loading = true
           state.error = null
@@ -73,16 +76,14 @@ const userSlice = createSlice({
           state.loading = false
           state.error = action.payload
         })
-        .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-          state.currentUser = action.payload
-        })
     },
 })
 
 export const { setUser } = userSlice.actions
 export const selectUser = (state) => state.users.user
+export const selectCurrentUser = (state) => state.users.currentUser
 export const selectUsers = (state) => state.users.users
 export const selectUsersLoading = (state) => state.users.loading
 export const selectUsersError = (state) => state.users.error
-export const selectCurrentUser = (state) => state.users.currentUser
+
 export default userSlice.reducer
