@@ -107,9 +107,14 @@ const Menu = () => {
   const location = useLocation()
   const isSettingsActive = location.pathname.startsWith('/settings')
   const [sidebarVisible, setSidebarVisible] = useState(false)
+  
+  const showSidebar = async () => {
+    setSidebarVisible(!sidebarVisible)
+  }
 
   const handleSignout = async () => {
     if (confirm("Are you sure?")) {
+      showSidebar()
       try {
         window.localStorage.removeItem('loggedUser')
         dispatch(setUser(null))
@@ -120,10 +125,6 @@ const Menu = () => {
         dispatch(setNotification('Sign out failed', 'error', 5))
       }
     }
-  }
-
-  const showSidebar = async () => {
-    setSidebarVisible(!sidebarVisible)
   }
 
   return (
@@ -140,37 +141,37 @@ const Menu = () => {
             to="#">
               <i className="fa-solid fa-xmark fa-xl" />
           </NavLinkStyled>
-          <NavLinkStyled className='sidebar-li' to="/" end>Roomies App</NavLinkStyled>
+          <NavLinkStyled className='sidebar-li' to="/" end onClick={showSidebar}>Roomies App</NavLinkStyled>
             {user?.admin && (
               <>
-                <NavLinkStyled className='sidebar-li' to="/notifications">Messages</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/users">Users</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/settings/weekdays">Weekdays</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/settings/dates">Holidays</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/rooms">Rooms</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/rooms/dates">Individual dates</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/bookings">Bookings</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/notifications" onClick={showSidebar}>Messages</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/users" onClick={showSidebar}>Users</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/settings/weekdays" onClick={showSidebar}>Weekdays</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/settings/dates" onClick={showSidebar}>Holidays</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms" onClick={showSidebar}>Rooms</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms/dates" onClick={showSidebar}>Individual dates</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/bookings" onClick={showSidebar}>Bookings</NavLinkStyled>
               </>
             )}
 
             {user && !user.admin && (
               <> 
-                <NavLinkStyled className='sidebar-li' to="/notifications">Messages</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/rooms">Rooms</NavLinkStyled>
-                <NavLinkStyled className='sidebar-li' to="/bookings">Bookings</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/notifications" onClick={showSidebar}>Messages</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/rooms" onClick={showSidebar}>Rooms</NavLinkStyled>
+                <NavLinkStyled className='sidebar-li' to="/bookings" onClick={showSidebar}>Bookings</NavLinkStyled>
               </>
             )}
         
         
           {user ? (
             <>
-              <NavLinkStyled className='sidebar-li' to={`/users/${user.id}`} end>{user.name}</NavLinkStyled>
+              <NavLinkStyled className='sidebar-li' to={`/users/${user.id}`} end onClick={showSidebar}>{user.name}</NavLinkStyled>
               <NavLinkStyledNoActive className='sidebar-li' to="/" end onClick={handleSignout}>Sign Out</NavLinkStyledNoActive>
             </>
           ) : (
             <>
-              <NavLinkStyled className='sidebar-li' to="/signin">Sign In</NavLinkStyled>
-              <NavLinkStyled className='sidebar-li' to="/signup">Sign Up</NavLinkStyled>
+              <NavLinkStyled className='sidebar-li' to="/signin" onClick={showSidebar}>Sign In</NavLinkStyled>
+              <NavLinkStyled className='sidebar-li' to="/signup" onClick={showSidebar}>Sign Up</NavLinkStyled>
             </>
           )}
         </NavList>
