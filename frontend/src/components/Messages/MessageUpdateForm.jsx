@@ -1,14 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton } from '../styles/Buttons'
+import { useEffect, useRef,useState } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
+
+import { fetchMessages } from '../../reducers/messageReducer'
 import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import messageService from '../../services/message'
-import { fetchMessages } from '../../reducers/messageReducer'
 import ResizableTextarea from '../ResizableTextarea'
+import { PrimaryButton } from '../styles/Buttons'
 import CloseButtonWrapper from '../styles/CloseButtonWrapper'
+import Wrapper from '../styles/Wrapper'
 
 const MessageUpdateForm = ({ message, id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()

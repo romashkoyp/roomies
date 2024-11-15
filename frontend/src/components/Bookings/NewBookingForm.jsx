@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton, SecondaryButton, CloseButton } from '../styles/Buttons'
-import bookingService from '../../services/booking'
-import { setNotification } from '../../reducers/notificationReducer'
-import { fetchBookingsByDate } from '../../reducers/bookingReducer'
-import { selectUser } from '../../reducers/userReducer'
-import PropTypes from 'prop-types'
 import moment from 'moment'
+import PropTypes from 'prop-types'
+import { useEffect,useState } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
+
+import { fetchBookingsByDate } from '../../reducers/bookingReducer'
+import { setNotification } from '../../reducers/notificationReducer'
+import { selectUser } from '../../reducers/userReducer'
+import bookingService from '../../services/booking'
+import { CloseButton,PrimaryButton, SecondaryButton } from '../styles/Buttons'
+import Wrapper from '../styles/Wrapper'
 
 const NewBookingForm = ({ slotInfo, onClose, onSubmit, editingBooking }) => {
   const user = useSelector(selectUser)

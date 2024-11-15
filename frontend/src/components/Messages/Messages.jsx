@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+
+import { selectMessages, selectMessagesError,selectMessagesLoading } from '../../reducers/messageReducer'
 import { selectUser } from '../../reducers/userReducer'
-import MessageForm from './MessageForm'
-import Wrapper from '../styles/Wrapper'
-import MessageWrapper from '../styles/MessageWrapper'
-import { selectMessages, selectMessagesLoading, selectMessagesError } from '../../reducers/messageReducer'
-import Spinner from '../spinner'
 import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
+import MessageWrapper from '../styles/MessageWrapper'
+import Wrapper from '../styles/Wrapper'
+import MessageForm from './MessageForm'
 
 const Messages = () => {
   const user = useSelector(selectUser)

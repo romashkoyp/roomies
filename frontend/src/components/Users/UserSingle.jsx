@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
-import { selectUser, fetchUsers, selectCurrentUser } from '../../reducers/userReducer'
-import UserUpdateForm from './UserUpdateForm'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
-import userService from '../../services/user'
+import { useDispatch,useSelector } from 'react-redux'
+import { useNavigate,useParams } from 'react-router-dom'
+
 import { setNotification } from '../../reducers/notificationReducer'
+import { fetchUsers, selectCurrentUser,selectUser } from '../../reducers/userReducer'
+import userService from '../../services/user'
+import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
+import Wrapper from '../styles/Wrapper'
+import UserUpdateForm from './UserUpdateForm'
 
 const SingleUser = () => {
   const dispatch = useDispatch()

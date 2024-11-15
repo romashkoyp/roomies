@@ -1,5 +1,6 @@
-import Wrapper from './styles/Wrapper'
 import styled from 'styled-components'
+
+import Wrapper from './styles/Wrapper'
 
 const StyledTd = styled.td`
   text-align: center;

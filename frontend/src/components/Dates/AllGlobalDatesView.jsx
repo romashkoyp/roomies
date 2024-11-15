@@ -1,12 +1,13 @@
+import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+
+import { selectGlobalDates, selectGlobalDatesError,selectGlobalDatesLoading } from '../../reducers/globalDateReducer'
+import { selectUser } from '../../reducers/userReducer'
+import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
 import Wrapper from '../styles/Wrapper'
 import AllGlobalDatesForm from './AllGlobalDatesForm'
-import { selectUser } from '../../reducers/userReducer'
-import { selectGlobalDates, selectGlobalDatesLoading, selectGlobalDatesError } from '../../reducers/globalDateReducer'
-import Spinner from '../spinner'
-import useDelayedLoading from '../../services/delayedLoading'
-import moment from 'moment'
 
 const AllGlobalDatesView = () => {
   const user = useSelector(selectUser)

@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+
+import { selectRooms, selectRoomsError,selectRoomsLoading } from '../../reducers/roomReducer'
 import { selectUser } from '../../reducers/userReducer'
-import { selectRooms, selectRoomsLoading, selectRoomsError } from '../../reducers/roomReducer'
+import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
 import Wrapper from '../styles/Wrapper'
 import RoomForm from './NewRoomForm'
-import Spinner from '../spinner'
-import useDelayedLoading from '../../services/delayedLoading'
 
 const Rooms = () => {
   const user = useSelector(selectUser)

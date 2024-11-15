@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { selectUser, selectUsers, selectUsersLoading, selectUsersError } from '../../reducers/userReducer'
-import Wrapper from '../styles/Wrapper'
-import Spinner from '../spinner'
+
+import { selectUser, selectUsers, selectUsersError,selectUsersLoading } from '../../reducers/userReducer'
 import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
+import Wrapper from '../styles/Wrapper'
 
 const Users = () => {
   const user = useSelector(selectUser)

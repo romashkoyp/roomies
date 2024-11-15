@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import signinService from '../services/signin'
+import { NavLink, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
+
 import { setNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/userReducer'
-import styled from 'styled-components'
+import signinService from '../services/signin'
 import StyledSidebar from './styles/Sidebar'
 
 const StyledNav = styled.nav`

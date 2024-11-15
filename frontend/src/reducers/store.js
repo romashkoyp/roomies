@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userReducer from './userReducer'
-import notificationReducer from './notificationReducer'
-import messageReducer from './messageReducer'
-import roomReducer from './roomReducer'
-import individualDateReducer from './individualDateReducer'
-import weekdayReducer from './weekdayReducer'
-import globalDateReducer from './globalDateReducer'
+
 import bookingReducer from './bookingReducer'
+import globalDateReducer from './globalDateReducer'
+import individualDateReducer from './individualDateReducer'
+import messageReducer from './messageReducer'
+import notificationReducer from './notificationReducer'
+import roomReducer from './roomReducer'
+import userReducer from './userReducer'
+import weekdayReducer from './weekdayReducer'
 
 const store = configureStore({
     reducer: {

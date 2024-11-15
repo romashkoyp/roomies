@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+
 import NotificationWrapper from './styles/Notifications'
 
 const Notification = () => {

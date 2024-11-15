@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import Wrapper from './styles/Wrapper'
-import { PrimaryButton } from './styles/Buttons'
-import signinService from '../services/signin'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { fetchUser } from '../reducers/userReducer'
+
 import { setNotification } from '../reducers/notificationReducer'
+import { fetchUser } from '../reducers/userReducer'
+import signinService from '../services/signin'
+import { PrimaryButton } from './styles/Buttons'
 import StyledInput from './styles/InputValidationStyle'
+import Wrapper from './styles/Wrapper'
 
 const SigninForm = () => {
   const dispatch = useDispatch()
@@ -57,7 +58,7 @@ const SigninForm = () => {
   }
 
   const isValidEmail = (email) => {
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
     return emailRegex.test(email)
   }
 

@@ -1,13 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
-import { selectUser } from '../../reducers/userReducer'
-import { selectGlobalDates } from '../../reducers/globalDateReducer'
-import Wrapper from '../styles/Wrapper'
-import { SecondaryButton } from '../styles/Buttons'
-import globalDateService from '../../services/globalDate'
-import { setNotification } from '../../reducers/notificationReducer'
-import { fetchGlobalDates } from '../../reducers/globalDateReducer'
 import moment from 'moment'
+import { useDispatch,useSelector } from 'react-redux'
+import { useNavigate,useParams } from 'react-router-dom'
+
+import { selectGlobalDates } from '../../reducers/globalDateReducer'
+import { fetchGlobalDates } from '../../reducers/globalDateReducer'
+import { setNotification } from '../../reducers/notificationReducer'
+import { selectUser } from '../../reducers/userReducer'
+import globalDateService from '../../services/globalDate'
+import { SecondaryButton } from '../styles/Buttons'
+import Wrapper from '../styles/Wrapper'
 
 const GlobalDateSingle = () => {
   const dispatch = useDispatch()

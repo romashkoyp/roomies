@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+
 import weekdaysService from '../services/weekday'
 
 export const fetchWeekdays = createAsyncThunk(

@@ -58,4 +58,4 @@ const CloseButton = styled.button`
   }
 `
 
-export { PrimaryButton, SecondaryButton, CloseButton }
+export { CloseButton,PrimaryButton, SecondaryButton }

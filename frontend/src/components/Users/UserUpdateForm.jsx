@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton } from '../styles/Buttons'
+import { useEffect, useRef,useState } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
+
 import { setNotification } from '../../reducers/notificationReducer'
-import { fetchUser, selectUser, selectCurrentUser, fetchCurrentUser } from '../../reducers/userReducer'
+import { fetchCurrentUser,fetchUser, selectCurrentUser, selectUser } from '../../reducers/userReducer'
 import userService from '../../services/user'
+import { PrimaryButton } from '../styles/Buttons'
 import CloseButtonWrapper from '../styles/CloseButtonWrapper'
+import Wrapper from '../styles/Wrapper'
 
 const UserUpdateForm = ({ id, onUpdateSuccess, onCloseEdit }) => {
   const dispatch = useDispatch()

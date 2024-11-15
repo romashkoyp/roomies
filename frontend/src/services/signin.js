@@ -1,5 +1,6 @@
-import { apiCall } from './apiUtils'
 import axios from 'axios'
+
+import { apiCall } from './apiUtils'
 import BASE_URL from './config'
 
 const url = BASE_URL + '/signin'

@@ -1,34 +1,36 @@
-// eslint-disable-next-line no-unused-vars
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'
+ 
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Container from './components/styles/Container'
-import SigninForm from './components/signinForm'
-import SignupForm from './components/signupForm'
-import Messages from './components/Messages/Messages'
-import MainPage from './components/MainPage'
-import MessageSingle from './components/Messages/MessageSingle'
-import AllUsersView from './components/Users/AllUsersView'
-import UserSingle from './components/Users/UserSingle'
-import AllRoomsView from './components/Rooms/AllRoomsView'
-import RoomSingle from './components/Rooms/RoomSingle'
-import DateSingle from './components/Rooms/IndividualDates/DateSingle'
-import Menu from './components/Menu'
-import Notification from './components/Notification'
-import { selectUser, setUser, selectUsers, fetchUsers, fetchCurrentUser, selectCurrentUser } from './reducers/userReducer'
-import { selectRooms, fetchRooms } from './reducers/roomReducer'
-import { selectMessages, fetchMessages} from './reducers/messageReducer'
-import signinService from './services/signin'
-import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
-import { selectIndividualDates, selectIndividualDatesForRoom, fetchAllIndividualDates, fetchIndividualDatesForRoom } from './reducers/individualDateReducer'
-import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
-import AllWeekdaysView from './components/Weekdays/AllWeekdaysView'
-import WeekdaySingle from './components/Weekdays/WeekDaySingle'
-import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
+// eslint-disable-next-line no-unused-vars
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'
+
+import MainCalendarView from './components/Bookings/MainCalendarView'
 import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
 import GlobalDateSingle from './components/Dates/GlobalDateSingle'
+import MainPage from './components/MainPage'
+import Menu from './components/Menu'
+import Messages from './components/Messages/Messages'
+import MessageSingle from './components/Messages/MessageSingle'
+import Notification from './components/Notification'
+import AllRoomsView from './components/Rooms/AllRoomsView'
+import AllDatesView from './components/Rooms/IndividualDates/AllDatesView'
+import AllRoomDates from './components/Rooms/IndividualDates/AllRoomDates'
+import DateSingle from './components/Rooms/IndividualDates/DateSingle'
+import RoomSingle from './components/Rooms/RoomSingle'
+import SigninForm from './components/signinForm'
+import SignupForm from './components/signupForm'
+import Container from './components/styles/Container'
+import AllUsersView from './components/Users/AllUsersView'
+import UserSingle from './components/Users/UserSingle'
+import AllWeekdaysView from './components/Weekdays/AllWeekdaysView'
+import WeekdaySingle from './components/Weekdays/WeekDaySingle'
 import { fetchGlobalDates } from './reducers/globalDateReducer'
-import MainCalendarView from './components/Bookings/MainCalendarView'
+import { fetchAllIndividualDates, fetchIndividualDatesForRoom,selectIndividualDates, selectIndividualDatesForRoom } from './reducers/individualDateReducer'
+import { fetchMessages,selectMessages} from './reducers/messageReducer'
+import { fetchRooms,selectRooms } from './reducers/roomReducer'
+import { fetchCurrentUser, fetchUsers, selectCurrentUser,selectUser, selectUsers, setUser } from './reducers/userReducer'
+import { fetchWeekdays, selectWeekdays } from './reducers/weekdayReducer'
+import signinService from './services/signin'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -40,7 +42,7 @@ const App = () => {
   const messages = useSelector(selectMessages)
   // eslint-disable-next-line no-unused-vars
   const currentUser = useSelector(selectCurrentUser)
-  // eslint-disable-next-line no-unused-vars
+   
   const rooms = useSelector(selectRooms)
   // eslint-disable-next-line no-unused-vars
   const individualDates = useSelector(selectIndividualDates)

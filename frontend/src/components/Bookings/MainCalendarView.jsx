@@ -1,18 +1,20 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
+
+import moment from 'moment'
+import { useCallback,useEffect, useState } from 'react'
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
-import { useSelector, useDispatch } from 'react-redux'
-import { selectBookings, selectBookingsLoading, selectBookingsError, fetchBookingsByDate } from '../../reducers/bookingReducer'
+import { useDispatch,useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
+import { fetchBookingsByDate,selectBookings, selectBookingsError, selectBookingsLoading } from '../../reducers/bookingReducer'
+import { setNotification } from '../../reducers/notificationReducer'
 import { selectUser } from '../../reducers/userReducer'
 import bookingService from '../../services/booking'
-import { setNotification } from '../../reducers/notificationReducer'
-import NewBookingForm from './NewBookingForm'
-import Spinner from '../spinner'
 import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
+import NewBookingForm from './NewBookingForm'
 
 const getSlotPropGetter = (resources) => {
   return (date, resource) => {
@@ -118,6 +120,7 @@ const BookingCalendar = () => {
         }
       }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resources])
 
   const handleDateChange = (newDate) => {
@@ -265,6 +268,7 @@ const BookingCalendar = () => {
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const slotPropGetter = useCallback(getSlotPropGetter(resources), [resources])
 
   const formats = {

@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+
+import { selectUser } from '../../reducers/userReducer'
+import { selectWeekdays, selectWeekdaysError,selectWeekdaysLoading } from '../../reducers/weekdayReducer'
+import useDelayedLoading from '../../services/delayedLoading'
+import Spinner from '../spinner'
 import Wrapper from '../styles/Wrapper'
 import AllWeekdaysForm from './AllWeekdaysForm'
-import { selectUser } from '../../reducers/userReducer'
-import { selectWeekdays, selectWeekdaysLoading, selectWeekdaysError } from '../../reducers/weekdayReducer'
-import Spinner from '../spinner'
-import useDelayedLoading from '../../services/delayedLoading'
 
 const AllWeekdaysView = () => {
   const user = useSelector(selectUser)

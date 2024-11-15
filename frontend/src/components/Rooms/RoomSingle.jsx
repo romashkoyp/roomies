@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { selectUser } from '../../reducers/userReducer'
-import { fetchRooms, selectRooms, selectRoomsLoading, selectRoomsError } from '../../reducers/roomReducer'
-import RoomUpdateForm from './RoomUpdateForm'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
-import roomService from '../../services/room'
+import { useEffect,useState } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
+import { Link,useNavigate, useParams } from 'react-router-dom'
+
 import { setNotification } from '../../reducers/notificationReducer'
-import Spinner from '../spinner'
+import { fetchRooms, selectRooms, selectRoomsError,selectRoomsLoading } from '../../reducers/roomReducer'
+import { selectUser } from '../../reducers/userReducer'
 import useDelayedLoading from '../../services/delayedLoading'
+import roomService from '../../services/room'
+import Spinner from '../spinner'
+import { PrimaryButton, SecondaryButton } from '../styles/Buttons'
+import Wrapper from '../styles/Wrapper'
+import RoomUpdateForm from './RoomUpdateForm'
 
 const SingleRoom = () => {
   const dispatch = useDispatch()

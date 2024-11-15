@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { selectUser } from '../../reducers/userReducer'
-import Wrapper from '../styles/Wrapper'
-import { PrimaryButton } from '../styles/Buttons'
-import WeekdayUpdateForm from './WeekdayUpdateForm'
-import { SecondaryButton } from '../styles/Buttons'
-import weekdaysService from '../../services/weekday'
-import { fetchWeekdays, selectWeekdays } from '../../reducers/weekdayReducer'
+
 import { setNotification } from '../../reducers/notificationReducer'
+import { selectUser } from '../../reducers/userReducer'
+import { fetchWeekdays, selectWeekdays } from '../../reducers/weekdayReducer'
+import weekdaysService from '../../services/weekday'
+import { PrimaryButton } from '../styles/Buttons'
+import { SecondaryButton } from '../styles/Buttons'
+import Wrapper from '../styles/Wrapper'
+import WeekdayUpdateForm from './WeekdayUpdateForm'
 
 const WeekdaySingle = () => {
   const dispatch = useDispatch()

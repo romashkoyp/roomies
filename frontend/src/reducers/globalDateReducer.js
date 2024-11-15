@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+
 import globalDateService from '../services/globalDate'
 
 export const fetchGlobalDates = createAsyncThunk(
