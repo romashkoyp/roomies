@@ -115,7 +115,7 @@ const Menu = () => {
 
   const handleSignout = async () => {
     if (confirm("Are you sure?")) {
-      showSidebar()
+      setSidebarVisible(false)
       try {
         window.localStorage.removeItem('loggedUser')
         dispatch(setUser(null))
