@@ -12,10 +12,10 @@ const SignupForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: 'yaroslav',
-    username: 'yaroslav@gmail.com',
-    password: '12345678',
-    confirmPassword: '12345678'
+    name: '',
+    username: '',
+    password: '',
+    confirmPassword: ''
   })
   const [formErrors, setFormErrors] = useState({
     name: '',
@@ -153,6 +153,7 @@ const SignupForm = () => {
               type="password"
               id="password"
               name="password"
+              placeholder="Password"
               value={formData.password}
               onChange={handleChange}
               required
@@ -170,6 +171,7 @@ const SignupForm = () => {
               type="password"
               id="confirmPassword"
               name="confirmPassword"
+              placeholder="Confirm password"
               value={formData.confirmPassword}
               onChange={handleChange}
               required

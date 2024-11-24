@@ -13,8 +13,8 @@ const SigninForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    username: 'admin@admin.com',
-    password: 'gfghlur4754675'
+    username: '',
+    password: ''
   })
   
   const [formErrors, setFormErrors] = useState({
