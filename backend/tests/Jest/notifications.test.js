@@ -38,18 +38,24 @@ describe('Notifications API', () => {
   })
 
   describe('GET /api/notifications', () => {
-    it('any user can get all notifications', async () => {
+    it('registered and enabled user can get all notifications', async () => {
       const res = await request(app)
         .get('/api/notifications')
+        .set('Authorization', `Bearer ${user1Token}`)
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(initialNotifications.length)
     })
 
-    it('any user can get desired notification', async () => {
+    it('visitor can\'t get all notifications', async () => {
+      const res = await request(app)
+        .get('/api/notifications')
+      expect(res.status).toBe(400)
+    })
+
+    it('visitor can\'t get desired notification', async () => {
       const res = await request(app)
         .get('/api/notifications/10')
-      expect(res.status).toBe(200)
-      expect(res.body.content).toBe('Test notification 1')
+      expect(res.status).toBe(400)
     })
   })
 

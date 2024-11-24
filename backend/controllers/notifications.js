@@ -9,20 +9,22 @@ const notificationFinder = async (req, res, next) => {
   next()
 }
 
-router.get('/', async (req, res) => {
-  const notifications = await Notification.findAll({
-    order: [['created_at', 'DESC']],
-    attributes: { exclude: ['userId'] },
-    include: {
-      model: User,
-      attributes: ['name', 'username']
-    }
-  })
+router.get('/', tokenExtractor, isTokenUser,
+  async (req, res) => {
+    const notifications = await Notification.findAll({
+      order: [['created_at', 'DESC']],
+      attributes: { exclude: ['userId'] },
+      include: {
+        model: User,
+        attributes: ['name', 'username']
+      }
+    })
 
-  res.json(notifications)
-})
+    res.json(notifications)
+  }
+)
 
-router.get('/:id', notificationFinder,
+router.get('/:id', tokenExtractor, notificationFinder, isTokenUser,
   async (req, res) => {
     res.status(200).json(req.notification)
   })
