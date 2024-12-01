@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { expect,test } from '@playwright/test'
 
 const expectNotification = async (page, message) => {
@@ -38,7 +39,7 @@ test('user can book room', async ({ page }) => {
   await page.getByPlaceholder('Email').fill('test@user.com')
   await page.getByPlaceholder('Password').fill('12345678')
   await page.getByRole('button', { name: 'Sign In' }).click()
-  await page.waitForTimeout(100)
+  await page.waitForTimeout(300)
   await page.goto('/bookings')
   await expect(page.getByText('Meeting room', { exact: true })).toBeVisible()
   await expect(page.getByText('Conference room', { exact: true })).toBeVisible()
@@ -80,8 +81,8 @@ test('user can change own booking', async ({ page }) => {
 test('admin can change booking of user', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.waitForTimeout(100)
@@ -102,8 +103,8 @@ test('admin can change booking of user', async ({ page }) => {
 test('admin can delete booking of user', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.waitForTimeout(100)
@@ -124,8 +125,8 @@ test('admin can delete booking of user', async ({ page }) => {
 test('admin can delete user', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.goto('/users')
@@ -140,8 +141,8 @@ test('admin can delete user', async ({ page }) => {
 test('admin can create a message', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.goto('/notifications')
@@ -153,8 +154,8 @@ test('admin can create a message', async ({ page }) => {
 test('admin can edit the message', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.goto('/notifications')
@@ -170,8 +171,8 @@ test('admin can edit the message', async ({ page }) => {
 test('admin can delete the message', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/signin')
-  await page.getByPlaceholder('Email').fill('admin@admin.com')
-  await page.getByPlaceholder('Password').fill('gfghlur4754675')
+  await page.getByPlaceholder('Email').fill(process.env.ADMIN_USERNAME)
+  await page.getByPlaceholder('Password').fill(process.env.ADMIN_PASSWORD)
   await page.getByRole('button', { name: 'Sign In' }).click()
   await expectNotification(page, 'You have successfully signed in to Roomies App as admin')
   await page.goto('/notifications')
