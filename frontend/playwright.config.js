@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
 import path from 'path'
@@ -28,9 +29,9 @@ export default defineConfig({
     },
   ],
 
-  // webServer: {
-  //   command: 'npm run dev',
-  //   url: 'http://localhost:5173', // Frontend url http://localhost:...
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173', // Frontend url http://localhost:...
+    reuseExistingServer: !process.env.CI,
+  },
 })
