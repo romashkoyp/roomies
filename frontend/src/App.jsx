@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import MainCalendarView from './components/Bookings/MainCalendarView'
 import AllGlobalDatesView from './components/Dates/AllGlobalDatesView'
 import GlobalDateSingle from './components/Dates/GlobalDateSingle'
-import MainPage from './components/MainPage.jsx'
+import MainPage from './components/MainPage'
 import Menu from './components/Menu'
 import Messages from './components/Messages/Messages'
 import MessageSingle from './components/Messages/MessageSingle'
