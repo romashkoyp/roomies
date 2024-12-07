@@ -13,5 +13,12 @@ export default defineConfig({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.json']
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 })
