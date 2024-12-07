@@ -9,16 +9,6 @@ export default defineConfig({
   plugins: [react()],
   define: {
     // eslint-disable-next-line no-undef
-    'process.env': process.env,
-  },
-  resolve: {
-    extensions: ['.js', '.jsx', '.json']
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
+    'process.env': process.env
   }
 })
