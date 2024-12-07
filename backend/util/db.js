@@ -2,15 +2,27 @@ const Sequelize = require('sequelize')
 const { Umzug, SequelizeStorage } = require('umzug')
 const { DATABASE_URL } = require('./config')
 
-const sequelize = new Sequelize(DATABASE_URL)
+// connection to local database
+// const sequelize = new Sequelize(DATABASE_URL)
+
+
+// connection to render.com database
+const sequelize = new Sequelize(DATABASE_URL, {
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
+})
 
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate()
     await runMigrations()
-    console.log('Connected to Postgres')
+    console.log('Connected to the database successfully')
   } catch (err) {
-    console.log('Unable to connect to Postgres', err)
+    console.log('Unable to connect to the database', err)
     return process.exit(1)
   }
 
