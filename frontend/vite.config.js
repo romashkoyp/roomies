@@ -11,4 +11,7 @@ export default defineConfig({
     // eslint-disable-next-line no-undef
     'process.env': process.env,
   },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
+  }
 })
