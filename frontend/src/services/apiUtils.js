@@ -10,7 +10,6 @@ export const handleError = (error, defaultMessage) => {
   } else if (error.message) {
     errorMessage = error.message
   }
-  
   return { 
     success: false, 
     error: errorMessage
