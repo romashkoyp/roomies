@@ -26,7 +26,6 @@ const connectToDatabase = async () => {
     console.log('Unable to connect to the database', err)
     return process.exit(1)
   }
-
   return null
 }
 
