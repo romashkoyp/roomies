@@ -26,7 +26,8 @@ jobs:
         working-directory: ./backend
         run: npm ci
       
-      - name: Deploy to Render.com
+      - name: Deploy backend to Render.com
         env:
-          RENDER_DEPLOY_BACKEND_HOOK_URL: ${{ secrets.RENDER_DEPLOY_BACKEND_HOOK_URL }}
-        run: curl -X "$RENDER_DEPLOY_BACKEND_HOOK_URL"
+          deploy_url: ${{ secrets.RENDER_DEPLOY_BACKEND_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
