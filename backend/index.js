@@ -3,7 +3,7 @@ require('express-async-errors')
 const app = express()
 const cors = require('cors')
 
-const { PORT, TEST } = require('./util/config')
+const { PORT, TEST, DEV, PROD } = require('./util/config')
 const { connectToDatabase } = require('./util/db')
 const { createAdminUser } = require('./util/adminCreator')
 const { createGlobalRoomsWeekdays } = require('./util/globalRoomsWeekdaysCreator')
@@ -39,9 +39,11 @@ app.use(errorHandler)
 const start = async () => {
   await connectToDatabase()
 
+  console.log('Status of production mode:', PROD)
+  console.log('Status of development mode:', DEV)
   console.log('Status of test mode:', TEST)
 
-  if (TEST === false) {
+  if (TEST !== true) {
     await createAdminUser()
     await createGlobalRoomsWeekdays()
     await createRooms()
@@ -49,7 +51,7 @@ const start = async () => {
   }
 }
 
-if (TEST === false) {
+if (TEST !== true) {
   start().then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`)
