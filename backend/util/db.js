@@ -17,19 +17,6 @@ if (PROD === true) {
   sequelize = new Sequelize(DATABASE_URL)
 }
 
-// // connection to local database
-// const sequelize = new Sequelize(DATABASE_URL)
-
-// // connection to render.com database
-// const sequelize = new Sequelize(DATABASE_URL, {
-//   dialectOptions: {
-//     ssl: {
-//       require: true,
-//       rejectUnauthorized: false
-//     }
-//   },
-// })
-
 const connectToDatabase = async () => {
   try {
     await sequelize.authenticate()
