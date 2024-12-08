@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Deploy Frontend
 
 on:
   push:
@@ -27,6 +27,7 @@ jobs:
         run: npm ci
 
       - name: Lint frontend code
+        working-directory: ./frontend
         run: npm run lint
       
       - name: Trigger build frontend on Render.com

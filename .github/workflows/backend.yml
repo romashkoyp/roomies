@@ -27,6 +27,7 @@ jobs:
         run: npm ci
 
       - name: Lint backend code
+        working-directory: ./backend
         run: npm run lint
       
       - name: Trigger build backend on Render.com
