@@ -1,18 +1,35 @@
-name: Deploy Frontend
+name: Deploy Backend
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'frontend/**' # Trigger only on changes within the frontend directory
+      - 'frontend/**'
 
 jobs:
-  trigger-build:
+  deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Trigger build frontend on render.com
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.10.0'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Lint frontend code
+        run: npm run lint
+      
+      - name: Trigger build frontend on Render.com
         env:
           url: ${{ secrets.RENDER_DEPLOY_FRONTEND_HOOK_URL }}
         run: |
