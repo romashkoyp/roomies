@@ -1,0 +1,19 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'frontend/**' # Trigger only on changes within the frontend directory
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger build frontend on render.com
+        env:
+          url: ${{ secrets.RENDER_DEPLOY_FRONTEND_HOOK_URL }}
+        run: |
+          curl "$url"
