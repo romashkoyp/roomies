@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
+    "test:e2e": "npx playwright test tests",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:e2e": "npx playwright test tests",
     "test:report": "playwright show-report"
   },
   "dependencies": {

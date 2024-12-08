@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()]
+  plugins: [react()],
   // define: {
   //   // eslint-disable-next-line no-undef
   //   'process.env': process.env
