@@ -8,9 +8,23 @@ on:
       - 'backend/**' # Trigger only on changes within the backend directory
 
 jobs:
-  trigger-build:
+  tag_release:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+          
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@a2c70ae13a881faf2b4953baaa9e49731997ab36
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
 
+  trigger-build:
+    needs: tag_release
+    runs-on: ubuntu-latest
     steps: 
       - name: Trigger build backend to Render.com
         env:
