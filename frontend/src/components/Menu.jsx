@@ -13,6 +13,10 @@ const StyledNav = styled.nav`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  @media (max-width: 870px) {
+    font-size: initial;
+  }
 `
 
 const NavList = styled.ul`

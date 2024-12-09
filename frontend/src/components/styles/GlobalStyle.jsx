@@ -170,7 +170,26 @@ const GlobalStyles = createGlobalStyle`
     width: 100%;
   }
 
-  @media(max-width: 870px){
+  .rbc-addons-dnd-row-body {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  .rbc-time-header-content > .rbc-row.rbc-row-resource {
+    border-bottom: 0;
+  }
+
+  .rbc-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    background-color: white;
+    border-bottom: 0;
+  }
+
+    @media(max-width: 870px){
     .hideOnMobile{
       display: none;
     }
@@ -191,25 +210,6 @@ const GlobalStyles = createGlobalStyle`
       font-size: small;
     }
 
-  }
-
-  .rbc-addons-dnd-row-body {
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-  }
-
-  .rbc-time-header-content > .rbc-row.rbc-row-resource {
-    border-bottom: 0;
-  }
-
-  .rbc-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 50px;
-    background-color: white;
-    border-bottom: 0;
   }
 `
 
