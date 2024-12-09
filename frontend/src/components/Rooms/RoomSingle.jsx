@@ -86,10 +86,12 @@ const SingleRoom = () => {
               </a>
               <table>
                 <tbody>
+                {user.admin && user.enabled &&
                   <tr>
                     <th width="150px">Room ID</th>
                     <td>{currentRoom.id}</td>
                   </tr>
+                }
                   <tr>
                     <th>Name</th>
                     <td>{currentRoom.name}</td>
