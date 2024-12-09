@@ -12,7 +12,7 @@ const createRooms = async () => {
   if (existingRooms.length === 0) {
 
     await Room.create({
-      id: '1',
+      id: '100',
       userId: '1',
       name: 'Meeting room',
       capacity: 10,
@@ -21,7 +21,7 @@ const createRooms = async () => {
     })
 
     await Room.create({
-      id: '2',
+      id: '200',
       userId: '1',
       name: 'Conference room',
       capacity: 25,
@@ -30,7 +30,7 @@ const createRooms = async () => {
     })
 
     await Room.create({
-      id: '3',
+      id: '300',
       userId: '1',
       name: 'Concert hall',
       capacity: 75,
