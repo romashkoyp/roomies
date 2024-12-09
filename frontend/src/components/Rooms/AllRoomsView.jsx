@@ -22,7 +22,6 @@ const Rooms = () => {
     navigate(`/rooms/${roomId}`)
   }
 
-
   return (
     <>
       {user.admin && user.enabled && <RoomForm />}
@@ -35,7 +34,7 @@ const Rooms = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Room ID</th>
+                  {user.admin && user.enabled && <th>Room ID</th>}
                   <th>Name</th>
                   <th>Capacity, people</th>
                   <th>Size, m<sup>2</sup></th>
@@ -48,7 +47,7 @@ const Rooms = () => {
                     onClick={()=>handleRowClick(u.id)}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td>{u.id}</td>
+                    {user.admin && user.enabled && <td>{u.id}</td>}
                     <td>{u.name}</td>
                     <td>{u.capacity}</td>
                     <td>{u.size}</td>
