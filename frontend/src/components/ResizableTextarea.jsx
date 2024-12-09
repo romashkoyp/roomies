@@ -5,10 +5,10 @@ const ResizableTextarea = ({
   value,
   onChange,
   placeholder = '',
-  rows = 4,
-  cols = 50,
+  rows = 15,
+  cols = 10,
 }) => {
-  const textareaRef = useRef(null);
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     const handleResize = () => {

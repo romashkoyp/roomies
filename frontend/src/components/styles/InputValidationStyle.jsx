@@ -5,8 +5,9 @@ const StyledInput = styled.input.withConfig({
 })`
   flex-grow: 1;
   max-width: 300px;
+  width: 90%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 1em;
   border: 1px solid ${(props) => (props.hasError ? '#ff5c5c' : '#ccc')};
   border-radius: 4px;
   outline: none;

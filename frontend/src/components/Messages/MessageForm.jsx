@@ -49,7 +49,7 @@ const MessageForm = () => {
         <CloseButtonWrapper>
           <LinkHeader onClick={handleClick}>
             <h3>
-              <i style={{ paddingRight: '0.5em' }} className="fa-regular fa-comment-dots" />
+              <i style={{ paddingRight: '0.5em' }} className='fa-regular fa-comment-dots' />
               Add new message
             </h3>
           </LinkHeader>
@@ -59,14 +59,14 @@ const MessageForm = () => {
           <form onSubmit={handleSubmit}>
             <div>
               <ResizableTextarea
-                type="text"
-                id="message"
-                name="message"
+                type='text'
+                id='message'
+                name='message'
                 value={content}
                 onChange={handleChange}
               />
             </div>
-            <PrimaryButton type="submit">Submit</PrimaryButton>
+            <PrimaryButton type='submit'>Submit</PrimaryButton>
           </form>
         }
       </Wrapper>

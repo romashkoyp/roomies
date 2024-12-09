@@ -83,7 +83,7 @@ const SigninForm = () => {
   }
 
   return (
-    <Wrapper style={{ maxWidth: '350px', alignSelf: 'center', padding: '2em' }}>
+    <Wrapper style={{ maxWidth: '350px', alignSelf: 'center', padding: '2em', width: '90%' }}>
       <form onSubmit={handleSignin}>
         <h2>Sign In</h2>
         

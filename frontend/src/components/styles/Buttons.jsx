@@ -4,16 +4,16 @@ const buttonStyles = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 600;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75em 1.5em;
   border: 2px solid transparent;
-  border-radius: 0.25rem;
+  border-radius: 0.25em;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease; border-color 0.3s ease;
-  margin: 1rem 1.5rem 0.3rem 0;
-  height: 35px; // Set the height of the button
-  width: 120px; // Set the width of the button
+  margin: 1em 1.5em 0.3em 0;
+  height: 35px;
+  width: 120px;
   &:focus {
     outline: none;
   }
@@ -21,6 +21,11 @@ const buttonStyles = css`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  @media(max-width: 830px){
+    font-size: small;
+    width: 40%;
   }
 `
 const PrimaryButton = styled.button`
@@ -46,16 +51,21 @@ const SecondaryButton = styled.button`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 0.2rem;
-  right: 0.8rem;
+  top: 0.1em;
+  right: 0.2em;
   background: none;
   border: none;
-  font-size: 2.5rem;
+  font-size: 2.5em;
   cursor: pointer;
   color: #888;
+
   &:hover {
     color: #333;
   }
+  
+  @media(max-width: 830px){
+    font-size: 2.2em;
+  }
 `
 
-export { CloseButton,PrimaryButton, SecondaryButton }
+export { CloseButton, PrimaryButton, SecondaryButton }

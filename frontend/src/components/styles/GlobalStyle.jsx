@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components'
 const GlobalStyles = createGlobalStyle`
   
   body {
-    margin: 1.5rem;
     padding: 0;
     font-family: "Poppins", sans-serif; 
     color: #333;
@@ -62,23 +61,25 @@ const GlobalStyles = createGlobalStyle`
     border-radius: 8px;
     margin-bottom: 20px;
   }
-  
-  .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
+    
   .booking-form-popup {
+    max-width: 350px;
+    width: 70%;
     position: fixed; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    padding: 20px;
+    padding: 1em 2em 2em 2em;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
   }
 
   .overlay {
@@ -93,14 +94,30 @@ const GlobalStyles = createGlobalStyle`
 
   label {
     width: 160px;
-    font-size: 16px;
+    max-width: 90%;
+    font-size: 1em;
   }
 
   input {
     flex-grow: 1;
-    max-width: 300px;
+    max-width: 170px;
+    width: 90%;
     padding: 10px;
-    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+  }
+
+  .booking-input {
+    flex-grow: 1;
+    min-width: 170px;
+    width: 90%;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     outline: none;
@@ -117,14 +134,10 @@ const GlobalStyles = createGlobalStyle`
     cursor: pointer;
   }
 
-  .form-group {
-    display: flex;
-    align-items: baseline;
-  }
-
   .input-container {
     display: flex;
     flex-direction: column;
+    align-self: center;
   }
 
   .error {
@@ -152,7 +165,12 @@ const GlobalStyles = createGlobalStyle`
     display: none;
   }
 
-  @media(max-width: 830px){
+  textarea {
+    display: flex;
+    width: 100%;
+  }
+
+  @media(max-width: 870px){
     .hideOnMobile{
       display: none;
     }
@@ -160,6 +178,19 @@ const GlobalStyles = createGlobalStyle`
     .menu-button {
       display: block;
     }
+    
+    body {
+      font-size: small;
+    }
+
+    label {
+      font-size: small;
+    }
+
+    input {
+      font-size: small;
+    }
+
   }
 
   .rbc-addons-dnd-row-body {

@@ -70,47 +70,59 @@ const NewBookingForm = ({ slotInfo, onClose, onSubmit, editingBooking }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-container">
+            <input
+              className='booking-input'
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="date">Date:</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-container">
+            <input
+              className='booking-input'
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="time_begin">Start Time:</label>
-          <input
-            type="time"
-            id="time_begin"
-            name="time_begin"
-            value={formData.time_begin}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-container">
+            <input
+              className='booking-input'
+              type="time"
+              id="time_begin"
+              name="time_begin"
+              value={formData.time_begin}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="time_end">End Time:</label>
-          <input
-            type="time"
-            id="time_end"
-            name="time_end"
-            value={formData.time_end}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-container">
+            <input
+              className='booking-input'
+              type="time"
+              id="time_end"
+              name="time_end"
+              value={formData.time_end}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <PrimaryButton type="submit">Submit</PrimaryButton>
         {editingBooking && ( 
