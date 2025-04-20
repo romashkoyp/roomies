@@ -1,6 +1,5 @@
 const express = require('express')
 require('express-async-errors')
-const path = require('path')
 const app = express()
 const cors = require('cors')
 
@@ -25,7 +24,6 @@ const { createMessages } = require('./util/messagesCreator')
 app.use(cors())
 app.use(express.json())
 app.use(express.static('public'))
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')))
 
 app.use('/api/notifications', notificationRouter)
 app.use('/api/users', userRouter)
@@ -37,10 +35,6 @@ app.use('/api/bookings', bookingRouter)
 app.use('/api/settings', settingRouter)
 
 app.use(errorHandler)
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'))
-})
 
 const start = async () => {
   await connectToDatabase()
