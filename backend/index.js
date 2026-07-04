@@ -4,7 +4,9 @@ const app = express()
 const cors = require('cors')
 
 const { PORT, TEST, DEV, PROD } = require('./util/config')
-const { connectToDatabase } = require('./util/db')
+const { connectToDatabase, sequelize } = require('./util/db')
+console.log('Database helper loaded. Sequelize instance created:', !!sequelize)
+
 const { createAdminUser } = require('./util/adminCreator')
 const { createGlobalRoomsWeekdays } = require('./util/globalRoomsWeekdaysCreator')
 
@@ -51,7 +53,27 @@ const start = async () => {
   }
 }
 
-if (TEST !== true) {
+let dbInitPromise = null
+
+const initializeDb = () => {
+  if (!dbInitPromise) {
+    dbInitPromise = start()
+  }
+  return dbInitPromise
+}
+
+if (process.env.VERCEL) {
+  // On Vercel (serverless), lazily connect/migrate before processing requests
+  app.use(async (req, res, next) => {
+    try {
+      await initializeDb()
+      next()
+    } catch (error) {
+      next(error)
+    }
+  })
+} else if (TEST !== true) {
+  // Eager start for local development
   start().then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`)
@@ -59,4 +81,8 @@ if (TEST !== true) {
   })
 }
 
-module.exports = { app, start }
+// Export the Express app function directly for Vercel,
+// but attach app and start properties so Jest tests don't break
+module.exports = app
+module.exports.app = app
+module.exports.start = start

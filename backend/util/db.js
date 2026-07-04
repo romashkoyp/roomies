@@ -3,20 +3,23 @@ const { Umzug, SequelizeStorage } = require('umzug')
 const path = require('path')
 const { DATABASE_URL, PROD, DEV } = require('./config')
 
-let sequelize
+console.log('Resolving database connection in db.js. PROD:', PROD, 'DATABASE_URL defined:', !!DATABASE_URL)
 
-if (PROD === true) {
-  sequelize = new Sequelize(DATABASE_URL, {
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    }
-  })
-} else {
-  sequelize = new Sequelize(DATABASE_URL)
+if (!DATABASE_URL) {
+  throw new Error('DATABASE_URL is undefined! Please verify your Vercel database integration or environment variables.')
 }
+
+const sequelize = PROD === true
+  ? new Sequelize(DATABASE_URL, {
+      dialect: 'postgres',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
+    })
+  : new Sequelize(DATABASE_URL)
 
 const connectToDatabase = async () => {
   try {
