@@ -3,27 +3,35 @@ const { Umzug, SequelizeStorage } = require('umzug')
 const path = require('path')
 const { DATABASE_URL, PROD, DEV } = require('./config')
 
-console.log('Resolving database connection in db.js. PROD:', PROD, 'DATABASE_URL defined:', !!DATABASE_URL)
+console.log('Database configuration loaded. PROD:', PROD, 'DATABASE_URL defined:', !!DATABASE_URL)
 
-if (!DATABASE_URL) {
-  throw new Error('DATABASE_URL is undefined! Please verify your Vercel database integration or environment variables.')
+let sequelizeInstance = null
+
+const getSequelize = () => {
+  if (!sequelizeInstance) {
+    if (!DATABASE_URL) {
+      throw new Error('DATABASE_URL is undefined! Please verify your Vercel database integration or environment variables.')
+    }
+    console.log('Initializing Sequelize instance...')
+    sequelizeInstance = PROD === true
+      ? new Sequelize(DATABASE_URL, {
+          dialect: 'postgres',
+          dialectOptions: {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false
+            }
+          },
+        })
+      : new Sequelize(DATABASE_URL)
+  }
+  return sequelizeInstance
 }
-
-const sequelize = PROD === true
-  ? new Sequelize(DATABASE_URL, {
-      dialect: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false
-        }
-      }
-    })
-  : new Sequelize(DATABASE_URL)
 
 const connectToDatabase = async () => {
   try {
-    await sequelize.authenticate()
+    const seq = getSequelize()
+    await seq.authenticate()
     await runMigrations()
     if (PROD === true || DEV === true) {
       await ensureSchema()
@@ -41,8 +49,12 @@ const migrationConf = {
   migrations: {
     glob: path.join(__dirname, '../migrations/*.js').replace(/\\/g, '/'),
   },
-  storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
-  context: sequelize.getQueryInterface(),
+  get storage() {
+    return new SequelizeStorage({ sequelize: getSequelize(), tableName: 'migrations' })
+  },
+  get context() {
+    return getSequelize().getQueryInterface()
+  },
   logger: console
 }
 
@@ -66,7 +78,8 @@ const ensureSchema = async () => {
     'sessions'
   ]
 
-  const tables = await sequelize.getQueryInterface().showAllTables()
+  const seq = getSequelize()
+  const tables = await seq.getQueryInterface().showAllTables()
   const existingTables = new Set(tables.map((table) => (typeof table === 'string' ? table : table.tableName)))
   const missingTables = requiredTables.filter((table) => !existingTables.has(table))
 
@@ -74,18 +87,21 @@ const ensureSchema = async () => {
     console.warn('Missing tables detected after migrations, repairing schema', {
       missingTables,
     })
-    await sequelize.sync()
+    await seq.sync()
   }
 }
 
 const rollbackMigration = async () => {
-  await sequelize.authenticate()
+  const seq = getSequelize()
+  await seq.authenticate()
   const migrator = new Umzug(migrationConf)
   await migrator.down({ to: 0 })
 }
 
 module.exports = {
   connectToDatabase,
-  sequelize,
+  get sequelize() {
+    return getSequelize()
+  },
   rollbackMigration
 }
