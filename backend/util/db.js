@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const { Umzug, SequelizeStorage } = require('umzug')
-const { DATABASE_URL, PROD } = require('./config')
+const path = require('path')
+const { DATABASE_URL, PROD, DEV } = require('./config')
 
 let sequelize
 
@@ -11,7 +12,7 @@ if (PROD === true) {
         require: true,
         rejectUnauthorized: false
       }
-    },
+    }
   })
 } else {
   sequelize = new Sequelize(DATABASE_URL)
@@ -21,6 +22,9 @@ const connectToDatabase = async () => {
   try {
     await sequelize.authenticate()
     await runMigrations()
+    if (PROD === true || DEV === true) {
+      await ensureSchema()
+    }
     console.log('Connected to the database successfully')
   } catch (err) {
     console.log('Unable to connect to the database', err)
@@ -32,7 +36,7 @@ const connectToDatabase = async () => {
 
 const migrationConf = {
   migrations: {
-    glob: 'migrations/*.js',
+    glob: path.join(__dirname, '../migrations/*.js').replace(/\\/g, '/'),
   },
   storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
   context: sequelize.getQueryInterface(),
@@ -45,6 +49,30 @@ const runMigrations = async () => {
   console.log('Migrations up to date', {
     files: migrations.map((mig) => mig.name),
   })
+}
+
+const ensureSchema = async () => {
+  const requiredTables = [
+    'users',
+    'notifications',
+    'rooms',
+    'global_weekdays',
+    'individual_dates',
+    'global_dates',
+    'bookings',
+    'sessions'
+  ]
+
+  const tables = await sequelize.getQueryInterface().showAllTables()
+  const existingTables = new Set(tables.map((table) => (typeof table === 'string' ? table : table.tableName)))
+  const missingTables = requiredTables.filter((table) => !existingTables.has(table))
+
+  if (missingTables.length > 0) {
+    console.warn('Missing tables detected after migrations, repairing schema', {
+      missingTables,
+    })
+    await sequelize.sync()
+  }
 }
 
 const rollbackMigration = async () => {
