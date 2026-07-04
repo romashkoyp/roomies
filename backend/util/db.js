@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+require('pg') // Force bundler (Rolldown) to bundle the pg driver
 const { Umzug, SequelizeStorage } = require('umzug')
 const path = require('path')
 const { DATABASE_URL, PROD, DEV } = require('./config')
