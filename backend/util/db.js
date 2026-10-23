@@ -16,14 +16,14 @@ const getSequelize = () => {
     console.log('Initializing Sequelize instance...')
     sequelizeInstance = PROD === true
       ? new Sequelize(DATABASE_URL, {
-          dialect: 'postgres',
-          dialectOptions: {
-            ssl: {
-              require: true,
-              rejectUnauthorized: false
-            }
-          },
-        })
+        dialect: 'postgres',
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false
+          }
+        },
+      })
       : new Sequelize(DATABASE_URL)
   }
   return sequelizeInstance
